@@ -1,0 +1,53 @@
+
+
+.yoti-connect .yoti-connect-button {
+    text-align: center;
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 0 #ccc;
+    box-shadow: 0 1px 0 #ccc;
+    text-decoration: none;
+    color: #555;
+}
+
+.yoti-connect .yoti-connect-button:hover {
+    border-color: #555;
+}
+.yoti-connect .yoti-connect-button:active {
+    background: #eee;
+    border-color: #999;
+    -webkit-box-shadow: inset 0 2px 5px -3px rgba(0,0,0,.5);
+    box-shadow: inset 0 2px 5px -3px rgba(0,0,0,.5);
+    -webkit-transform: translateY(1px);
+    -ms-transform: translateY(1px);
+    transform: translateY(1px);
+}
+#loginform .yoti-connect-button {
+    margin: 10px 0 25px 0;
+    display: block;
+}
+
+.yoti-connect div.error {
+    border-left: 4px solid #dc3232;
+}
+
+.yoti-connect .notice,
+.yoti-connect div.error,
+.yoti-connect div.updated {
+    background: #fff;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    margin: 5px 0;
+    padding: 3px 12px;
+}
+
+.wrap .pem-file {
+    margin-bottom: 10px;
+}
+
+.wrap .pem-file input[name="yoti_delete_pem"] {
+    margin-left: 10px;
+}
