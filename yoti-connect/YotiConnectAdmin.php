@@ -123,6 +123,7 @@ class YotiConnectAdmin
                         'name' => $name,
                         'contents' => $pemContents,
                     ),
+                    'yoti_allow_registration' => $data['yoti_allow_registration'],
                 );
 
                 // save config

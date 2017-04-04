@@ -7,8 +7,9 @@
 ?>
 <div class="wrap">
     <h1>Yoti Connect Settings</h1>
-    <p>You need to first create a Yoti App at <a href="<?php echo \Yoti\YotiClient::DASHBOARD_URL; ?>" target="_blank">Yoti Dashboard</a>.</p>
-    <p>Note: On the Yoti Dashboard the callback URL should be set to: <code><?php echo site_url('wp-login.php?yoti-connect=1&action=link', 'https'); ?></code></p>
+    <p>Please create a Yoti Application on the <a href="<?php echo \Yoti\YotiClient::DASHBOARD_URL; ?>" target="_blank">Yoti Dashboard</a>.</p>
+    <p>Note: On the Yoti Dashboard, under the 'Integration' tab, please set the callback URL to: <code><?php echo site_url('wp-login.php?yoti-connect=1&action=link', 'https'); ?></code></p>
+    <p>Note: Once you have created your Yoti Application, navigate to the 'Keys' tab to get the IDs and file required below:</p>
     <?php
     if ($updateMessage)
     {
@@ -60,6 +61,17 @@
                     }
                     ?>
                     <input name="yoti_pem" type="file" id="yoti_pem" />
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="yoti_allow_registration">Allow new users to register via Yoti Connect?</label>
+                </th>
+                <td>
+                    <?php
+                        $signupChecked = (!empty($data['yoti_allow_registration']) ? ' checked="checked"' : '');
+                        echo '<input type="checkbox" name="yoti_allow_registration" value="1"' . $signupChecked . ' />';
+                    ?>
                 </td>
             </tr>
             </tbody>

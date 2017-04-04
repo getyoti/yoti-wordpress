@@ -17,6 +17,7 @@ class YotiConnectHelper
     public static $profileFields = array(
         ActivityDetails::ATTR_SELFIE => 'Selfie',
         ActivityDetails::ATTR_PHONE_NUMBER => 'Phone number',
+        ActivityDetails::ATTR_EMAIL_ADDRESS => 'Email Address',
         ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date of birth',
         ActivityDetails::ATTR_GIVEN_NAMES => 'Given names',
         ActivityDetails::ATTR_FAMILY_NAME => 'Family name',
@@ -84,9 +85,16 @@ class YotiConnectHelper
         // if user isn't logged in
         if (!is_user_logged_in())
         {
-            // register new user
+            // Register new user
             if (!$userId)
             {
+                // Prevent registration if new users are not allowed to register
+                if(!$config['yoti_allow_registration'])
+                {
+                    self::setFlash("Unable to register new users. This can be updated in 'Settings > Yoti Connect", 'error');
+                    return false;
+                }
+
                 $errMsg = $userId = null;
                 try
                 {
@@ -139,7 +147,7 @@ class YotiConnectHelper
         if (is_user_logged_in())
         {
             $this->deleteYotiUser($currentUser->ID);
-            self::setFlash('Your Yoti profile is successfully unlinked from your account.');
+            self::setFlash('Your Yoti profile has been successfully unlinked from your account.');
 
             return true;
         }

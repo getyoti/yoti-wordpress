@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Yoti Connect Plugin
-Plugin URI:
-Description: Let Yoti users quickly register on your site
-Version: 1.0
-Author: Simon Tong
-Author URI: http://yoti.com
+Plugin URI: https://github.com/getyoti/wordpress
+Description: Password free logins powered by Yoti
+Version: 1.1
+Author: Yoti Ltd.
+Author URI: https://yoti.com
 */
 
 use Yoti\ActivityDetails;
