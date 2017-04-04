@@ -21,7 +21,7 @@ class YotiConnectHelper
         ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date of birth',
         ActivityDetails::ATTR_GIVEN_NAMES => 'Given names',
         ActivityDetails::ATTR_FAMILY_NAME => 'Family name',
-        ActivityDetails::ATTR_FULL_NAME => 'Family name',
+        ActivityDetails::ATTR_FULL_NAME => 'Full name',
         ActivityDetails::ATTR_NATIONALITY => 'Nationality',
     );
 
