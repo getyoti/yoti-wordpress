@@ -75,6 +75,7 @@ class YotiConnectAdmin
             $data['yoti_app_id'] = $this->postVar('yoti_app_id');
             $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
             $data['yoti_delete_pem'] = ($this->postVar('yoti_delete_pem')) ? true : false;
+            $data['yoti_allow_registration'] = ($this->postVar('yoti_allow_registration')) ? true : false;
             $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
 
             // validation

@@ -21,6 +21,7 @@ class YotiConnectHelper
         ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date of birth',
         ActivityDetails::ATTR_GIVEN_NAMES => 'Given names',
         ActivityDetails::ATTR_FAMILY_NAME => 'Family name',
+        ActivityDetails::ATTR_FULL_NAME => 'Family name',
         ActivityDetails::ATTR_NATIONALITY => 'Nationality',
     );
 
@@ -91,7 +92,7 @@ class YotiConnectHelper
                 // Prevent registration if new users are not allowed to register
                 if(!$config['yoti_allow_registration'])
                 {
-                    self::setFlash("Unable to register new users. This can be updated in 'Settings > Yoti Connect", 'error');
+                    self::setFlash("New user registrations are not allowed.", 'error');
                     return false;
                 }
 
@@ -221,7 +222,7 @@ class YotiConnectHelper
      * @param string $prefix
      * @return string
      */
-    private function generateUsername($prefix = 'yoticonnect-')
+    private function generateUsername($activityDetails, $prefix = 'yoticonnect-')
     {
         $i = 0;
         do
@@ -266,9 +267,27 @@ class YotiConnectHelper
      */
     private function createUser(ActivityDetails $activityDetails)
     {
-        $username = $this->generateUsername();
+        $email = $username = null;
+
+        if($activityDetails->getProfileAttribute(ActivityDetails::ATTR_EMAIL_ADDRESS))
+        {
+            $email = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_EMAIL_ADDRESS);
+        }
+        else
+        {
+            $email = $this->generateEmail();
+        }
+
+        if($activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME))
+        {
+            $username = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME);
+        }
+        else
+        {
+            $username = $this->generateUsername($activityDetails);
+        }
+
         $password = $this->generatePassword();
-        $email = $this->generateEmail();
         $userId = wp_create_user($username, $password, $email);
         $this->createYotiUser($userId, $activityDetails);
 

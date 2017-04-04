@@ -65,7 +65,7 @@
             </tr>
             <tr>
                 <th scope="row">
-                    <label for="yoti_allow_registration">Allow new users to register via Yoti Connect?</label>
+                    <label for="yoti_allow_registration">Allow new registrations?</label>
                 </th>
                 <td>
                     <?php
