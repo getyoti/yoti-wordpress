@@ -228,16 +228,34 @@ class YotiConnectHelper
         if($activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME))
         {
             $prefix = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME);
-        }
 
-        $i = 0;
-        do
-        {
-            $username = $prefix . $i++;
-        }
-        while (get_user_by('login', $username));
+            // If someone with this full name already exists, add an integer. Otherwise return the name.
+            if(get_user_by('login', $prefix))
+            {
+                $i = 2;
+                do
+                {
+                    $username = $prefix . " " . $i++;
+                }
+                while (get_user_by('login', $username));
 
-        return $username;
+                return $username;
+            }
+            else
+            {
+                return $prefix;
+            }
+        }
+        else {
+            $i = 0;
+            do
+            {
+                $username = $prefix . $i++;
+            }
+            while (get_user_by('login', $username));
+
+            return $username;
+        }
     }
 
     /**
