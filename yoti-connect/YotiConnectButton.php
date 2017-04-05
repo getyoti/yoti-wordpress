@@ -37,7 +37,7 @@ class YotiConnectButton
             {
                 $url = YotiConnectHelper::getLoginUrl();
             }
-            $label = 'Sign on with Yoti';
+            $label = 'Log in with Yoti';
         }
         else
         {

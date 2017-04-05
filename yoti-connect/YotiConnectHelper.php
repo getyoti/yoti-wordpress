@@ -17,9 +17,11 @@ class YotiConnectHelper
     public static $profileFields = array(
         ActivityDetails::ATTR_SELFIE => 'Selfie',
         ActivityDetails::ATTR_PHONE_NUMBER => 'Phone number',
+        ActivityDetails::ATTR_EMAIL_ADDRESS => 'Email Address',
         ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date of birth',
         ActivityDetails::ATTR_GIVEN_NAMES => 'Given names',
         ActivityDetails::ATTR_FAMILY_NAME => 'Family name',
+        ActivityDetails::ATTR_FULL_NAME => 'Full name',
         ActivityDetails::ATTR_NATIONALITY => 'Nationality',
     );
 
@@ -84,9 +86,16 @@ class YotiConnectHelper
         // if user isn't logged in
         if (!is_user_logged_in())
         {
-            // register new user
+            // Register new user
             if (!$userId)
             {
+                // Prevent registration if new users are not allowed to register
+                if(!$config['yoti_allow_registration'])
+                {
+                    self::setFlash("New user registrations are not allowed.", 'error');
+                    return false;
+                }
+
                 $errMsg = $userId = null;
                 try
                 {
@@ -139,7 +148,7 @@ class YotiConnectHelper
         if (is_user_logged_in())
         {
             $this->deleteYotiUser($currentUser->ID);
-            self::setFlash('Your Yoti profile is successfully unlinked from your account.');
+            self::setFlash('Your Yoti profile has been successfully unlinked from your account.');
 
             return true;
         }
@@ -210,23 +219,48 @@ class YotiConnectHelper
     }
 
     /**
-     * @param string $prefix
+     * @param ActivityDetails $activityDetails
      * @return string
      */
-    private function generateUsername($prefix = 'yoticonnect-')
+    private function generateUsername($activityDetails)
     {
-        $i = 0;
-        do
+        $FULL_NAME = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME);
+        $GIVEN_NAMES = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_GIVEN_NAMES);
+        $FAMILY_NAME = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FAMILY_NAME);
+
+        $i = 2;
+        $username = null;
+
+        if($FULL_NAME)
         {
-            $username = $prefix . $i++;
+            $prefix = $FULL_NAME;
         }
-        while (get_user_by('login', $username));
+        elseif($GIVEN_NAMES && $FAMILY_NAME)
+        {
+            $prefix = $GIVEN_NAMES . " " . $FAMILY_NAME;
+        }
+        else
+        {
+            $prefix = "YotiConnect";
+        }
+
+        if(get_user_by('login', $prefix))
+        {
+            do
+            {
+                $username = $prefix . " " . $i++;
+            }
+            while (get_user_by('login', $username));
+        }
+        else {
+            $username = $prefix;
+        }
 
         return $username;
     }
 
     /**
-     * @param $prefix
+     * @param string $prefix
      * @param string $domain
      * @return string
      */
@@ -258,9 +292,19 @@ class YotiConnectHelper
      */
     private function createUser(ActivityDetails $activityDetails)
     {
-        $username = $this->generateUsername();
+        $email = null;
+
+        if($activityDetails->getProfileAttribute(ActivityDetails::ATTR_EMAIL_ADDRESS))
+        {
+            $email = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_EMAIL_ADDRESS);
+        }
+        else
+        {
+            $email = $this->generateEmail();
+        }
+
+        $username = $this->generateUsername($activityDetails);
         $password = $this->generatePassword();
-        $email = $this->generateEmail();
         $userId = wp_create_user($username, $password, $email);
         $this->createYotiUser($userId, $activityDetails);
 
