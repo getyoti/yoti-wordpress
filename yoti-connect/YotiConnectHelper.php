@@ -219,43 +219,44 @@ class YotiConnectHelper
     }
 
     /**
-     * @param string $prefix
      * @param ActivityDetails $activityDetails
      * @return string
      */
-    private function generateUsername($activityDetails, $prefix = 'yoticonnect-')
+    private function generateUsername($activityDetails)
     {
-        if($activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME))
+        $FULL_NAME = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME);
+        $GIVEN_NAMES = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_GIVEN_NAMES);
+        $FAMILY_NAME = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FAMILY_NAME);
+
+        $i = 2;
+        $username = null;
+
+        if($FULL_NAME)
         {
-            $prefix = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_FULL_NAME);
-
-            // If someone with this full name already exists, add an integer. Otherwise return the name.
-            if(get_user_by('login', $prefix))
-            {
-                $i = 2;
-                do
-                {
-                    $username = $prefix . " " . $i++;
-                }
-                while (get_user_by('login', $username));
-
-                return $username;
-            }
-            else
-            {
-                return $prefix;
-            }
+            $prefix = $FULL_NAME;
         }
-        else {
-            $i = 0;
+        elseif($GIVEN_NAMES && $FAMILY_NAME)
+        {
+            $prefix = $GIVEN_NAMES . " " . $FAMILY_NAME;
+        }
+        else
+        {
+            $prefix = "YotiConnect";
+        }
+
+        if(get_user_by('login', $prefix))
+        {
             do
             {
-                $username = $prefix . $i++;
+                $username = $prefix . " " . $i++;
             }
             while (get_user_by('login', $username));
-
-            return $username;
         }
+        else {
+            $username = $prefix;
+        }
+
+        return $username;
     }
 
     /**
