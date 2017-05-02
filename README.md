@@ -79,11 +79,9 @@ Please do not open the pem file as this might corrupt the key and you will need 
 When your application receives a token via the exposed endpoint (it will be assigned to a query string parameter named `token`), you can easily retrieve the user profile by adding the following to your endpoint handler:
 
 ```php
-   {
-            $yotiClient = new YotiClient($config['yoti_sdk_id'], $config['yoti_pem']['contents']);
-            $yotiClient->setMockRequests(self::mockRequests());
-            $activityDetails = $yotiClient->getActivityDetails($token);
-        }
+$yotiClient = new YotiClient($config['yoti_sdk_id'], $config['yoti_pem']['contents']);
+$yotiClient->setMockRequests(self::mockRequests());
+$activityDetails = $yotiClient->getActivityDetails($token);
 ```
 Before you inspect the user profile, you might want to check whether the user validation was successful.
 This is done as follows:
@@ -91,9 +89,9 @@ This is done as follows:
 ```javascript
 $activityDetails = $yotiClient->getActivityDetails($token);
 if ($yotiClient->getOutcome() == YotiClient::OUTCOME_SUCCESS)
-        {
-    	//handle happy path
-        }else{
+{
+	//handle happy path
+} else {
 	//handle unhappy path
 }
 ```
@@ -109,15 +107,11 @@ Here is an example of how this works:
  // check if yoti user exists
 $userId = $this->getUserIdByYotiId($activityDetails->getUserId());
 if (!$userId)
-           {
-                    //handle login
-                
- 	} else {
-		// handle registration
-
-	} else {
-		// handle unhappy path
-	}
+{
+	// handle registration
+} else {
+	// handle unhappy path
+}
 ```
 
 ## API Coverage
