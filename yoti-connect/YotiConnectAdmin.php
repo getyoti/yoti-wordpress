@@ -73,6 +73,7 @@ class YotiConnectAdmin
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
         {
             $data['yoti_app_id'] = $this->postVar('yoti_app_id');
+            $data['yoti_scenario_id'] = $this->postVar('yoti_scenario_id');
             $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
             $data['yoti_delete_pem'] = ($this->postVar('yoti_delete_pem')) ? true : false;
             $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
@@ -118,6 +119,7 @@ class YotiConnectAdmin
 
                 $data = $config = array(
                     'yoti_app_id' => $data['yoti_app_id'],
+                    'yoti_scenario_id' => $data['yoti_scenario_id'],
                     'yoti_sdk_id' => $data['yoti_sdk_id'],
                     'yoti_pem' => array(
                         'name' => $name,

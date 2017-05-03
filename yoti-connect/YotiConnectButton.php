@@ -29,7 +29,7 @@ class YotiConnectButton
         $linkButton = '<span
             data-yoti-application-id="' . $config['yoti_app_id'] . '"
             data-yoti-type="inline"
-            data-yoti-scenario-id="c8e2543d-1685-4e01-b2c6-024d6b527ce3"
+            data-yoti-scenario-id="' . $config['yoti_scenario_id'] . '"
             data-size="small">
             %s
         </span>
