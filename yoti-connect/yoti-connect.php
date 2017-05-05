@@ -14,6 +14,7 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require_once __DIR__ . '/YotiConnectHelper.php';
 require_once __DIR__ . '/YotiConnectAdmin.php';
 require_once __DIR__ . '/YotiConnectButton.php';
+require_once __DIR__ . '/YotiWidget.php';
 
 /**
  * Activation hook
@@ -21,8 +22,7 @@ require_once __DIR__ . '/YotiConnectButton.php';
 function yoti_connect_activation_hook()
 {
     // create upload dir
-    if (!is_dir(YotiConnectHelper::uploadDir()))
-    {
+    if (!is_dir(YotiConnectHelper::uploadDir())) {
         mkdir(YotiConnectHelper::uploadDir(), 0777, true);
     }
 
@@ -54,25 +54,21 @@ function yoti_connect_deactivation_hook()
  */
 function yoti_connect_init()
 {
-    if (!empty($_GET['yoti-connect']))
-    {
+    if (!empty($_GET['yoti-connect'])) {
         $yc = new YotiConnectHelper();
 
         // action
         $action = !empty($_GET['action']) ? $_GET['action'] : '';
         $redirect = (!empty($_GET['redirect'])) ? $_GET['redirect'] : '/';
-        switch ($action)
-        {
+        switch ($action) {
             case 'link':
-                if ($yc->link())
-                {
+                if ($yc->link()) {
                     wp_safe_redirect($redirect);
                 }
                 break;
 
             case 'unlink':
-                if ($yc->unlink())
-                {
+                if ($yc->unlink()) {
                     wp_redirect($redirect);
                 }
                 break;
@@ -99,12 +95,13 @@ function yoti_connect_admin_menu()
  */
 function yoti_connect_login_footer()
 {
-    $config = YotiConnectHelper::getConfig();
-    if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents']))
-    {
-        wp_enqueue_style('yoti-connect', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
-        echo YotiConnectButton::render();
-    }
+    // uncomment these lines to have yoti button on login page
+
+//    $config = YotiConnectHelper::getConfig();
+//    if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
+//        wp_enqueue_style('yoti-connect', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
+//        echo YotiConnectButton::render();
+//    }
 }
 
 /**
@@ -116,17 +113,25 @@ function show_user_profile($user)
     $dbProfile = YotiConnectHelper::getUserProfile($user->ID);
 
     $profile = null;
-    if ($yotiId && $dbProfile)
-    {
+    if ($yotiId && $dbProfile) {
         $profile = new ActivityDetails($dbProfile, $yotiId);
     }
 
     // add scope
-    $show = function () use ($profile, $dbProfile)
-    {
+    $show = function () use ($profile, $dbProfile) {
         require_once __DIR__ . '/views/profile.php';
     };
     $show();
+}
+
+function yoti_register_widget()
+{
+    register_widget('YotiWidget');
+}
+
+function yoti_enqueue_scripts()
+{
+    wp_enqueue_script('yoti-connect', 'https://sdk.yoti.com/clients/browser.js', array(), null);
 }
 
 // register hooks
@@ -137,3 +142,5 @@ add_action('init', 'yoti_connect_init');
 add_action('login_form', 'yoti_connect_login_footer');
 add_action('show_user_profile', 'show_user_profile', 10, 1);
 add_action('edit_user_profile', 'show_user_profile', 10, 1);
+add_action('widgets_init', 'yoti_register_widget');
+add_action('wp_enqueue_scripts', 'yoti_enqueue_scripts');

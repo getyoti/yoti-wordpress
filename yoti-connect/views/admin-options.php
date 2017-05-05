@@ -41,6 +41,12 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row"><label for="yoti_scenario_id">Yoti Scenario ID</label></th>
+                <td>
+                    <input name="yoti_scenario_id" type="text" id="yoti_scenario_id" value="<?php echo htmlspecialchars($data['yoti_scenario_id']); ?>" class="regular-text code" />
+                </td>
+            </tr>
+            <tr>
                 <th scope="row"><label for="yoti_sdk_id">Yoti SDK ID</label></th>
                 <td>
                     <input name="yoti_sdk_id" type="text" id="yoti_sdk_id" value="<?php echo htmlspecialchars($data['yoti_sdk_id']); ?>" class="regular-text code" />
