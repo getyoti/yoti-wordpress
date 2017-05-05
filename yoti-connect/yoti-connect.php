@@ -59,7 +59,7 @@ function yoti_connect_init()
 
         // action
         $action = !empty($_GET['action']) ? $_GET['action'] : '';
-        $redirect = (!empty($_GET['redirect'])) ? $_GET['redirect'] : '/';
+        $redirect = (!empty($_GET['redirect'])) ? $_GET['redirect'] : home_url();
         switch ($action) {
             case 'link':
                 if ($yc->link()) {

@@ -34,6 +34,7 @@ class YotiConnectButton
             %s
         </span>
         <script>
+//            _ybg.config.service = "https://staging0.www.yoti.com/connect/";
             _ybg.config.service = "https://www.yoti.com/connect/";
             _ybg.init();
         </script>';
