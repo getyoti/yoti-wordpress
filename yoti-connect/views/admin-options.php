@@ -35,14 +35,14 @@
                 <th scope="row"><label for="yoti_app_id">Yoti App ID</label></th>
                 <td>
                     <input name="yoti_app_id" type="text" id="yoti_app_id" value="<?php echo htmlspecialchars($data['yoti_app_id']); ?>" class="regular-text code" />
-                  <p><code>Yoti App ID</code> is unique identifier for your specific application.</p>
+                  <p><code>Yoti App ID</code> is a unique identifier for your specific application.</p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="yoti_scenario_id">Yoti Scenario ID</label></th>
                 <td>
                     <input name="yoti_scenario_id" type="text" id="yoti_scenario_id" value="<?php echo htmlspecialchars($data['yoti_scenario_id']); ?>" class="regular-text code" />
-                  <p><code>Yoti Scenario ID</code> is Used to render the inline QR code.</p>
+                  <p><code>Yoti Scenario ID</code> is used to render the inline QR code.</p>
                 </td>
             </tr>
             <tr>
