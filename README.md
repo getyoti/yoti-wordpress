@@ -76,11 +76,11 @@ For FAQ: https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs
 
 Screenshot of attributes you can add in Yoti Dashboard:
 
-`yoti-connect/assets/SS1.png`
+![SS1](yoti-connect/assets/SS1.png?raw=true "SS1")
 
 Screenshot of settings to add into Wordpress from Yoti Dashboard:
 
-`yoti-connect/assets/Screen Shot 2017-05-10 at 13.05.39.png`
+![SS1](yoti-connect/assets/SS2.png?raw=true "SS1")
 
 == Changelog ==
 
