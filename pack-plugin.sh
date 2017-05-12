@@ -26,6 +26,8 @@ if [ -L "./yoti-connect/sdk" ]; then
 fi
 
 cp -R "$SDK_RELATIVE_PATH" "./yoti-connect/sdk"
+cp README.md "./yoti-connect"
+cp LICENSE "./yoti-connect"
 zip -r "$NAME" "./yoti-connect"
 rm -rf "./yoti-connect/sdk"
 
