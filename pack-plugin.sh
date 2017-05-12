@@ -36,6 +36,8 @@ if [ $sym_exist ]; then
     mv "./__sdk-sym" "./yoti-connect/sdk"
 fi
 rm -rf sdk
+rm "./yoti-connect/README.md"
+rm "./yoti-connect/LICENSE"
 echo "Plugin packed. File $NAME created."
 echo ""
 
