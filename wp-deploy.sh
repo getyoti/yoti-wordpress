@@ -15,7 +15,6 @@ SVNPATH="/tmp/$PLUGINSLUG" # path to a temp SVN repo. No trailing slash required
 SVNURL="http://plugins.svn.wordpress.org/yoti-connect/" # Remote SVN repo on wordpress.org, with trailing slash
 SVNUSER="yotiwordpress" # your svn username
 
-
 # Let's begin...
 echo ".........................................."
 echo 
@@ -69,6 +68,13 @@ svn rm $SVNPATH/trunk/*
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
+
+cd $SVNPATH/trunk/yoti-connect
+echo "Get latest SDK ..."
+curl https://github.com/getyoti/php/archive/master.zip -O -L
+unzip master.zip -d sdk
+mv sdk/php-master/src/* sdk
+rm -rf sdk/php-master
 
 echo "Ignoring github specific files and deployment script"
 svn propset svn:ignore "deploy.sh
