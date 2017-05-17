@@ -2,8 +2,8 @@
 Contributors: Simon Tong, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access
 Requires at least: 3.0.1
-Tested up to: 1.1.0
-Stable tag: 1.1.0
+Tested up to: 1.1.1
+Stable tag: 1.1.1
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
