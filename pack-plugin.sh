@@ -26,6 +26,8 @@ if [ -L "./yoti-connect/sdk" ]; then
 fi
 
 cp -R "$SDK_RELATIVE_PATH" "./yoti-connect/sdk"
+cp README.md "./yoti-connect"
+cp LICENSE "./yoti-connect"
 zip -r "$NAME" "./yoti-connect"
 rm -rf "./yoti-connect/sdk"
 
@@ -34,6 +36,8 @@ if [ $sym_exist ]; then
     mv "./__sdk-sym" "./yoti-connect/sdk"
 fi
 rm -rf sdk
+rm "./yoti-connect/README.md"
+rm "./yoti-connect/LICENSE"
 echo "Plugin packed. File $NAME created."
 echo ""
 
