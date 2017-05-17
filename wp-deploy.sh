@@ -40,9 +40,9 @@ if [ "$NEWVERSION1" != "$NEWVERSION2" ]; then echo "Version in readme.txt & $MAI
 echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
 
 if git show-ref --tags --quiet --verify -- "refs/tags/$NEWVERSION1"
-	then 
-		echo "Version $NEWVERSION1 already exists as git tag. Exiting...."; 
-		exit 1; 
+	then
+		echo "Version $NEWVERSION1 already exists as git tag. Exiting....";
+		exit 1;
 	else
 		echo "Git version does not exist. Let's proceed..."
 fi
@@ -72,9 +72,11 @@ git checkout-index -a -f --prefix=$SVNPATH/trunk/
 cd $SVNPATH/trunk/yoti-connect
 echo "Get latest SDK ..."
 curl https://github.com/getyoti/php/archive/master.zip -O -L
+rm -rf sdk
 unzip master.zip -d sdk
 mv sdk/php-master/src/* sdk
 rm -rf sdk/php-master
+rm master.zip
 
 echo "Ignoring github specific files and deployment script"
 svn propset svn:ignore "deploy.sh
