@@ -68,8 +68,14 @@ svn rm $SVNPATH/trunk/*
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
+git --work-tree=$SVNPATH/trunk/ checkout HEAD -- yoti-connect
 
-cd $SVNPATH/trunk/yoti-connect
+cd $SVNPATH/trunk
+
+# move yoti-connect contents
+mv yoti-connect/* .
+rm -rf yoti-connect
+
 echo "Get latest SDK ..."
 curl https://github.com/getyoti/php/archive/master.zip -O -L
 rm -rf sdk
