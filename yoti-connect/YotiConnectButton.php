@@ -26,6 +26,19 @@ class YotiConnectButton
             return null;
         }
 
+        // if connect url starts with 'https://staging' then we are in staging mode
+        $isStaging = strpos(\Yoti\YotiClient::CONNECT_BASE_URL, 'https://staging') === 0;
+        if ($isStaging)
+        {
+            // base url for connect
+            $baseUrl = preg_replace('/^(.+)\/connect$/', '$1', \Yoti\YotiClient::CONNECT_BASE_URL);
+
+            $script[] = sprintf('_ybg.config.qr = "%s/qr/";', $baseUrl);
+            $script[] = sprintf('_ybg.config.service = "%s/connect/";', $baseUrl);
+        }
+
+        // add init()
+        $script[] = '_ybg.init();';
         $linkButton = '<span
             data-yoti-application-id="' . $config['yoti_app_id'] . '"
             data-yoti-type="inline"
@@ -33,11 +46,7 @@ class YotiConnectButton
             data-size="small">
             %s
         </span>
-        <script>
-//            _ybg.config.service = "https://staging0.www.yoti.com/connect/";
-            _ybg.config.service = "https://www.yoti.com/connect/";
-            _ybg.init();
-        </script>';
+        <script>' . implode("\r\n", $script) . '</script>';
 
         if (!is_user_logged_in()) {
             $button = sprintf($linkButton, 'Log in with Yoti');
