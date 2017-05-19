@@ -71,17 +71,6 @@ For further support please feel free to email us at: sdksupport@yoti.com
 
 For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs)
 
-
-== Screenshots ==
-
-Screenshot of attributes you can add in Yoti Dashboard:
-
-`assets/SS1.png`
-
-Screenshot of settings to add into Wordpress from Yoti Dashboard:
-
-`assets/SS2.png`
-
 == Changelog ==
 
 = 1.0.9 =
