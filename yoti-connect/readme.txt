@@ -11,7 +11,7 @@ Yoti is a digital identity platform that simply allows a user to securely login 
 
 == Description ==
 
-Yoti is a digital identity platform that simply allows a user to securely login to your WordPress site faster, password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more:](https://www.yoti.com)
+Yoti is a digital identity platform that simply allows a user to securely login to your WordPress site faster, password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more.](https://www.yoti.com)
 
 This plugin also allows functionality to link your current followers to their Yoti accounts making registration and blogging quicker with a fancy button!
 
@@ -76,11 +76,11 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 
 Screenshot of attributes you can add in Yoti Dashboard:
 
-`yoti-connect/assets/SS1.png`
+`assets/SS1.png`
 
 Screenshot of settings to add into Wordpress from Yoti Dashboard:
 
-`yoti-connect/assets/Screen Shot 2017-05-10 at 13.05.39.png`
+`assets/SS2.png`
 
 == Changelog ==
 
