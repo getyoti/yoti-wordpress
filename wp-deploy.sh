@@ -81,11 +81,12 @@ curl https://github.com/getyoti/php/archive/master.zip -O -L
 rm -rf sdk
 unzip master.zip -d sdk
 mv sdk/php-master/src/* sdk
-rm -rf sdk/php-master
-rm master.zip
+rm -rf sdk/php-master master.zip
 
 echo "Ignoring github specific files and deployment script"
 svn propset svn:ignore "deploy.sh
+symlink-plugin-to-site.sh
+pack-plugin.sh
 README.md
 .git
 .gitignore" "$SVNPATH/trunk/"
