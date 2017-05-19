@@ -84,7 +84,7 @@ mv sdk/php-master/src/* sdk
 rm -rf sdk/php-master master.zip
 
 echo "Ignoring github specific files and deployment script"
-svn propset svn:ignore "deploy.sh
+svn propset svn:ignore "wp-deploy.sh
 symlink-plugin-to-site.sh
 pack-plugin.sh
 README.md
