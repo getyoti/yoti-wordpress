@@ -1,8 +1,8 @@
-=== Yoti ===
+=== Yoti Connect ===
 Contributors: Simon Tong, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access
 Requires at least: 3.0.1
-Tested up to: 1.0.9
+Tested up to: 4.7
 Stable tag: 1.0.9
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
@@ -10,19 +10,11 @@ License URI: https://www.gnu.org/licenses/gpl.txt
 Yoti is a digital identity platform that simply allows a user to securely login to your WordPress site faster, password free!
 
 == Description ==
-
 Yoti is a digital identity platform that simply allows a user to securely login to your WordPress site faster, password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more.](https://www.yoti.com)
 
 This plugin also allows functionality to link your current followers to their Yoti accounts making registration and blogging quicker with a fancy button!
 
-== Features ==
-
-* Fast Log on
-* Automatic log in blog entry ease
-* No need for passwords
-
 == Installation ==
-
 We have a few simple steps we need you to fill before you get started:
 
 1) Download the Yoti app and add at least one ID document (either your passport or driving licence) so that we can confirm your name, date of birth and photo.
@@ -38,8 +30,6 @@ We have a few simple steps we need you to fill before you get started:
 
 4) Once this is completed you can move your Yoti widget to where appropriate on your site.
 Yoti generates the user their own ID e.g. yoti connect-4 so if you would like to update your username, please change your nickname on your user profile.
-
-== WordPress instructions ==
 
 To import the Yoti SDK inside your project:
 
@@ -64,19 +54,19 @@ To set things up, navigate on WordPress to `Settings > Yoti Connect`.
 You can find our Yoti button in the widget section and can place it where you see appropriate.
 
 == Frequently Asked Questions ==
-
 For a more detailed explanation please go to our github [page.](https://github.com/getyoti/wordpress)
 
 For further support please feel free to email us at: sdksupport@yoti.com
 
 For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs)
 
+== Screenshots ==
+1. Attributes you can add in Yoti Dashboard
+2. Settings to add into Wordpress from Yoti Dashboard
+
 == Changelog ==
-
 = 1.0.9 =
-
 This is the latest version
 
 == Upgrade Notice ==
-
 This is N/A for now - but our plugin will get better and better so we will let you know!
