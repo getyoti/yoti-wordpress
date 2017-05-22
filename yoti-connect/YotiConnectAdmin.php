@@ -77,6 +77,7 @@ class YotiConnectAdmin
             $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
             $data['yoti_delete_pem'] = ($this->postVar('yoti_delete_pem')) ? true : false;
             $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
+            $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
 
             // validation
             if (!$data['yoti_app_id'])
@@ -121,6 +122,7 @@ class YotiConnectAdmin
                     'yoti_app_id' => $data['yoti_app_id'],
                     'yoti_scenario_id' => $data['yoti_scenario_id'],
                     'yoti_sdk_id' => $data['yoti_sdk_id'],
+                    'yoti_only_existing' => $data['yoti_only_existing'],
                     'yoti_pem' => array(
                         'name' => $name,
                         'contents' => $pemContents,

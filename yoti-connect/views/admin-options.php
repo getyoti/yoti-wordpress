@@ -68,6 +68,12 @@
                     <p><code>Yoti PEM File</code> is the application pem file. It can be downloaded only once from the Keys tab in your Yoti Dashboard.</p>
                 </td>
             </tr>
+            <tr>
+              <th scope="row"></th>
+              <td>
+                <label><input type="checkbox" name="yoti_only_existing" value="1"<?php if (!empty($data['yoti_only_existing'])) echo ' checked="checked"'; ?> /> Only allow existing Wordpress users to link their Yoti account</label>
+              </td>
+            </tr>
             </tbody>
         </table>
         <p class="submit">
