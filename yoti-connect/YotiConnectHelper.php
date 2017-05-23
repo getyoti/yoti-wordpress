@@ -238,7 +238,7 @@ class YotiConnectHelper
      */
     public static function getYotiUserFromStore()
     {
-        return array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : null;
+        return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : null;
     }
 
     /**

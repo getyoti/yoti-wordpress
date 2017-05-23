@@ -99,8 +99,15 @@ function yoti_connect_admin_menu()
 /**
  * add to login footer
  */
-function yoti_connect_login_footer()
+function yoti_connect_login_header()
 {
+
+    // don't allow unless session
+    if (!YotiConnectHelper::getYotiUserFromStore())
+    {
+        return;
+    }
+
     // uncomment these lines to have yoti button on login page
 
     //    $config = YotiConnectHelper::getConfig();
@@ -108,6 +115,13 @@ function yoti_connect_login_footer()
     //        wp_enqueue_style('yoti-connect', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
     //        echo YotiConnectButton::render();
     //    }
+    $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
+
+    echo '<div style="margin: 0 0 25px 0">
+        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link Wordpress to your Yoti account.</div>
+        <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
+        <label class="option" for="edit-yoti-link">Check this box to login regularly.</label>
+    </div>';
 }
 
 /**
@@ -160,10 +174,8 @@ register_deactivation_hook(__FILE__, 'yoti_connect_deactivation_hook');
 register_activation_hook(__FILE__, 'yoti_connect_activation_hook');
 add_action('admin_menu', 'yoti_connect_admin_menu');
 add_action('init', 'yoti_connect_init');
-add_action('login_form', 'yoti_connect_login_footer');
+add_action('login_form', 'yoti_connect_login_header');
 add_action('show_user_profile', 'show_user_profile', 10, 1);
 add_action('edit_user_profile', 'show_user_profile', 10, 1);
 add_action('widgets_init', 'yoti_register_widget');
 add_action('wp_enqueue_scripts', 'yoti_enqueue_scripts');
-
-add_filter('login_message', 'yoti_connect_login_message');
