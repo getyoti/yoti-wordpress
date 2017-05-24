@@ -91,18 +91,18 @@ class YotiConnectHelper
                 $errMsg = null;
 
                 // attempt to connect by email
-                //                if (!empty($config['connect_email']))
-                //                {
-                //                    if (($email = $activityDetails->getProfileAttribute('email_address')))
-                //                    {
-                //                        $byMail = user_load_by_mail($email);
-                //                        if ($byMail)
-                //                        {
-                //                            $drupalYotiUid = $byMail->uid;
-                //                            $this->createYotiUser($drupalYotiUid, $activityDetails);
-                //                        }
-                //                    }
-                //                }
+                if (!empty($config['yoti_connect_email']))
+                {
+                    if (($email = $activityDetails->getProfileAttribute('email_address')))
+                    {
+                        $byMail = get_user_by('mail', $email);
+                        if ($byMail)
+                        {
+                            $wpYotiUid = $byMail->ID;
+                            $this->createYotiUser($wpYotiUid, $activityDetails);
+                        }
+                    }
+                }
 
                 // if config only existing enabled then check if user exists, if not then redirect
                 // to login page
@@ -112,28 +112,17 @@ class YotiConnectHelper
                     {
                         try
                         {
-                            self::storeYotiUser($activityDetails);
-                            auth_redirect();
-                            // todo: store user details in session + redirect here
-                            //                            $wpYotiUid = $this->createUser($activityDetails);
+                            $wpYotiUid = $this->createUser($activityDetails);
                         }
                         catch (Exception $e)
                         {
                             $errMsg = $e->getMessage();
                         }
-
-                        // no user id? no account
-                        /*if (!$userId)
-                        {
-                            // if couldn't create user then bail
-                            self::setFlash("Could not create user account. $errMsg", 'error');
-
-                            return false;
-                        }*/
                     }
                     else
                     {
-                        $errMsg = "Drupal user doesn't exist";
+                        self::storeYotiUser($activityDetails);
+                        auth_redirect();
                     }
                 }
 
