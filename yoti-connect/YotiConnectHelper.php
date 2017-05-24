@@ -1,4 +1,5 @@
 <?php
+
 use Yoti\ActivityDetails;
 use Yoti\YotiClient;
 
@@ -72,53 +73,92 @@ class YotiConnectHelper
         }
 
         // check if yoti user exists
-        $userId = $this->getUserIdByYotiId($activityDetails->getUserId());
+        $wpYotiUid = $this->getUserIdByYotiId($activityDetails->getUserId());
 
         // if yoti user exists in db but isn't an actual account then remove it from yoti table
-        if ($userId && $currentUser->ID != $userId && !get_user_by('id', $userId))
+        if ($wpYotiUid && $currentUser->ID != $wpYotiUid && !get_user_by('id', $wpYotiUid))
         {
             // remove users account
-            $this->deleteYotiUser($userId);
+            $this->deleteYotiUser($wpYotiUid);
         }
 
         // if user isn't logged in
         if (!is_user_logged_in())
         {
             // register new user
-            if (!$userId)
+            if (!$wpYotiUid)
             {
-                $errMsg = $userId = null;
-                try
+                $errMsg = null;
+
+                // attempt to connect by email
+                //                if (!empty($config['connect_email']))
+                //                {
+                //                    if (($email = $activityDetails->getProfileAttribute('email_address')))
+                //                    {
+                //                        $byMail = user_load_by_mail($email);
+                //                        if ($byMail)
+                //                        {
+                //                            $drupalYotiUid = $byMail->uid;
+                //                            $this->createYotiUser($drupalYotiUid, $activityDetails);
+                //                        }
+                //                    }
+                //                }
+
+                // if config only existing enabled then check if user exists, if not then redirect
+                // to login page
+                if (!$wpYotiUid)
                 {
-                    $userId = $this->createUser($activityDetails);
-                }
-                catch (Exception $e)
-                {
-                    $errMsg = $e->getMessage();
+                    if (empty($config['yoti_only_existing']))
+                    {
+                        try
+                        {
+                            self::storeYotiUser($activityDetails);
+                            auth_redirect();
+                            // todo: store user details in session + redirect here
+                            //                            $wpYotiUid = $this->createUser($activityDetails);
+                        }
+                        catch (Exception $e)
+                        {
+                            $errMsg = $e->getMessage();
+                        }
+
+                        // no user id? no account
+                        /*if (!$userId)
+                        {
+                            // if couldn't create user then bail
+                            self::setFlash("Could not create user account. $errMsg", 'error');
+
+                            return false;
+                        }*/
+                    }
+                    else
+                    {
+                        $errMsg = "Drupal user doesn't exist";
+                    }
                 }
 
                 // no user id? no account
-                if (!$userId)
+                if (!$wpYotiUid)
                 {
                     // if couldn't create user then bail
-                    self::setFlash("Could not create user account. $errMsg", 'error');
+                    $this->setFlash("Could not create user account. $errMsg", 'error');
 
                     return false;
                 }
             }
 
             // log user in
-            $this->loginUser($userId);
+            $this->loginUser($wpYotiUid);
         }
         else
         {
             // if current logged in user doesn't match yoti user registered then bail
-            if ($userId && $currentUser->ID != $userId)
+            if ($wpYotiUid && $currentUser->ID != $wpYotiUid)
             {
                 self::setFlash('This Yoti account is already linked to another account.', 'error');
             }
             // if joomla user not found in yoti table then create new yoti user
-            elseif (!$userId)
+            elseif (!$wpYotiUid)
             {
                 $this->createYotiUser($currentUser->ID, $activityDetails);
                 self::setFlash('Your Yoti account has been successfully linked.');
@@ -183,6 +223,42 @@ class YotiConnectHelper
         header('Content-Type:' . $type);
         header('Content-Length: ' . filesize($file));
         readfile($file);
+    }
+
+    /**
+     * @param \Yoti\ActivityDetails $activityDetails
+     */
+    public static function storeYotiUser(ActivityDetails $activityDetails)
+    {
+        if (!session_id())
+        {
+            session_start();
+        }
+        $_SESSION['yoti-user'] = serialize($activityDetails);
+    }
+
+    /**
+     * @return ActivityDetails|null
+     */
+    public static function getYotiUserFromStore()
+    {
+        if (!session_id())
+        {
+            session_start();
+        }
+        return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : null;
+    }
+
+    /**
+     *
+     */
+    public static function clearYotiUserStore()
+    {
+        if (!session_id())
+        {
+            session_start();
+        }
+        unset($_SESSION['yoti-user']);
     }
 
     /**
@@ -289,7 +365,7 @@ class YotiConnectHelper
      * @param $userId
      * @param ActivityDetails $activityDetails
      */
-    private function createYotiUser($userId, ActivityDetails $activityDetails)
+    public function createYotiUser($userId, ActivityDetails $activityDetails)
     {
         // create upload dir
         if (!is_dir(self::uploadDir()))
