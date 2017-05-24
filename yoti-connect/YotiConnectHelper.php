@@ -115,7 +115,7 @@ class YotiConnectHelper
                             self::storeYotiUser($activityDetails);
                             auth_redirect();
                             // todo: store user details in session + redirect here
-//                            $wpYotiUid = $this->createUser($activityDetails);
+                            //                            $wpYotiUid = $this->createUser($activityDetails);
                         }
                         catch (Exception $e)
                         {
@@ -230,6 +230,10 @@ class YotiConnectHelper
      */
     public static function storeYotiUser(ActivityDetails $activityDetails)
     {
+        if (!session_id())
+        {
+            session_start();
+        }
         $_SESSION['yoti-user'] = serialize($activityDetails);
     }
 
@@ -238,6 +242,10 @@ class YotiConnectHelper
      */
     public static function getYotiUserFromStore()
     {
+        if (!session_id())
+        {
+            session_start();
+        }
         return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : null;
     }
 
@@ -246,6 +254,10 @@ class YotiConnectHelper
      */
     public static function clearYotiUserStore()
     {
+        if (!session_id())
+        {
+            session_start();
+        }
         unset($_SESSION['yoti-user']);
     }
 
@@ -353,7 +365,7 @@ class YotiConnectHelper
      * @param $userId
      * @param ActivityDetails $activityDetails
      */
-    private function createYotiUser($userId, ActivityDetails $activityDetails)
+    public function createYotiUser($userId, ActivityDetails $activityDetails)
     {
         // create upload dir
         if (!is_dir(self::uploadDir()))

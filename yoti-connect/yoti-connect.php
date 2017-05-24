@@ -101,7 +101,6 @@ function yoti_connect_admin_menu()
  */
 function yoti_connect_login_header()
 {
-
     // don't allow unless session
     if (!YotiConnectHelper::getYotiUserFromStore())
     {
@@ -117,11 +116,30 @@ function yoti_connect_login_header()
     //    }
     $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
 
-    echo '<div style="margin: 0 0 25px 0">
-        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link Wordpress to your Yoti account.</div>
+    echo '<div style="margin: 0 0 25px 0" class="message">
+        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link Wordpress to your Yoti account. Click the box below to keep them separate.</div>
         <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
-        <label class="option" for="edit-yoti-link">Check this box to login regularly.</label>
+        <label class="option" for="edit-yoti-link">Don\'t link my Yoti account</label>
     </div>';
+}
+
+/**
+ * @param $user_login
+ * @param $user
+ */
+function yoti_connect_login($user_login, $user)
+{
+    $activityDetails = YotiConnectHelper::getYotiUserFromStore();
+    if ($activityDetails && empty($_SESSION['yoti_nolink']))
+    {
+        // link account
+        $helper = new YotiConnectHelper();
+        $helper->createYotiUser($user->ID, $activityDetails);
+    }
+
+    // remove session
+    unset($_SESSION['yoti_nolink']);
+    YotiConnectHelper::clearYotiUserStore();
 }
 
 /**
@@ -129,13 +147,13 @@ function yoti_connect_login_header()
  */
 function yoti_connect_login_message()
 {
-//    $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
-//
-//    echo '<div class="message" style="margin: 0 0 15px 0">
-//        <div><b>Warning: You are about to link your Drupal account to your Yoti account</b></div>
-//        <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
-//        <label class="option" for="edit-yoti-link">Check this box to stop this from happening and instead login regularly.</label>
-//    </div>';
+    //    $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
+    //
+    //    echo '<div class="message" style="margin: 0 0 15px 0">
+    //        <div><b>Warning: You are about to link your Drupal account to your Yoti account</b></div>
+    //        <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
+    //        <label class="option" for="edit-yoti-link">Check this box to stop this from happening and instead login regularly.</label>
+    //    </div>';
 }
 
 /**
@@ -175,7 +193,9 @@ register_activation_hook(__FILE__, 'yoti_connect_activation_hook');
 add_action('admin_menu', 'yoti_connect_admin_menu');
 add_action('init', 'yoti_connect_init');
 add_action('login_form', 'yoti_connect_login_header');
+add_action('wp_login', 'yoti_connect_login', 10, 2);
 add_action('show_user_profile', 'show_user_profile', 10, 1);
 add_action('edit_user_profile', 'show_user_profile', 10, 1);
 add_action('widgets_init', 'yoti_register_widget');
 add_action('wp_enqueue_scripts', 'yoti_enqueue_scripts');
+

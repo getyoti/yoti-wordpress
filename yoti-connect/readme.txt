@@ -14,6 +14,12 @@ Yoti is a digital identity platform that simply allows a user to securely login 
 
 This plugin also allows functionality to link your current followers to their Yoti accounts making registration and blogging quicker with a fancy button!
 
+== Features ==
+* Faster Logon using your Yoti App.
+* Automatic login to create blogs with ease
+* No need for passwords
+* Remember me functionality
+
 == Installation ==
 We have a few simple steps we need you to fill before you get started:
 
