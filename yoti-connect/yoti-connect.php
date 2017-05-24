@@ -143,20 +143,6 @@ function yoti_connect_login($user_login, $user)
 }
 
 /**
- * add message to login footer
- */
-function yoti_connect_login_message()
-{
-    //    $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
-    //
-    //    echo '<div class="message" style="margin: 0 0 15px 0">
-    //        <div><b>Warning: You are about to link your Drupal account to your Yoti account</b></div>
-    //        <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
-    //        <label class="option" for="edit-yoti-link">Check this box to stop this from happening and instead login regularly.</label>
-    //    </div>';
-}
-
-/**
  * @param WP_User $user
  */
 function show_user_profile($user)
