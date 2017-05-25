@@ -35,11 +35,18 @@ class YotiConnectHelper
 
     /**
      * Login user
+     * @param null $currentUser
+     * @return bool
      */
-    public function link()
+    public function link($currentUser = null)
     {
-        $currentUser = wp_get_current_user();
+        if (!$currentUser)
+        {
+            $currentUser = wp_get_current_user();
+        }
+
         $config = self::getConfig();
+        //    print_r($config);exit;
         $token = (!empty($_GET['token'])) ? $_GET['token'] : null;
 
         // if no token then ignore
@@ -83,7 +90,7 @@ class YotiConnectHelper
         }
 
         // if user isn't logged in
-        if (!is_user_logged_in())
+        if (!$currentUser->ID)
         {
             // register new user
             if (!$wpYotiUid)
