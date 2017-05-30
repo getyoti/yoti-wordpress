@@ -75,7 +75,7 @@ function yoti_connect_init()
             case 'unlink':
                 if ($yc->unlink())
                 {
-//                    wp_redirect($redirect);
+                    wp_redirect($redirect);
                 }
                 break;
 
