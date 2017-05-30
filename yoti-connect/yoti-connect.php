@@ -56,6 +56,11 @@ function yoti_connect_deactivation_hook()
  */
 function yoti_connect_init()
 {
+    if (!session_id())
+    {
+        session_start();
+    }
+
     if (!empty($_GET['yoti-connect']))
     {
         $yc = new YotiConnectHelper();
@@ -75,7 +80,7 @@ function yoti_connect_init()
             case 'unlink':
                 if ($yc->unlink())
                 {
-                    wp_redirect($redirect);
+                    wp_safe_redirect($redirect);
                 }
                 break;
 
@@ -127,8 +132,12 @@ function yoti_connect_login_header()
  * @param $user_login
  * @param $user
  */
-function yoti_connect_login($user)
+function yoti_connect_login($user_login, $user)
 {
+    if (!$user) {
+        return;
+    }
+
     $activityDetails = YotiConnectHelper::getYotiUserFromStore();
     if ($activityDetails && empty($_SESSION['yoti_nolink']))
     {

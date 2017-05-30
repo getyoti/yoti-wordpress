@@ -102,7 +102,7 @@ class YotiConnectHelper
                 {
                     if (($email = $activityDetails->getProfileAttribute('email_address')))
                     {
-                        $byMail = get_user_by('mail', $email);
+                        $byMail = get_user_by('email', $email);
                         if ($byMail)
                         {
                             $wpYotiUid = $byMail->ID;
@@ -129,7 +129,8 @@ class YotiConnectHelper
                     else
                     {
                         self::storeYotiUser($activityDetails);
-                        auth_redirect();
+                        wp_redirect(wp_login_url(!empty($_GET['redirect']) ? $_GET['redirect'] : home_url()));
+                        exit;
                     }
                 }
 
@@ -226,10 +227,6 @@ class YotiConnectHelper
      */
     public static function storeYotiUser(ActivityDetails $activityDetails)
     {
-        if (!session_id())
-        {
-            session_start();
-        }
         $_SESSION['yoti-user'] = serialize($activityDetails);
     }
 
@@ -238,10 +235,6 @@ class YotiConnectHelper
      */
     public static function getYotiUserFromStore()
     {
-        if (!session_id())
-        {
-            session_start();
-        }
         return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : null;
     }
 
@@ -250,10 +243,6 @@ class YotiConnectHelper
      */
     public static function clearYotiUserStore()
     {
-        if (!session_id())
-        {
-            session_start();
-        }
         unset($_SESSION['yoti-user']);
     }
 
