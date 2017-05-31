@@ -1,6 +1,6 @@
 === Yoti Connect ===
 Contributors: Simon Tong, yotiwordpress
-Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access
+Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
 Tested up to: 4.7
 Stable tag: 1.0.9
@@ -19,6 +19,7 @@ This plugin also allows functionality to link your current followers to their Yo
 * Automatic login to create blogs with ease
 * No need for passwords
 * Remember me functionality
+* Ability for user to link and unlink Wordpress Account to Yoti Account
 
 == Installation ==
 We have a few simple steps we need you to fill before you get started:
@@ -69,6 +70,8 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Screenshots ==
 1. Attributes you can add in Yoti Dashboard
 2. Settings to add into Wordpress from Yoti Dashboard
+3. Example of logging in with Yoti
+4. Add Yoti button for faster login experience
 
 == Changelog ==
 = 1.0.9 =
