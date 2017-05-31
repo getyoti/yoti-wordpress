@@ -11,10 +11,11 @@ $currentUser = wp_get_current_user();
 $isAdmin = in_array('administrator', $currentUser->roles);
 $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : null;
 
-echo '<h2>' . __('Yoti Profile') . '</h2>';
-echo '<table class="form-table">';
 if ($profile)
 {
+    echo '<h2>' . __('Yoti Profile') . '</h2>';
+    echo '<table class="form-table">';
+
     foreach (YotiConnectHelper::$profileFields as $param => $label)
     {
         $value = $profile->getProfileAttribute($param);
@@ -35,11 +36,11 @@ if ($profile)
         echo '<tr><th><label>' . esc_html($label) . '</label></th>';
         echo '<td>' . ($value ? $value : '<i>(empty)</i>') . '</td></tr>';
     }
-}
 
-if (!$userId || $currentUser->ID == $userId || !$isAdmin)
-{
-    echo '<tr><th><label>Connect</label></th>';
-    echo '<td>' . YotiConnectButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
+    if (!$userId || $currentUser->ID == $userId || !$isAdmin)
+    {
+        echo '<tr><th><label>Connect</label></th>';
+        echo '<td>' . YotiConnectButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
+    }
+    echo '</table>';
 }
-echo '</table>';

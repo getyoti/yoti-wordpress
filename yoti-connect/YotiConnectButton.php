@@ -55,7 +55,8 @@ class YotiConnectButton
             $currentUser = wp_get_current_user();
             $yotiId = get_user_meta($currentUser->ID, 'yoti_connect.identifier');
             if (!$yotiId) {
-                $button = sprintf($linkButton, 'Link account with Yoti');
+                return '';
+//                $button = sprintf($linkButton, 'Link account with Yoti');
             }
             else {
                 $url = site_url('wp-login.php') . '?yoti-connect=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
