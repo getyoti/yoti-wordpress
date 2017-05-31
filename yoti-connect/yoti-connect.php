@@ -132,7 +132,7 @@ function yoti_connect_login_header()
  * @param $user_login
  * @param $user
  */
-function yoti_connect_login($user_login, $user)
+function yoti_connect_login($user_login=null, $user=null)
 {
     if (!$user) {
         return;
