@@ -58,10 +58,6 @@ class YotiConnectAdmin
         {
             $errors[] = "PHP module 'curl' not installed. Yoti Connect requires it to work. Please contact your server administrator.";
         }
-        if (!function_exists('mcrypt_encrypt'))
-        {
-            $errors[] = "PHP module 'mcrypt' not installed. Yoti Connect requires it to work. Please contact your server administrator.";
-        }
         if (!function_exists('json_decode'))
         {
             $errors[] = "PHP module 'json' not installed. Yoti Connect requires it to work. Please contact your server administrator.";
