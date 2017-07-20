@@ -49,7 +49,6 @@ class YotiConnectHelper
         }
 
         $config = self::getConfig();
-        //    print_r($config);exit;
         $token = (!empty($_GET['token'])) ? $_GET['token'] : null;
 
         // if no token then ignore
@@ -82,10 +81,10 @@ class YotiConnectHelper
             return false;
         }
 
-        // check if yoti user exists
+        // check if Yoti user exists
         $wpYotiUid = $this->getUserIdByYotiId($activityDetails->getUserId());
 
-        // if yoti user exists in db but isn't an actual account then remove it from yoti table
+        // if Yoti user exists in db but isn't an actual account then remove it from yoti table
         if ($wpYotiUid && $currentUser->ID != $wpYotiUid && !get_user_by('id', $wpYotiUid))
         {
             // remove users account
@@ -103,7 +102,7 @@ class YotiConnectHelper
                 // attempt to connect by email
                 if (!empty($config['yoti_connect_email']))
                 {
-                    if (($email = $activityDetails->getProfileAttribute('email_address')))
+                    if (($email = $activityDetails->getEmailAddress()))
                     {
                         $byMail = get_user_by('email', $email);
                         if ($byMail)
@@ -152,12 +151,12 @@ class YotiConnectHelper
         }
         else
         {
-            // if current logged in user doesn't match yoti user registered then bail
+            // if current logged in user doesn't match Yoti user registered then bail
             if ($wpYotiUid && $currentUser->ID != $wpYotiUid)
             {
                 self::setFlash('This Yoti account is already linked to another account.', 'error');
             }
-            // if joomla user not found in yoti table then create new yoti user
+            // if WP user not found in Yoti table then create new Yoti user
             elseif (!$wpYotiUid)
             {
                 $this->createYotiUser($currentUser->ID, $activityDetails);
@@ -368,11 +367,11 @@ class YotiConnectHelper
         }
 
         $selfieFilename = null;
-        $selfie = $activityDetails->getProfileAttribute(ActivityDetails::ATTR_SELFIE);
+        $selfie = $activityDetails->getSelfie();
         if ($selfie)
         {
             $selfieFilename = md5("selfie_$userId") . ".png";
-            file_put_contents(self::uploadDir() . "/$selfieFilename", $activityDetails->getProfileAttribute(ActivityDetails::ATTR_SELFIE));
+            file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie);
             unset($meta[ActivityDetails::ATTR_SELFIE]);
             $meta['selfie_filename'] = $selfieFilename;
         }
@@ -382,7 +381,7 @@ class YotiConnectHelper
     }
 
     /**
-     * @param int $userId joomla user id
+     * @param int $userId WP user id
      */
     private function deleteYotiUser($userId)
     {

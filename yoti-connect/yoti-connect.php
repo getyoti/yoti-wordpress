@@ -139,7 +139,7 @@ function yoti_connect_login($user_login=null, $user=null)
     }
 
     $activityDetails = YotiConnectHelper::getYotiUserFromStore();
-    if ($activityDetails && empty($_SESSION['yoti_nolink']))
+    if ($activityDetails && (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink'])))
     {
         // link account
         $helper = new YotiConnectHelper();
