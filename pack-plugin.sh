@@ -1,5 +1,5 @@
 #!/bin/bash
-NAME="yoti-connect-1.0.0-edge.zip"
+NAME="yoti-connect-1.1.0-edge.zip"
 SDK_RELATIVE_PATH="sdk"
 curl https://github.com/getyoti/php/archive/master.zip -O -L
 unzip master.zip -d sdk
