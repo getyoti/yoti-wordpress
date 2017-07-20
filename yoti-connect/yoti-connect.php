@@ -140,6 +140,7 @@ function yoti_connect_login($user_login=null, $user=null)
 
     $activityDetails = YotiConnectHelper::getYotiUserFromStore();
     $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
+    
     // Check that activityDetails exists and yoti_nolink button is not checked
     if ($activityDetails && $yotiNoLinkIsNotChecked)
     {
