@@ -1,9 +1,9 @@
 === Yoti Connect ===
-Contributors: Simon Tong, yotiwordpress
+Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
 Tested up to: 4.7
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -74,8 +74,10 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 4. Add Yoti button for faster login experience
 
 == Changelog ==
-= 1.0.9 =
+= 1.1.1 =
 This is the latest version
+
+In this release we removed php module mcrypt dependency from wordpress plugin and fixed a bug that was occurring when a user decides not to link their account to Yoti in the login process.
 
 == Upgrade Notice ==
 This is N/A for now - but our plugin will get better and better so we will let you know!
