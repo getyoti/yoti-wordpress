@@ -4,8 +4,8 @@
 Plugin Name: Yoti Connect Plugin
 Plugin URI:
 Description: Let Yoti users quickly register on your site
-Version: 1.0.9
-Author: Simon Tong
+Version: 1.1.1
+Author: Moussa Sidibe
 Author URI: http://yoti.com
 */
 
