@@ -1,20 +1,23 @@
 === Yoti Connect ===
+
 Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
 Tested up to: 4.7
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
 Yoti is a digital identity platform that simply allows a user to securely log in to your WordPress site faster, password free!
 
 == Description ==
+
 Yoti is a digital identity platform that simply allows a user to securely log in to your WordPress site faster, password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more.](https://www.yoti.com)
 
 This plugin also allows functionality to link your current followers to their Yoti accounts making registration and blogging quicker with a fancy button!
 
 == Features ==
+
 * Faster Logon using your Yoti App
 * Automatic login to create blogs with ease
 * No need for passwords
@@ -22,6 +25,7 @@ This plugin also allows functionality to link your current followers to their Yo
 * Ability for user to link and unlink Wordpress Account to Yoti Account
 
 == Installation ==
+
 We have a few simple steps we need you to fill before you get started:
 
 1) Download the Yoti app and add at least one ID document (either your passport or driving licence) so that we can confirm your name, date of birth and photo.
@@ -61,6 +65,7 @@ To set things up, navigate on WordPress to `Settings > Yoti Connect`.
 You can find our Yoti button in the widget section and can place it where you see appropriate.
 
 == Frequently Asked Questions ==
+
 For a more detailed explanation please go to our github [page.](https://github.com/getyoti/wordpress)
 
 For further support please feel free to email us at: sdksupport@yoti.com
@@ -74,10 +79,21 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 4. Add Yoti button for faster login experience
 
 == Changelog ==
-= 1.1.1 =
-This is the latest version
 
-In this release we removed php module mcrypt dependency from wordpress plugin and fixed a bug that was occurring when a user decides not to link their account to Yoti in the login process.
+Here you found the changes in each version.
+
+    Version     Date            Changes
+
+    1.1.2       2017/01/08      Remove Yoti plugin config data when the plugin is uninstalled and removed from wordpress.
+
+    1.1.1       2017/20/07      Fix a bug that was occurring when a user decides not to link their account to Yoti During the login process.
+
+    1.1.0       2017/20/07      Remove php module mcrypt dependency from wordpress plugin
+
+    1.0.9       2017/19/05      Add plugin documentation.
+
+    1.0.0       2017/12/03/     First release.
 
 == Upgrade Notice ==
+
 This is N/A for now - but our plugin will get better and better so we will let you know!
