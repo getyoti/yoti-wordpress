@@ -5,8 +5,8 @@ Plugin Name: Yoti Connect
 Plugin URI: https://wordpress.org/plugins/yoti-connect/
 Description: Let Yoti users quickly register on your site.
 Version: 1.1.2
-Author: Moussa Sidibe
-Author URI: http://yoti.com
+Author: Yoti Ltd.
+Author URI: https://yoti.com
 */
 
 use Yoti\ActivityDetails;

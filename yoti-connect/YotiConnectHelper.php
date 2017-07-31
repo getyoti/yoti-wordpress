@@ -15,7 +15,7 @@ class YotiConnectHelper
     /**
      * Yoti config option name
      */
-    Const YOTI_CONFIG_OPTION_NAME = 'yoti_connect';
+    const YOTI_CONFIG_OPTION_NAME = 'yoti_connect';
 
     /**
      * @var array
