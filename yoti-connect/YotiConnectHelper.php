@@ -13,6 +13,11 @@ require_once __DIR__ . '/sdk/boot.php';
 class YotiConnectHelper
 {
     /**
+     * Yoti config option name
+     */
+    Const YOTI_CONFIG_OPTION_NAME = 'yoti_connect';
+
+    /**
      * @var array
      */
     public static $profileFields = array(
@@ -29,6 +34,7 @@ class YotiConnectHelper
 
     /**
      * Running mock requests instead of going to yoti
+     *
      * @return bool
      */
     public static function mockRequests()
@@ -38,6 +44,7 @@ class YotiConnectHelper
 
     /**
      * Login user
+     *
      * @param null $currentUser
      * @return bool
      */
@@ -168,7 +175,7 @@ class YotiConnectHelper
     }
 
     /**
-     * Unlink account from currently logged in
+     * Unlink account from currently logged in user
      */
     public function unlink()
     {
@@ -189,6 +196,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Display user profile image
+     *
      * @param $field
      * @param null $userId
      */
@@ -225,6 +234,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Save Yoti user data in the session.
+     *
      * @param \Yoti\ActivityDetails $activityDetails
      */
     public static function storeYotiUser(ActivityDetails $activityDetails)
@@ -233,6 +244,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Retrieve Yoti user data from the session.
+     *
      * @return ActivityDetails|null
      */
     public static function getYotiUserFromStore()
@@ -241,7 +254,7 @@ class YotiConnectHelper
     }
 
     /**
-     *
+     * Remove Yoti user data from the session.
      */
     public static function clearYotiUserStore()
     {
@@ -249,6 +262,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Set user notification message.
+     *
      * @param $message
      * @param string $type
      */
@@ -258,6 +273,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Get user notification message.
+     *
      * @return mixed
      */
     public static function getFlash()
@@ -273,6 +290,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Generate Yoti dynamic username.
+     *
      * @param string $prefix
      * @return string
      */
@@ -289,8 +308,11 @@ class YotiConnectHelper
     }
 
     /**
+     * Generate Yoti user email.
+     *
      * @param $prefix
      * @param string $domain
+     *
      * @return string
      */
     private function generateEmail($prefix = 'yoticonnect-', $domain = 'example.com')
@@ -306,6 +328,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Generate Yoti user password.
+     *
      * @param int $length
      * @return mixed
      */
@@ -315,8 +339,12 @@ class YotiConnectHelper
     }
 
     /**
+     * Create user profile with Yoti data.
+     *
      * @param ActivityDetails $activityDetails
+     *
      * @return int
+     *
      * @throws Exception
      */
     private function createUser(ActivityDetails $activityDetails)
@@ -331,7 +359,10 @@ class YotiConnectHelper
     }
 
     /**
+     * Get Yoti user by ID.
+     *
      * @param $yotiId
+     *
      * @return int
      */
     private function getUserIdByYotiId($yotiId)
@@ -349,6 +380,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Create Yoti user profile.
+     *
      * @param $userId
      * @param ActivityDetails $activityDetails
      */
@@ -381,6 +414,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Delete Yoti user profile.
+     *
      * @param int $userId WP user id
      */
     private function deleteYotiUser($userId)
@@ -390,6 +425,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Log user by ID.
+     *
      * @param $userId
      */
     private function loginUser($userId)
@@ -401,12 +438,14 @@ class YotiConnectHelper
     }
 
     /**
+     * Get user profile by ID.
+     *
      * @param $userId
+     *
      * @return mixed
      */
     public static function getUserProfile($userId)
     {
-        $yotiId = get_user_meta($userId, 'yoti_connect.identifier');
         $dbProfile = get_user_meta($userId, 'yoti_connect.profile');
         $dbProfile = reset($dbProfile);
 
@@ -414,6 +453,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Get Yoti upload dir.
+     *
      * @return string
      */
     public static function uploadDir()
@@ -422,6 +463,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Get Yoti upload dir URL.
+     *
      * @return string
      */
     public static function uploadUrl()
@@ -430,6 +473,8 @@ class YotiConnectHelper
     }
 
     /**
+     * Get Yoti Config.
+     *
      * @return array
      */
     public static function getConfig()
@@ -440,10 +485,20 @@ class YotiConnectHelper
             return $config;
         }
 
-        return maybe_unserialize(get_option('yoti_connect'));
+        return maybe_unserialize(get_option(YotiConnectHelper::YOTI_CONFIG_OPTION_NAME));
     }
 
     /**
+     * Remove Yoti config option data from wordpress option table.
+     */
+    public static function deleteYotiConfigData()
+    {
+        delete_option(YotiConnectHelper::YOTI_CONFIG_OPTION_NAME);
+    }
+
+    /**
+     * Get Yoti app login URL.
+     *
      * @return null|string
      */
     public static function getLoginUrl()

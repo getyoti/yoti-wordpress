@@ -27,28 +27,14 @@ function yoti_connect_activation_hook()
     {
         mkdir(YotiConnectHelper::uploadDir(), 0777, true);
     }
-
-    //    $table_name = YotiConnectHelper::tableName();
-    //    $sql = "CREATE TABLE IF NOT EXISTS `{$table_name}` (
-    //        `wp_userid` bigint(20) UNSIGNED NOT NULL,
-    //        `identifier` TEXT NOT NULL,
-    //        `nationality` VARCHAR(255) NULL,
-    //        `date_of_birth` VARCHAR(255) NULL,
-    //        `selfie_filename` VARCHAR(255) NULL,
-    //        `phone_number` VARCHAR(255) NULL,
-    //        KEY `wp_userid` (`wp_userid`)
-    //    )";
-    //    dbDelta($sql);
 }
 
 /**
- * Deactivation hook
+ * Uninstall hook
  */
-function yoti_connect_deactivation_hook()
+function yoti_connect_uninstall_hook()
 {
-    //    $table_name = YotiConnectHelper::tableName();
-    //    $sql = "DROP TABLE IF EXISTS `{$table_name}`";
-    //    dbDelta($sql);
+    YotiConnectHelper::deleteYotiConfigData();
 }
 
 /**
@@ -112,13 +98,6 @@ function yoti_connect_login_header()
         return;
     }
 
-    // uncomment these lines to have yoti button on login page
-
-    //    $config = YotiConnectHelper::getConfig();
-    //    if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
-    //        wp_enqueue_style('yoti-connect', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
-    //        echo YotiConnectButton::render();
-    //    }
     $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
 
     echo '<div style="margin: 0 0 25px 0" class="message">
@@ -186,7 +165,7 @@ function yoti_enqueue_scripts()
 }
 
 // register hooks
-register_deactivation_hook(__FILE__, 'yoti_connect_deactivation_hook');
+register_uninstall_hook(__FILE__, 'yoti_connect_uninstall_hook');
 register_activation_hook(__FILE__, 'yoti_connect_activation_hook');
 add_action('admin_menu', 'yoti_connect_admin_menu');
 add_action('init', 'yoti_connect_init');
