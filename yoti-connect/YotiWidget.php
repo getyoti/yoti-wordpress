@@ -32,13 +32,6 @@ class YotiWidget extends WP_Widget
         else {
             echo '<div class="yoti-missing-config"><p><strong>Yoti Connect not configured.</strong></p></div>';
         }
-
-//        echo $args['before_widget'];
-//        if (!empty($instance['title'])) {
-//            echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
-//        }
-//        echo esc_html__('Hello, World!', 'text_domain');
-//        echo $args['after_widget'];
     }
 
     /**

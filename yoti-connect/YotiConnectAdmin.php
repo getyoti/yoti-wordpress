@@ -128,7 +128,7 @@ class YotiConnectAdmin
                 );
 
                 // save config
-                update_option("yoti_connect", maybe_serialize($config));
+                update_option(YotiConnectHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
                 $updateMessage = 'Settings saved.';
             }
         }
