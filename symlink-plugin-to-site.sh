@@ -10,8 +10,8 @@ if [ ! -d "$BASE" ]; then
     exit
 fi
 
-target="$PWD/yoti-connect"
-link="$BASE/wp-content/plugins/yoti-connect"
+target="$PWD/yoti"
+link="$BASE/wp/plugins/yoti"
 
 # if link already exists then don't create
 if [ ! -L "$link" ]; then

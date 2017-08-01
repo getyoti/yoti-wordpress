@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class YotiConnectButton
+ * Class YotiButton
  *
- * @author Simon Tong <simon.tong@yoti.com>
+ * @author Yoti Ltd <sdksupport@yoti.com>
  */
-class YotiConnectButton
+class YotiButton
 {
     /**
      * Display Yoti button.
@@ -19,12 +19,12 @@ class YotiConnectButton
         global $wpdb;
 
         $testToken = null;
-        if (YotiConnectHelper::mockRequests()) {
+        if (YotiHelper::mockRequests()) {
             $testToken = file_get_contents(__DIR__ . '/sdk/sample-data/connect-token.txt');
         }
 
         // no config? no button
-        $config = YotiConnectHelper::getConfig();
+        $config = YotiHelper::getConfig();
         if (!$config && !$testToken) {
             return null;
         }
@@ -56,18 +56,18 @@ class YotiConnectButton
         }
         else {
             $currentUser = wp_get_current_user();
-            $yotiId = get_user_meta($currentUser->ID, 'yoti_connect.identifier');
+            $yotiId = get_user_meta($currentUser->ID, 'yoti_user.identifier');
             if (!$yotiId) {
                 return '';
             }
             else {
-                $url = site_url('wp-login.php') . '?yoti-connect=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
+                $url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
                 $label = 'Unlink account from Yoti';
                 $button = '<a class="yoti-connect-button" href="' . $url . '">' . $label . '</a>';
             }
         }
 
-        $message = YotiConnectHelper::getFlash();
+        $message = YotiHelper::getFlash();
         $html = '<div class="yoti-connect"> ';
         if ($message) {
             $html .= '<div class="' . ($message['type'] == 'error' ? 'error' : 'message') . ' notice">' .

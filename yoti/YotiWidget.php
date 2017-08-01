@@ -8,9 +8,9 @@ class YotiWidget extends WP_Widget
     public function __construct()
     {
         parent::__construct(
-            'yoti_connect', // Base ID
-            esc_html__('Yoti Connect'), // Name
-            array('description' => 'Yoti Connect button')
+            'yoti-widget', // Base ID
+            esc_html__('Yoti Widget'), // Name
+            array('description' => 'Yoti button')
         );
     }
 
@@ -24,10 +24,10 @@ class YotiWidget extends WP_Widget
      */
     public function widget($args, $instance)
     {
-        wp_enqueue_style('yoti-connect', plugin_dir_url(__FILE__) . 'assets/styles.css');
-        $config = YotiConnectHelper::getConfig();
+        wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
+        $config = YotiHelper::getConfig();
         if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
-            echo '<div class="yoti-connect-button">' . YotiConnectButton::render() . '</div>';
+            echo '<div class="yoti-connect-button">' . YotiButton::render() . '</div>';
         }
         else {
             echo '<div class="yoti-missing-config"><p><strong>Yoti Connect not configured.</strong></p></div>';

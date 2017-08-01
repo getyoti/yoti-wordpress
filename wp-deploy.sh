@@ -3,9 +3,9 @@
 # The difference is that this script lives in the plugin's git repo & doesn't require an existing SVN repo.
 
 # main config
-PLUGINSLUG="yoti-connect"
+PLUGINSLUG="yoti"
 CURRENTDIR=`pwd`
-MAINFILE="yoti-connect.php" # this should be the name of your main php file in the wordpress plugin
+MAINFILE="yoti.php" # this should be the name of your main php file in the wordpress plugin
 
 # git config
 GITPATH="$CURRENTDIR/" # this file should be in the base of your git repository

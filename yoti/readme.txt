@@ -1,4 +1,4 @@
-=== Yoti Connect ===
+=== Yoti ===
 
 Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor

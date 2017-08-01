@@ -13,19 +13,18 @@ $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : null;
 
 if ($profile)
 {
-    echo '<h2>' . __('Yoti Profile') . '</h2>';
+    echo '<h2>' . __('Yoti User Profile') . '</h2>';
     echo '<table class="form-table">';
 
-    foreach (YotiConnectHelper::$profileFields as $param => $label)
+    foreach (YotiHelper::$profileFields as $param => $label)
     {
         $value = $profile->getProfileAttribute($param);
         if ($param == ActivityDetails::ATTR_SELFIE)
         {
-            $selfieFullPath = YotiConnectHelper::uploadDir() . "/{$dbProfile['selfie_filename']}";
+            $selfieFullPath = YotiHelper::uploadDir() . "/{$dbProfile['selfie_filename']}";
             if ($dbProfile['selfie_filename'] && file_exists($selfieFullPath))
             {
-                $selfieUrl = site_url('wp-login.php') . '?yoti-connect=1&action=bin-file&field=selfie' . ($isAdmin ? "&user_id=$userId" : '');
-                //                $selfieUrl = YotiConnectHelper::uploadUrl() . "/{$dbProfile['selfie_filename']}";
+                $selfieUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . ($isAdmin ? "&user_id=$userId" : '');
                 $value = '<img src="' . $selfieUrl . '" width="100" />';
             }
             else
@@ -39,8 +38,8 @@ if ($profile)
 
     if (!$userId || $currentUser->ID == $userId || !$isAdmin)
     {
-        echo '<tr><th><label>Connect</label></th>';
-        echo '<td>' . YotiConnectButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
+        echo '<tr><th><label>Action</label></th>';
+        echo '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
     }
     echo '</table>';
 }

@@ -1,10 +1,10 @@
 <?php
 /**
- * Class YotiConnectAdmin
+ * Class YotiAdmin
  *
- * @author Simon Tong <simon.tong@yoti.com>
+ * @author Yoti Ltd <sdksupport@yoti.com>
  */
-class YotiConnectAdmin
+class YotiAdmin
 {
     /**
      * @var self
@@ -50,17 +50,17 @@ class YotiConnectAdmin
         }
 
         // get current config
-        $config = YotiConnectHelper::getConfig();
+        $config = YotiHelper::getConfig();
 
         // check has preliminary extensions to run
         $errors = array();
         if (!function_exists('curl_version'))
         {
-            $errors[] = "PHP module 'curl' not installed. Yoti Connect requires it to work. Please contact your server administrator.";
+            $errors[] = "PHP module 'curl' not installed. Yoti requires it to work. Please contact your server administrator.";
         }
         if (!function_exists('json_decode'))
         {
-            $errors[] = "PHP module 'json' not installed. Yoti Connect requires it to work. Please contact your server administrator.";
+            $errors[] = "PHP module 'json' not installed. Yoti requires it to work. Please contact your server administrator.";
         }
 
         // get data
@@ -74,7 +74,7 @@ class YotiConnectAdmin
             $data['yoti_delete_pem'] = ($this->postVar('yoti_delete_pem')) ? true : false;
             $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
             $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
-            $data['yoti_connect_email'] = $this->postVar('yoti_connect_email');
+            $data['yoti_user_email'] = $this->postVar('yoti_user_email');
 
             // validation
             if (!$data['yoti_app_id'])
@@ -120,7 +120,7 @@ class YotiConnectAdmin
                     'yoti_scenario_id' => $data['yoti_scenario_id'],
                     'yoti_sdk_id' => $data['yoti_sdk_id'],
                     'yoti_only_existing' => $data['yoti_only_existing'],
-                    'yoti_connect_email' => $data['yoti_connect_email'],
+                    'yoti_user_email' => $data['yoti_user_email'],
                     'yoti_pem' => array(
                         'name' => $name,
                         'contents' => $pemContents,
@@ -128,7 +128,7 @@ class YotiConnectAdmin
                 );
 
                 // save config
-                update_option(YotiConnectHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
+                update_option(YotiHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
                 $updateMessage = 'Settings saved.';
             }
         }
