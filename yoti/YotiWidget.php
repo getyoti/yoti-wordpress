@@ -8,7 +8,7 @@ class YotiWidget extends WP_Widget
     public function __construct()
     {
         parent::__construct(
-            'yoti-widget', // Base ID
+            'yoti_widget', // Base ID
             esc_html__('Yoti Widget'), // Name
             array('description' => 'Yoti button')
         );

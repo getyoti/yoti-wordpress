@@ -40,7 +40,7 @@ We have a few simple steps we need you to fill before you get started:
 	-Yoti PEM File - which is the application pem file. It can be downloaded only once 	from the Keys tab in your Yoti Dashboard.
 
 4) Once this is completed you can move your Yoti widget to where appropriate on your site.
-Yoti generates the user their own ID e.g. yoti connect-4 so if you would like to update your username, please change your nickname on your user profile.
+Yoti generates the user their own ID e.g. YotiUser-4 so if you would like to update your username, please change your nickname on your user profile.
 
 To import the Yoti SDK inside your project:
 
@@ -50,7 +50,7 @@ Log on to the admin console of your WordPress website. e.g. https://www.wordpres
 
 3) Search for Yoti and install and activate the plug in.
 
-To set things up, navigate on WordPress to `Settings > Yoti Connect`.
+To set things up, navigate on WordPress to `Settings > Yoti`.
 
  Here you will be asked to add the following information from your dashboard:
 
@@ -80,15 +80,17 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 
 == Changelog ==
 
-Here you found the changes in each version.
+Here you can find the changes for each version:
 
     Version     Date            Changes
 
-    1.1.2       2017/01/08      Remove Yoti plugin config data when the plugin is uninstalled and removed from wordpress.
+    1.1.2       2017/01/08      Remove Yoti plugin config data when the plugin is uninstalled and removed from Wordpress.
+                                Rename Yoti plugin from `Yoti Connect` to Yoti.
+                                Change Yoti generic user ID from yoti-connect-x to YotiUser-x, e.g YotiUser-1.
 
-    1.1.1       2017/20/07      Fix a bug that was occurring when a user decides not to link their account to Yoti During the login process.
+    1.1.1       2017/20/07      Fix a bug that was occurring when a user decides not to link their account to Yoti during the login process.
 
-    1.1.0       2017/20/07      Remove php module mcrypt dependency from wordpress plugin
+    1.1.0       2017/20/07      Remove PHP module mcrypt dependency from Wordpress plugin
 
     1.0.9       2017/19/05      Add plugin documentation.
 

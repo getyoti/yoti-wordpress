@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: Yoti
-Plugin URI: https://wordpress.org/plugins/yoti-connect/
+Plugin URI: https://wordpress.org/plugins/yoti/
 Description: Let Yoti users quickly register on your site.
 Version: 1.1.2
 Author: Yoti Ltd.
@@ -164,7 +164,7 @@ function yoti_enqueue_scripts()
     wp_enqueue_script('yoti-asset-js', 'https://sdk.yoti.com/clients/browser.js', array(), null);
 }
 
-// register hooks
+// Register hooks
 register_uninstall_hook(__FILE__, 'yoti_uninstall_hook');
 register_activation_hook(__FILE__, 'yoti_activation_hook');
 add_action('admin_menu', 'yoti_admin_menu');

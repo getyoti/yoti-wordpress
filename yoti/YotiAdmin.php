@@ -43,16 +43,16 @@ class YotiAdmin
      */
     private function options()
     {
-        // make sure user can edit
+        // Make sure user can edit
         if (!current_user_can('manage_options'))
         {
             return;
         }
 
-        // get current config
+        // Get current config
         $config = YotiHelper::getConfig();
 
-        // check has preliminary extensions to run
+        // Check curl has preliminary extensions to run
         $errors = array();
         if (!function_exists('curl_version'))
         {
@@ -63,7 +63,7 @@ class YotiAdmin
             $errors[] = "PHP module 'json' not installed. Yoti requires it to work. Please contact your server administrator.";
         }
 
-        // get data
+        // Get data
         $data = $config;
         $updateMessage = '';
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -76,7 +76,7 @@ class YotiAdmin
             $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
             $data['yoti_user_email'] = $this->postVar('yoti_user_email');
 
-            // validation
+            // Validation
             if (!$data['yoti_app_id'])
             {
                 $errors['yoti_app_id'] = 'App ID is required.';
@@ -94,10 +94,10 @@ class YotiAdmin
                 $errors['yoti_pem'] = 'PEM file is invalid.';
             }
 
-            // no errors? proceed
+            // No errors? proceed
             if (!$errors)
             {
-                // if pem file uploaded then process
+                // If pem file uploaded then process
                 $name = $pemContents = null;
                 if (!empty($pemFile['tmp_name']))
                 {
@@ -108,7 +108,7 @@ class YotiAdmin
                     }
                     $pemContents = file_get_contents($pemFile['tmp_name']);
                 }
-                // if delete not ticked
+                // If delete not ticked
                 elseif (!$data['yoti_delete_pem'])
                 {
                     $name = $config['yoti_pem']['name'];
@@ -127,13 +127,13 @@ class YotiAdmin
                     ),
                 );
 
-                // save config
+                // Save config
                 update_option(YotiHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
                 $updateMessage = 'Settings saved.';
             }
         }
 
-        // display form with scope
+        // Display form with scope
         $form = function () use ($data, $errors, $updateMessage)
         {
             require_once __DIR__ . '/views/admin-options.php';

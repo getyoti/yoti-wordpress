@@ -8,6 +8,11 @@
 class YotiButton
 {
     /**
+     * Default text for Yoti link button
+     */
+    const YOTI_LINK_BUTTON_TEXT = 'Use Yoti';
+
+    /**
      * Display Yoti button.
      *
      * @param null $redirect
@@ -16,31 +21,29 @@ class YotiButton
      */
     public static function render($redirect = null)
     {
-        global $wpdb;
-
         $testToken = null;
         if (YotiHelper::mockRequests()) {
             $testToken = file_get_contents(__DIR__ . '/sdk/sample-data/connect-token.txt');
         }
 
-        // no config? no button
+        // No config? no button
         $config = YotiHelper::getConfig();
         if (!$config && !$testToken) {
             return null;
         }
 
-        // if connect url starts with 'https://staging' then we are in staging mode
+        // If connect url starts with 'https://staging' then we are in staging mode
         $isStaging = strpos(\Yoti\YotiClient::CONNECT_BASE_URL, 'https://staging') === 0;
         if ($isStaging)
         {
-            // base url for connect
+            // Base url for connect
             $baseUrl = preg_replace('/^(.+)\/connect$/', '$1', \Yoti\YotiClient::CONNECT_BASE_URL);
 
             $script[] = sprintf('_ybg.config.qr = "%s/qr/";', $baseUrl);
             $script[] = sprintf('_ybg.config.service = "%s/connect/";', $baseUrl);
         }
 
-        // add init()
+        // Add init()
         $script[] = '_ybg.init();';
         $linkButton = '<span
             data-yoti-application-id="' . $config['yoti_app_id'] . '"
@@ -52,7 +55,7 @@ class YotiButton
         <script>' . implode("\r\n", $script) . '</script>';
 
         if (!is_user_logged_in()) {
-            $button = sprintf($linkButton, 'Log in with Yoti');
+            $button = sprintf($linkButton, YotiButton::YOTI_LINK_BUTTON_TEXT);
         }
         else {
             $currentUser = wp_get_current_user();
