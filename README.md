@@ -71,7 +71,7 @@ To import the Yoti SDK inside your project:
 
 ## Plugin Setup
 
-To set things up, navigate on WordPress to `Settings > Yoti Connect`.
+To set things up, navigate on WordPress to `Settings > Yoti`.
  
  Here you will be asked to add the following information:
  
@@ -109,19 +109,6 @@ By default, this is not enabled for security. Ticking the box and saving your ch
 A new user who registeres this way will be set to the `Subscriber` role in WordPress.
  
 If left disabled, if a new user tries to scan the Yoti QR code, they will be redirected back to the login page with an error message displayed.
-
- ## Linking existing accounts to use Yoti authentication
-
-To allow your existing users to log in using Yoti instead of entering thier username/password combination, they must:
-
-1) Log in as normal into WordPress
-2) Navigate to `Users > Your Profile`
-3) Scroll down to `Yoti Profile`
-4) Click on the `Link account to Yoti` button
-5) Scan the QR code and allow the share request
-
-The User is now linked to Yoti authentication, at the log in screen they can click `Log in with Yoti`, scan the QR code, and they will be logged in.
-
 
 ## API Coverage
 

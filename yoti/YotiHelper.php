@@ -6,16 +6,16 @@ use Yoti\YotiClient;
 require_once __DIR__ . '/sdk/boot.php';
 
 /**
- * Class YotiConnect
+ * Class YotiHelper
  *
- * @author Simon Tong <simon.tong@yoti.com>
+ * @author Yoti Ltd <sdksupport@yoti.com>
  */
-class YotiConnectHelper
+class YotiHelper
 {
     /**
      * Yoti config option name
      */
-    const YOTI_CONFIG_OPTION_NAME = 'yoti_connect';
+    const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
 
     /**
      * @var array
@@ -58,7 +58,7 @@ class YotiConnectHelper
         $config = self::getConfig();
         $token = (!empty($_GET['token'])) ? $_GET['token'] : null;
 
-        // if no token then ignore
+        // If no token then ignore
         if (!$token)
         {
             self::setFlash('Could not get Yoti token.', 'error');
@@ -80,7 +80,7 @@ class YotiConnectHelper
             return false;
         }
 
-        // if unsuccessful then bail
+        // If unsuccessful then bail
         if ($yotiClient->getOutcome() != YotiClient::OUTCOME_SUCCESS)
         {
             self::setFlash('Yoti failed to connect to your account.', 'error');
@@ -88,26 +88,26 @@ class YotiConnectHelper
             return false;
         }
 
-        // check if Yoti user exists
+        // Check if Yoti user exists
         $wpYotiUid = $this->getUserIdByYotiId($activityDetails->getUserId());
 
-        // if Yoti user exists in db but isn't an actual account then remove it from yoti table
+        // If Yoti user exists in db but isn't an actual account then remove it from yoti table
         if ($wpYotiUid && $currentUser->ID != $wpYotiUid && !get_user_by('id', $wpYotiUid))
         {
             // remove users account
             $this->deleteYotiUser($wpYotiUid);
         }
 
-        // if user isn't logged in
+        // If user isn't logged in
         if (!$currentUser->ID)
         {
-            // register new user
+            // Register new user
             if (!$wpYotiUid)
             {
                 $errMsg = null;
 
-                // attempt to connect by email
-                if (!empty($config['yoti_connect_email']))
+                // Attempt to connect by email
+                if (!empty($config['yoti_user_email']))
                 {
                     if (($email = $activityDetails->getEmailAddress()))
                     {
@@ -120,7 +120,7 @@ class YotiConnectHelper
                     }
                 }
 
-                // if config only existing enabled then check if user exists, if not then redirect
+                // If config only existing enabled then check if user exists, if not then redirect
                 // to login page
                 if (!$wpYotiUid)
                 {
@@ -143,7 +143,7 @@ class YotiConnectHelper
                     }
                 }
 
-                // no user id? no account
+                // No user id? no account
                 if (!$wpYotiUid)
                 {
                     // if couldn't create user then bail
@@ -153,17 +153,17 @@ class YotiConnectHelper
                 }
             }
 
-            // log user in
+            // Log user in
             $this->loginUser($wpYotiUid);
         }
         else
         {
-            // if current logged in user doesn't match Yoti user registered then bail
+            // If current logged in user doesn't match Yoti user registered then bail
             if ($wpYotiUid && $currentUser->ID != $wpYotiUid)
             {
                 self::setFlash('This Yoti account is already linked to another account.', 'error');
             }
-            // if WP user not found in Yoti table then create new Yoti user
+            // If WP user not found in Yoti table then create new Yoti user
             elseif (!$wpYotiUid)
             {
                 $this->createYotiUser($currentUser->ID, $activityDetails);
@@ -181,7 +181,7 @@ class YotiConnectHelper
     {
         $currentUser = wp_get_current_user();
 
-        // unlink
+        // Unlink user account from Yoti
         if (is_user_logged_in())
         {
             $this->deleteYotiUser($currentUser->ID);
@@ -221,7 +221,7 @@ class YotiConnectHelper
             return;
         }
 
-        $file = YotiConnectHelper::uploadDir() . "/{$dbProfile[$field]}";
+        $file = YotiHelper::uploadDir() . "/{$dbProfile[$field]}";
         if (!file_exists($file))
         {
             return;
@@ -290,17 +290,30 @@ class YotiConnectHelper
     }
 
     /**
-     * Generate Yoti dynamic username.
+     * Generate Yoti unique username.
      *
      * @param string $prefix
      * @return string
      */
-    private function generateUsername($prefix = 'yoticonnect-')
+    private function generateUsername($prefix = 'YotiUser-')
     {
-        $i = 0;
+        // Get the number of user_login that starts with YotiUser-
+        $userQuery = new WP_User_Query(
+            array(
+                // Search for Yoti users starting with the prefix  YotiUser-.
+                'search' => $prefix . '*',
+                // Search the `user_login` field only.
+                'search_columns' => array('user_login'),
+                // Return user count
+                'count_total' => TRUE,
+            )
+        );
+
+        // Generate Yoti unique username
+        $userCount = (int)$userQuery->get_total();
         do
         {
-            $username = $prefix . $i++;
+            $username = $prefix . ++$userCount;
         }
         while (get_user_by('login', $username));
 
@@ -308,19 +321,32 @@ class YotiConnectHelper
     }
 
     /**
-     * Generate Yoti user email.
+     * Generate Yoti unique user email.
      *
      * @param $prefix
      * @param string $domain
      *
      * @return string
      */
-    private function generateEmail($prefix = 'yoticonnect-', $domain = 'example.com')
+    private function generateEmail($prefix = 'yotiuser-', $domain = 'example.com')
     {
-        $i = 0;
+        // Get the number of user_email that starts with yotiuser-
+        $userQuery = new WP_User_Query(
+            array(
+                // Search for Yoti users starting with the prefix yotiuser-.
+                'search' => $prefix . '*',
+                // Search the `user_email` field only.
+                'search_columns' => array('user_email'),
+                // Return user count
+                'count_total' => TRUE,
+            )
+        );
+
+        // Generate Yoti unique user email
+        $userCount = (int)$userQuery->get_total();
         do
         {
-            $email = $prefix . $i++ . "@$domain";
+            $email = $prefix . ++$userCount . "@$domain";
         }
         while (get_user_by('email', $email));
 
@@ -370,7 +396,7 @@ class YotiConnectHelper
         // Query for users based on the meta data
         $users = (new WP_User_Query(
             array(
-                'meta_key' => 'yoti_connect.identifier',
+                'meta_key' => 'yoti_user.identifier',
                 'meta_value' => $yotiId,
             )
         ))->get_results();
@@ -387,7 +413,7 @@ class YotiConnectHelper
      */
     public function createYotiUser($userId, ActivityDetails $activityDetails)
     {
-        // create upload dir
+        // Create upload dir
         if (!is_dir(self::uploadDir()))
         {
             mkdir(self::uploadDir(), 0777, true);
@@ -409,8 +435,8 @@ class YotiConnectHelper
             $meta['selfie_filename'] = $selfieFilename;
         }
 
-        update_user_meta($userId, 'yoti_connect.profile', $meta);
-        update_user_meta($userId, 'yoti_connect.identifier', $activityDetails->getUserId());
+        update_user_meta($userId, 'yoti_user.profile', $meta);
+        update_user_meta($userId, 'yoti_user.identifier', $activityDetails->getUserId());
     }
 
     /**
@@ -420,8 +446,8 @@ class YotiConnectHelper
      */
     private function deleteYotiUser($userId)
     {
-        delete_user_meta($userId, 'yoti_connect.identifier');
-        delete_user_meta($userId, 'yoti_connect.profile');
+        delete_user_meta($userId, 'yoti_user.identifier');
+        delete_user_meta($userId, 'yoti_user.profile');
     }
 
     /**
@@ -446,7 +472,7 @@ class YotiConnectHelper
      */
     public static function getUserProfile($userId)
     {
-        $dbProfile = get_user_meta($userId, 'yoti_connect.profile');
+        $dbProfile = get_user_meta($userId, 'yoti_user.profile');
         $dbProfile = reset($dbProfile);
 
         return $dbProfile;
@@ -485,7 +511,7 @@ class YotiConnectHelper
             return $config;
         }
 
-        return maybe_unserialize(get_option(YotiConnectHelper::YOTI_CONFIG_OPTION_NAME));
+        return maybe_unserialize(get_option(YotiHelper::YOTI_CONFIG_OPTION_NAME));
     }
 
     /**
@@ -493,7 +519,7 @@ class YotiConnectHelper
      */
     public static function deleteYotiConfigData()
     {
-        delete_option(YotiConnectHelper::YOTI_CONFIG_OPTION_NAME);
+        delete_option(YotiHelper::YOTI_CONFIG_OPTION_NAME);
     }
 
     /**

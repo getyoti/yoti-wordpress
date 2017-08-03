@@ -6,9 +6,9 @@
  */
 ?>
 <div class="wrap">
-    <h1>Yoti Connect Settings</h1>
+    <h1>Yoti Settings</h1>
     <p>You need to first create a Yoti App at <a href="<?php echo \Yoti\YotiClient::DASHBOARD_URL; ?>" target="_blank">Yoti Dashboard</a>.</p>
-    <p>Note: On the Yoti Dashboard the callback URL should be set to: <code><?php echo site_url('wp-login.php?yoti-connect=1&action=link', 'https'); ?></code></p>
+    <p>Note: On the Yoti Dashboard the callback URL should be set to: <code><?php echo site_url('wp-login.php?yoti-select=1&action=link', 'https'); ?></code></p>
     <?php
     if ($updateMessage) {
         echo '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible">' .
@@ -77,7 +77,7 @@
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_connect_email" value="1"<?php if (!empty($data['yoti_connect_email'])) echo ' checked="checked"'; ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
+              <label><input type="checkbox" name="yoti_user_email" value="1"<?php if (!empty($data['yoti_user_email'])) echo ' checked="checked"'; ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
             </td>
           </tr>
           </tbody>
