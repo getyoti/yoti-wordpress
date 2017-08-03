@@ -101,7 +101,7 @@ function yoti_login_header()
     $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
 
     echo '<div style="margin: 0 0 25px 0" class="message">
-        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link Wordpress account to your Yoti account. Click the box below to keep them separate.</div>
+        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link your Wordpress account to your Yoti account. Click the box below to keep them separate.</div>
         <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
         <label class="option" for="edit-yoti-link">Don\'t link my Yoti account</label>
     </div>';
