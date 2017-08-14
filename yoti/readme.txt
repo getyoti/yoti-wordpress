@@ -84,7 +84,7 @@ Here you can find the changes for each version:
 
     Version     Date            Changes
 
-    1.1.3       2017/14/08      Change Yoti generic user ID to use the combination of user given names and family name i.e givenname.familyname.
+    1.1.3       2017/14/08      Change Yoti generic user ID to use the combination of user given names and family name.
                                 Change Yoti generic email to use user email address if provided.
 
     1.1.2       2017/01/08      Remove Yoti plugin config data when the plugin is uninstalled and removed from Wordpress.

@@ -73,7 +73,7 @@ You can install the Yoti SDK in two ways:
 
 ### By using this repos (For Mac & Linux users)
 
-1) Download and unzip this repository, or, clone this repository
+1) download and unzip this repository, or, clone this repository
 2) Run `./pack-plugin.sh`. This will Download the Yoti PHP SDK, and place it within the plugin directory.
 3) On completion of step 2, you will have a file called `yoti-wordpress-(version)-edge.zip`.
 4) Upload this file on WordPress at `Plugins > Add New`, then click `Upload Plugin`.

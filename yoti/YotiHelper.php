@@ -297,17 +297,17 @@ class YotiHelper
      *
      * @return null|string
      */
-    private function generateUsername(ActivityDetails $activityDetails, $prefix = 'Yoti User')
+    private function generateUsername(ActivityDetails $activityDetails, $prefix = 'yoti.user')
     {
-        $givenName = $this->getUserGivenName($activityDetails);
+        $givenName = $this->getUserGivenNames($activityDetails);
         $familyName = $activityDetails->getFamilyName();
 
         // If GivenName and FamilyName are provided use as user nickname/login
         if(!empty($givenName) && !empty($familyName)) {
-            $prefix = $givenName . " " . $familyName;
+            $userFullName = $givenName . " " . $familyName;
+            $userProvidedPrefix = strtolower(str_replace(" ", ".", $userFullName));
+            $prefix = (validate_username($userProvidedPrefix)) ? $userProvidedPrefix : $prefix;
         }
-
-        $username = $prefix = strtolower(str_replace(" ", ".", $prefix));
 
         // Get the number of user_login that starts with prefix
         $userQuery = new WP_User_Query(
@@ -322,6 +322,7 @@ class YotiHelper
 
         // Generate Yoti unique username
         $userCount = (int)$userQuery->get_total();
+        $username = $prefix;
         // If we already have  a login with this prefix then generate another login
         if ($userCount > 0) {
             do
@@ -335,13 +336,11 @@ class YotiHelper
     }
 
     /**
-     * If user has more than one given name return the first one,
-     * otherwise return user given
-     *
+     * If user has more than one given name return the first one
      * @param ActivityDetails $activityDetails
      * @return null|string
      */
-    private function getUserGivenName(ActivityDetails $activityDetails)
+    private function getUserGivenNames(ActivityDetails $activityDetails)
     {
         $givenNames = $activityDetails->getGivenNames();
         $givenNamesArr = explode(" ", $activityDetails->getGivenNames());
