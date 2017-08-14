@@ -323,7 +323,7 @@ class YotiHelper
         // Generate Yoti unique username
         $userCount = (int)$userQuery->get_total();
         $username = $prefix;
-        // If we already have  a login with this prefix then generate another login
+        // If we already have a login with this prefix then generate another login
         if ($userCount > 0) {
             do
             {
@@ -337,6 +337,7 @@ class YotiHelper
 
     /**
      * If user has more than one given name return the first one
+     *
      * @param ActivityDetails $activityDetails
      * @return null|string
      */
@@ -344,7 +345,7 @@ class YotiHelper
     {
         $givenNames = $activityDetails->getGivenNames();
         $givenNamesArr = explode(" ", $activityDetails->getGivenNames());
-        return (count($givenNamesArr) > 1) ? givenNamesArr[0] : $givenNames;
+        return (count($givenNamesArr) > 1) ? $givenNamesArr[0] : $givenNames;
     }
 
     /**
