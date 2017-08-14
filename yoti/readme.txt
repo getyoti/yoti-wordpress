@@ -3,8 +3,8 @@
 Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
-Tested up to: 4.7
-Stable tag: 1.1.2
+Tested up to: 4.8.1
+Stable tag: 1.1.3
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -83,6 +83,9 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 Here you can find the changes for each version:
 
     Version     Date            Changes
+
+    1.1.3       2017/14/08      Change Yoti generic user ID to use the combination of user given names and family name i.e givenname.familyname.
+                                Change Yoti generic email to use user email address if provided.
 
     1.1.2       2017/01/08      Remove Yoti plugin config data when the plugin is uninstalled and removed from Wordpress.
                                 Rename Yoti plugin from `Yoti Connect` to Yoti.

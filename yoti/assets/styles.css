@@ -5,12 +5,12 @@
     display: inline-block;
     padding: 5px 10px;
     border: 1px solid #ccc;
-    background: #f7f7f7;
+    background: #0085ba;
     border-radius: 3px;
     -webkit-box-shadow: 0 1px 0 #ccc;
     box-shadow: 0 1px 0 #ccc;
     text-decoration: none;
-    color: #555;
+    color: #fff;
 }
 
 .yoti-connect .yoti-connect-button:hover {
