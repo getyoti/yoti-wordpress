@@ -4,7 +4,7 @@
 Plugin Name: Yoti
 Plugin URI: https://wordpress.org/plugins/yoti/
 Description: Let Yoti users quickly register on your site.
-Version: 1.1.2
+Version: 1.1.3
 Author: Yoti Ltd.
 Author URI: https://yoti.com
 */
@@ -95,6 +95,13 @@ function yoti_login_header()
     // don't allow unless session
     if (!YotiHelper::getYotiUserFromStore())
     {
+        return;
+    }
+    // On page refresh clear the YotiUserStore session and don't display the message
+    elseif($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to']))
+    {
+        YotiHelper::clearYotiUserStore();
+
         return;
     }
 

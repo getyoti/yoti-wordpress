@@ -292,15 +292,26 @@ class YotiHelper
     /**
      * Generate Yoti unique username.
      *
+     * @param ActivityDetails $activityDetails
      * @param string $prefix
-     * @return string
+     *
+     * @return null|string
      */
-    private function generateUsername($prefix = 'YotiUser-')
+    private function generateUsername(ActivityDetails $activityDetails, $prefix = 'yoti.user')
     {
-        // Get the number of user_login that starts with YotiUser-
+        $givenName = $this->getUserGivenNames($activityDetails);
+        $familyName = $activityDetails->getFamilyName();
+
+        // If GivenName and FamilyName are provided use as user nickname/login
+        if(!empty($givenName) && !empty($familyName)) {
+            $userFullName = $givenName . " " . $familyName;
+            $userProvidedPrefix = strtolower(str_replace(" ", ".", $userFullName));
+            $prefix = (validate_username($userProvidedPrefix)) ? $userProvidedPrefix : $prefix;
+        }
+
+        // Get the number of user_login that starts with prefix
         $userQuery = new WP_User_Query(
             array(
-                // Search for Yoti users starting with the prefix  YotiUser-.
                 'search' => $prefix . '*',
                 // Search the `user_login` field only.
                 'search_columns' => array('user_login'),
@@ -311,24 +322,41 @@ class YotiHelper
 
         // Generate Yoti unique username
         $userCount = (int)$userQuery->get_total();
-        do
-        {
-            $username = $prefix . ++$userCount;
+        $username = $prefix;
+        // If we already have a login with this prefix then generate another login
+        if ($userCount > 0) {
+            do
+            {
+                $username = $prefix . ++$userCount;
+            }
+            while (get_user_by('login', $username));
         }
-        while (get_user_by('login', $username));
 
         return $username;
     }
 
     /**
+     * If user has more than one given name return the first one
+     *
+     * @param ActivityDetails $activityDetails
+     * @return null|string
+     */
+    private function getUserGivenNames(ActivityDetails $activityDetails)
+    {
+        $givenNames = $activityDetails->getGivenNames();
+        $givenNamesArr = explode(" ", $activityDetails->getGivenNames());
+        return (count($givenNamesArr) > 1) ? $givenNamesArr[0] : $givenNames;
+    }
+
+    /**
      * Generate Yoti unique user email.
      *
-     * @param $prefix
+     * @param string $prefix
      * @param string $domain
      *
      * @return string
      */
-    private function generateEmail($prefix = 'yotiuser-', $domain = 'example.com')
+    private function generateEmail($prefix = 'yoti.user', $domain = 'example.com')
     {
         // Get the number of user_email that starts with yotiuser-
         $userQuery = new WP_User_Query(
@@ -342,13 +370,19 @@ class YotiHelper
             )
         );
 
+        // Generate the default email
+        $email = $prefix . "@$domain";
+
         // Generate Yoti unique user email
         $userCount = (int)$userQuery->get_total();
-        do
+        if ($userCount > 0)
         {
-            $email = $prefix . ++$userCount . "@$domain";
+            do
+            {
+                $email = $prefix . ++$userCount . "@$domain";
+            }
+            while (get_user_by('email', $email));
         }
-        while (get_user_by('email', $email));
 
         return $email;
     }
@@ -375,10 +409,20 @@ class YotiHelper
      */
     private function createUser(ActivityDetails $activityDetails)
     {
-        $username = $this->generateUsername();
+        $username = $this->generateUsername($activityDetails);
         $password = $this->generatePassword();
-        $email = $this->generateEmail();
+        $userProvidedEmail = $activityDetails->getEmailAddress();
+        // If user has provided an email address and it's not in use then use it,
+        // otherwise use Yoti generic email
+        $userProvidedEmailCanBeUsed = is_email($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
+        $email = ($userProvidedEmailCanBeUsed) ? $userProvidedEmail : $this->generateEmail();
+
         $userId = wp_create_user($username, $password, $email);
+        // If there has been an error creating the user, stop the process
+        if(is_wp_error($userId)) {
+            throw new \Exception($userId->get_error_message(), 401);
+        }
+
         $this->createYotiUser($userId, $activityDetails);
 
         return $userId;

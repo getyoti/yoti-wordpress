@@ -63,11 +63,21 @@ Yoti also allows you to enable user details verification from your mobile app by
 This SDK works with the WordPress business plan package.
 
 ## Installing the SDK
+You can install the Yoti SDK in two ways:
 
-To import the Yoti SDK inside your project:
+### By importing the Yoti SDK inside your project:
+
 1) Log on to the admin console of your Wordpress website. e.g. Https://www.wordpressurl.org.uk/wp-admin
 2) Navigate to at `Plugins > Add New`.
 3) Search for Yoti and install and activate the plug in.
+
+### By using this repos (For Mac & Linux users)
+
+1) Download and unzip this repository, or, clone this repository
+2) Run `./pack-plugin.sh`. This will download the Yoti PHP SDK, and place it within the plugin directory.
+3) On completion of step 2, you will have a file called `yoti-wordpress-(version)-edge.zip`.
+4) Upload this file on WordPress at `Plugins > Add New`, then click `Upload Plugin`.
+5) Once installed, click `Activate Plugin`.
 
 ## Plugin Setup
 
