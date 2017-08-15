@@ -414,7 +414,7 @@ class YotiHelper
         $userProvidedEmail = $activityDetails->getEmailAddress();
         // If user has provided an email address and it's not in use then use it,
         // otherwise use Yoti generic email
-        $userProvidedEmailCanBeUsed = !empty($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
+        $userProvidedEmailCanBeUsed = is_email($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
         $email = ($userProvidedEmailCanBeUsed) ? $userProvidedEmail : $this->generateEmail();
 
         $userId = wp_create_user($username, $password, $email);
