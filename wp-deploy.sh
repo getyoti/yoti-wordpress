@@ -77,11 +77,11 @@ mv yoti-connect/* .
 rm -rf yoti-connect
 
 echo "Get latest SDK ..."
-curl https://github.com/getyoti/php/archive/master.zip -O -L
+curl https://github.com/getyoti/yoti-php-sdk/archive/master.zip -O -L
 rm -rf sdk
 unzip master.zip -d sdk
-mv sdk/php-master/src/* sdk
-rm -rf sdk/php-master master.zip
+mv sdk/yoti-php-sdk-master/src/* sdk
+rm -rf sdk/yoti-php-sdk-master master.zip
 
 echo "Ignoring github specific files and deployment script"
 svn propset svn:ignore "wp-deploy.sh
