@@ -66,7 +66,7 @@ You can find our Yoti button in the widget section and can place it where you se
 
 == Frequently Asked Questions ==
 
-For a more detailed explanation please go to our github [page.](https://github.com/getyoti/wordpress)
+For a more detailed explanation please go to our github [page.](https://github.com/getyoti/yoti-wordpress)
 
 For further support please feel free to email us at: sdksupport@yoti.com
 
