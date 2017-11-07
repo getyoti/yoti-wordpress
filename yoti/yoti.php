@@ -4,14 +4,14 @@
 Plugin Name: Yoti
 Plugin URI: https://wordpress.org/plugins/yoti/
 Description: Let Yoti users quickly register on your site.
-Version: 1.1.3
+Version: 1.1.4
 Author: Yoti Ltd.
 Author URI: https://yoti.com
 */
 
 use Yoti\ActivityDetails;
 
-require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 require_once __DIR__ . '/YotiHelper.php';
 require_once __DIR__ . '/YotiAdmin.php';
 require_once __DIR__ . '/YotiButton.php';
@@ -22,7 +22,7 @@ require_once __DIR__ . '/YotiWidget.php';
  */
 function yoti_activation_hook()
 {
-    // create upload dir
+    // Create upload dir
     if (!is_dir(YotiHelper::uploadDir()))
     {
         mkdir(YotiHelper::uploadDir(), 0777, true);
@@ -66,6 +66,7 @@ function yoti_init()
             case 'unlink':
                 if ($yc->unlink())
                 {
+                    // Redirect
                     wp_safe_redirect($redirect);
                 }
                 break;
@@ -92,7 +93,7 @@ function yoti_admin_menu()
  */
 function yoti_login_header()
 {
-    // don't allow unless session
+    // Don't allow unless session
     if (!YotiHelper::getYotiUserFromStore())
     {
         return;
@@ -105,10 +106,13 @@ function yoti_login_header()
         return;
     }
 
+    $config = YotiHelper::getConfig();
+    $companyName = isset($config['yoti_company_name']) ? $config['yoti_company_name'] : 'WordPress';
+
     $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
 
     echo '<div style="margin: 0 0 25px 0" class="message">
-        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link your Wordpress account to your Yoti account. Click the box below to keep them separate.</div>
+        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link your ' . $companyName . ' account to your Yoti account. Click the box below to keep them separate.</div>
         <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
         <label class="option" for="edit-yoti-link">Don\'t link my Yoti account</label>
     </div>';
@@ -130,14 +134,22 @@ function yoti_login($user_login=null, $user=null)
     // Check that activityDetails exists and yoti_nolink button is not checked
     if ($activityDetails && $yotiNoLinkIsNotChecked)
     {
-        // link account
+        // Link account to Yoti
         $helper = new YotiHelper();
         $helper->createYotiUser($user->ID, $activityDetails);
     }
 
-    // remove session
+    // Remove Yoti session
     unset($_SESSION['yoti_nolink']);
     YotiHelper::clearYotiUserStore();
+}
+
+/**
+ * WP logout hook
+ */
+function yoti_logout()
+{
+    YotiHelper::clearFlash();
 }
 
 /**
@@ -154,7 +166,7 @@ function show_user_profile($user)
         $profile = new ActivityDetails($dbProfile, $yotiId);
     }
 
-    // add scope
+    // Add profile scope
     $show = function () use ($profile, $dbProfile) {
         require_once __DIR__ . '/views/profile.php';
     };
@@ -178,6 +190,7 @@ add_action('admin_menu', 'yoti_admin_menu');
 add_action('init', 'yoti_init');
 add_action('login_form', 'yoti_login_header');
 add_action('wp_login', 'yoti_login', 10, 2);
+add_action('wp_logout', 'yoti_logout', 10, 2);
 add_action('show_user_profile', 'show_user_profile', 10, 1);
 add_action('edit_user_profile', 'show_user_profile', 10, 1);
 add_action('widgets_init', 'yoti_register_widget');

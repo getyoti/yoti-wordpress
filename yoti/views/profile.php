@@ -8,8 +8,8 @@
 use Yoti\ActivityDetails;
 
 $currentUser = wp_get_current_user();
-$isAdmin = in_array('administrator', $currentUser->roles);
-$userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : null;
+$isAdmin = in_array('administrator', $currentUser->roles, TRUE);
+$userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : NULL;
 
 if ($profile)
 {
@@ -19,7 +19,7 @@ if ($profile)
     foreach (YotiHelper::$profileFields as $param => $label)
     {
         $value = $profile->getProfileAttribute($param);
-        if ($param == ActivityDetails::ATTR_SELFIE)
+        if ($param === ActivityDetails::ATTR_SELFIE)
         {
             $selfieFullPath = YotiHelper::uploadDir() . "/{$dbProfile['selfie_filename']}";
             if ($dbProfile['selfie_filename'] && file_exists($selfieFullPath))
@@ -36,9 +36,9 @@ if ($profile)
         echo '<td>' . ($value ? $value : '<i>(empty)</i>') . '</td></tr>';
     }
 
-    if (!$userId || $currentUser->ID == $userId || !$isAdmin)
+    if (!$userId || $currentUser->ID === $userId || !$isAdmin)
     {
-        echo '<tr><th><label>Action</label></th>';
+        echo '<tr><th><label></label></th>';
         echo '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
     }
     echo '</table>';
