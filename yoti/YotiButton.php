@@ -19,9 +19,17 @@ class YotiButton
      *
      * @return string
      */
-    public static function render($redirect = null)
+    /**
+     * Display Yoti button.
+     *
+     * @param null $redirect
+     * @param bool $fromWidget
+     *
+     * @return null|string
+     */
+    public static function render($redirect = NULL, $fromWidget = FALSE)
     {
-        $testToken = null;
+        $testToken = NULL;
         if (YotiHelper::mockRequests()) {
             $testToken = file_get_contents(__DIR__ . '/sdk/sample-data/connect-token.txt');
         }
@@ -29,7 +37,7 @@ class YotiButton
         // No config? no button
         $config = YotiHelper::getConfig();
         if (!$config && !$testToken) {
-            return null;
+            return NULL;
         }
 
         // If connect url starts with 'https://staging' then we are in staging mode
@@ -61,12 +69,17 @@ class YotiButton
             $currentUser = wp_get_current_user();
             $yotiId = get_user_meta($currentUser->ID, 'yoti_user.identifier');
             if (!$yotiId) {
-                return '';
+                $button = sprintf($linkButton, 'Link to Yoti');
+            }
+            else if ($fromWidget) {
+                $button = '<strong>Yoti</strong> Linked';
             }
             else {
+                $promptMessage = 'This will unlink your account from Yoti.';
+                $onClikEvent = "onclick=\"return confirm('{$promptMessage}')\"";
                 $url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
-                $label = 'Unlink account from Yoti';
-                $button = '<a class="yoti-connect-button" href="' . $url . '">' . $label . '</a>';
+                $label = 'Unlink Yoti Account';
+                $button = "<a class=\"yoti-connect-button\" href=\"{$url}\" {$onClikEvent}>{$label}</a>";
             }
         }
 
