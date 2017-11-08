@@ -5,7 +5,7 @@ Plugin Name: Yoti
 Plugin URI: https://wordpress.org/plugins/yoti/
 Description: Let Yoti users quickly register on your site.
 Version: 1.1.4
-Author: Yoti Ltd.
+Author: Yoti SDK.
 Author URI: https://yoti.com
 */
 
@@ -51,7 +51,7 @@ function yoti_init()
     {
         $yc = new YotiHelper();
 
-        // action
+        // Action
         $action = !empty($_GET['action']) ? $_GET['action'] : '';
         $redirect = (!empty($_GET['redirect'])) ? $_GET['redirect'] : home_url();
         switch ($action)
@@ -107,7 +107,10 @@ function yoti_login_header()
     }
 
     $config = YotiHelper::getConfig();
-    $companyName = isset($config['yoti_company_name']) ? $config['yoti_company_name'] : 'WordPress';
+    $companyName = 'WordPress';
+    if(isset($config['yoti_company_name']) && !empty($config['yoti_company_name'])) {
+        $companyName = $config['yoti_company_name'];
+    }
 
     $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
 

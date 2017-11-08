@@ -2,7 +2,7 @@
 /**
  * Class YotiAdmin
  *
- * @author Yoti Ltd <sdksupport@yoti.com>
+ * @author Yoti SDK <sdksupport@yoti.com>
  */
 class YotiAdmin
 {
@@ -75,7 +75,7 @@ class YotiAdmin
             $data['yoti_scenario_id'] = $this->postVar('yoti_scenario_id');
             $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
             $data['yoti_company_name'] = $this->postVar('yoti_company_name');
-            $data['yoti_delete_pem'] = ($this->postVar('yoti_delete_pem')) ? true : false;
+            $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
             $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
             $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
             $data['yoti_user_email'] = $this->postVar('yoti_user_email');

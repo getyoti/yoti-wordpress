@@ -75,9 +75,11 @@ class YotiButton
                 $button = '<strong>Yoti</strong> Linked';
             }
             else {
+                $promptMessage = 'This will unlink your account from Yoti.';
+                $onClikEvent = "onclick=\"return confirm('{$promptMessage}')\"";
                 $url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
                 $label = 'Unlink Yoti Account';
-                $button = '<a class="yoti-connect-button" href="' . $url . '">' . $label . '</a>';
+                $button = "<a class=\"yoti-connect-button\" href=\"{$url}\" {$onClikEvent}>{$label}</a>";
             }
         }
 

@@ -12,7 +12,7 @@ GITPATH="$CURRENTDIR/" # this file should be in the base of your git repository
 
 # svn config
 SVNPATH="/tmp/$PLUGINSLUG" # path to a temp SVN repo. No trailing slash required and don't add trunk.
-SVNURL="http://plugins.svn.wordpress.org/yoti-connect/" # Remote SVN repo on wordpress.org, with trailing slash
+SVNURL="http://plugins.svn.wordpress.org/yoti/" # Remote SVN repo on wordpress.org, with trailing slash
 SVNUSER="yotiwordpress" # your svn username
 
 # Let's begin...
@@ -68,13 +68,13 @@ svn rm $SVNPATH/trunk/*
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
-git --work-tree=$SVNPATH/trunk/ checkout HEAD -- yoti-connect
+git --work-tree=$SVNPATH/trunk/ checkout HEAD -- yoti
 
 cd $SVNPATH/trunk
 
-# move yoti-connect contents
-mv yoti-connect/* .
-rm -rf yoti-connect
+# move yoti contents
+mv yoti/* .
+rm -rf yoti
 
 echo "Get latest SDK ..."
 curl https://github.com/getyoti/yoti-php-sdk/archive/master.zip -O -L

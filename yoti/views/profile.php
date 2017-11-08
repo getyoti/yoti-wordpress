@@ -4,7 +4,7 @@
  * @var array $dbProfile
  */
 
-// display these fields
+// Display these fields
 use Yoti\ActivityDetails;
 
 $currentUser = wp_get_current_user();
@@ -38,7 +38,7 @@ if ($profile)
 
     if (!$userId || $currentUser->ID === $userId || !$isAdmin)
     {
-        echo '<tr><th><label></label></th>';
+        echo '<tr><th></th>';
         echo '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
     }
     echo '</table>';
