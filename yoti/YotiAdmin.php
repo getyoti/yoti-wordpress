@@ -2,7 +2,7 @@
 /**
  * Class YotiAdmin
  *
- * @author Yoti Ltd <sdksupport@yoti.com>
+ * @author Yoti SDK <sdksupport@yoti.com>
  */
 class YotiAdmin
 {
@@ -62,6 +62,9 @@ class YotiAdmin
         {
             $errors[] = "PHP module 'json' not installed. Yoti requires it to work. Please contact your server administrator.";
         }
+        if (version_compare(phpversion(), '5.4.0', '<')) {
+            $errors[] = 'Yoti could not be installed. Yoti PHP SDK requires PHP 5.4 or higher.';
+        }
 
         // Get data
         $data = $config;
@@ -71,7 +74,8 @@ class YotiAdmin
             $data['yoti_app_id'] = $this->postVar('yoti_app_id');
             $data['yoti_scenario_id'] = $this->postVar('yoti_scenario_id');
             $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
-            $data['yoti_delete_pem'] = ($this->postVar('yoti_delete_pem')) ? true : false;
+            $data['yoti_company_name'] = $this->postVar('yoti_company_name');
+            $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
             $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
             $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
             $data['yoti_user_email'] = $this->postVar('yoti_user_email');
@@ -98,7 +102,7 @@ class YotiAdmin
             if (!$errors)
             {
                 // If pem file uploaded then process
-                $name = $pemContents = null;
+                $name = $contents = NULL;
                 if (!empty($pemFile['tmp_name']))
                 {
                     $name = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $pemFile['name']);
@@ -106,30 +110,28 @@ class YotiAdmin
                     {
                         $name = md5($pemFile['name']) . '.pem';
                     }
-                    $pemContents = file_get_contents($pemFile['tmp_name']);
+                    $contents = file_get_contents($pemFile['tmp_name']);
                 }
                 // If delete not ticked
                 elseif (!$data['yoti_delete_pem'])
                 {
                     $name = $config['yoti_pem']['name'];
-                    $pemContents = $config['yoti_pem']['contents'];
+                    $contents = $config['yoti_pem']['contents'];
                 }
 
-                $data = $config = array(
-                    'yoti_app_id' => $data['yoti_app_id'],
-                    'yoti_scenario_id' => $data['yoti_scenario_id'],
-                    'yoti_sdk_id' => $data['yoti_sdk_id'],
+                $data = $config = [
+                    'yoti_app_id'        => $data['yoti_app_id'],
+                    'yoti_scenario_id'   => $data['yoti_scenario_id'],
+                    'yoti_sdk_id'        => $data['yoti_sdk_id'],
+                    'yoti_company_name'  => $data['yoti_company_name'],
                     'yoti_only_existing' => $data['yoti_only_existing'],
-                    'yoti_user_email' => $data['yoti_user_email'],
-                    'yoti_pem' => array(
-                        'name' => $name,
-                        'contents' => $pemContents,
-                    ),
-                );
+                    'yoti_user_email'    => $data['yoti_user_email'],
+                    'yoti_pem'           => compact('name', 'contents'),
+                ];
 
                 // Save config
                 update_option(YotiHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
-                $updateMessage = 'Settings saved.';
+                $updateMessage = 'Yoti settings saved.';
             }
         }
 
@@ -148,7 +150,7 @@ class YotiAdmin
      */
     protected function postVar($var, $default = null)
     {
-        return (array_key_exists($var, $_POST)) ? $_POST[$var] : $default;
+        return array_key_exists($var, $_POST) ? $_POST[$var] : $default;
     }
 
     /**

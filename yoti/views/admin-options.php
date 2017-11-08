@@ -53,6 +53,13 @@
               </td>
           </tr>
           <tr>
+              <th scope="row"><label for="yoti_sdk_id">Company Name</label></th>
+              <td>
+                  <input name="yoti_company_name" type="text" id="yoti_company_name" value="<?php echo htmlspecialchars($data['yoti_company_name']); ?>" class="regular-text code" />
+                  <p><code>Company Name</code> to replace WordPress wording in the warning message on the login form.</p>
+              </td>
+          </tr>
+          <tr>
               <th scope="row"><label for="yoti_pem">Yoti PEM File</label></th>
               <td>
                   <?php
@@ -71,13 +78,13 @@
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php if (!empty($data['yoti_only_existing'])) echo ' checked="checked"'; ?> /> Only allow existing Wordpress users to link their Yoti account</label>
+              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php if (!empty($data['yoti_only_existing'])) { echo ' checked="checked"'; } ?> /> Only allow existing Wordpress users to link their Yoti account</label>
             </td>
           </tr>
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_user_email" value="1"<?php if (!empty($data['yoti_user_email'])) echo ' checked="checked"'; ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
+              <label><input type="checkbox" name="yoti_user_email" value="1"<?php if (!empty($data['yoti_user_email'])) { echo ' checked="checked"'; } ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
             </td>
           </tr>
           </tbody>

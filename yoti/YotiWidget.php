@@ -10,7 +10,7 @@ class YotiWidget extends WP_Widget
         parent::__construct(
             'yoti_widget', // Base ID
             esc_html__('Yoti Widget'), // Name
-            array('description' => 'Yoti button')
+            ['description' => 'Yoti button']
         );
     }
 
@@ -27,7 +27,7 @@ class YotiWidget extends WP_Widget
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
         $config = YotiHelper::getConfig();
         if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
-            echo '<div class="yoti-connect-button">' . YotiButton::render() . '</div>';
+            echo '<div class="yoti-connect-button">' . YotiButton::render(NULL, TRUE) . '</div>';
         }
         else {
             echo '<div class="yoti-missing-config"><p><strong>Yoti Connect not configured.</strong></p></div>';
@@ -64,7 +64,7 @@ class YotiWidget extends WP_Widget
      */
     public function update($new_instance, $old_instance)
     {
-        $instance = array();
+        $instance = [];
         $instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
 
         return $instance;
