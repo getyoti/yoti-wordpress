@@ -12,7 +12,7 @@ Yoti is a digital identity platform that simply allows a user to securely log in
 
 == Description ==
 
-Yoti is a digital identity platform that simply allows a user to securely log in to your WordPress site faster, password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more.](https://www.yoti.com)
+Yoti is a digital identity platform that allows users to log in to your WordPress site—simply, securely and password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more.](https://www.yoti.com)
 
 This plugin also allows functionality to link your current followers to their Yoti accounts making registration and blogging quicker with a fancy button!
 
@@ -41,7 +41,7 @@ We have a few simple steps we need you to fill before you get started:
 	-Yoti PEM File - which is the application pem file. It can be downloaded only once 	from the Keys tab in your Yoti Dashboard.
 
 4) Once this is completed you can move your Yoti widget to where appropriate on your site.
-Yoti generates the user their own ID e.g. YotiUser-4 so if you would like to update your username, please change your nickname on your user profile.
+Yoti generates the user their own ID e.g. yoti.user so if you would like to update your username, please change your nickname on your user profile.
 
 To import the Yoti SDK inside your project:
 
@@ -71,7 +71,7 @@ You can find our Yoti button in the widget section and can place it where you se
 
 For a more detailed explanation please go to our github [page.](https://github.com/getyoti/yoti-wordpress)
 
-For further support please feel free to email us at: sdksupport@yoti.com
+For further support please feel free to email us at: tech@yoti.com
 
 For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs)
 
