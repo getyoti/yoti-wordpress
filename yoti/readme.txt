@@ -71,7 +71,7 @@ You can find our Yoti button in the widget section and can place it where you se
 
 For a more detailed explanation please go to our github [page.](https://github.com/getyoti/yoti-wordpress)
 
-For further support please feel free to email us at: tech@yoti.com
+For further support please feel free to email us at: sdksupport@yoti.com
 
 For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs)
 
@@ -96,7 +96,7 @@ Here you can find the changes for each version:
 
     1.1.2       2017/01/08      Remove Yoti plugin config data when the plugin is uninstalled and removed from Wordpress.
                                 Rename Yoti plugin from `Yoti Connect` to Yoti.
-                                Change Yoti generic user ID from yoti-connect-x to YotiUser-x, e.g YotiUser-1.
+                                Change Yoti generic user ID from yoti-connect-x to yoti.userx, e.g yoti.user1.
 
     1.1.1       2017/20/07      Fix a bug that was occurring when a user decides not to link their account to Yoti during the login process.
 

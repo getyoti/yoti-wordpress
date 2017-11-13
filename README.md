@@ -141,7 +141,7 @@ If left disabled, if a new user tries to scan the Yoti QR code, they will be red
 
 ## Support
 
-For any questions or support please email [tech@yoti.com](mailto:tech@yoti.com).
+For any questions or support please email [sdksupport@yoti.com](mailto:sdksupport@yoti.com).
 Please provide the following the get you up and working as quick as possible:
 
 - Computer Type
