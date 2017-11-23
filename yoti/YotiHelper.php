@@ -18,6 +18,11 @@ class YotiHelper
     const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
 
     /**
+     * Yoti SDK javascript library.
+     */
+    const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://sdk.yoti.com/clients/browser.2.0.0.js';
+
+    /**
      * @var array
      */
     public static $profileFields = [

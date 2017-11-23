@@ -11,6 +11,16 @@ $currentUser = wp_get_current_user();
 $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
 $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : NULL;
 
+// Set userId if admin user is viewing his own profile
+//   and the userId is NULL
+if(
+    $isAdmin
+    && $profileUserId === $currentUser->ID
+    && is_null($userId)
+) {
+    $userId = $profileUserId;
+}
+
 if ($profile)
 {
     echo '<h2>' . __('Yoti User Profile') . '</h2>';

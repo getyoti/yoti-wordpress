@@ -4,6 +4,12 @@
  * @var string $updateMessage
  * @var array $errors
  */
+// Check link users by email address
+$checkUseEmailAddress = '';
+$yotiConfig = YotiHelper::getConfig();
+if(!$yotiConfig || !empty($data['yoti_user_email'])) {
+  $checkUseEmailAddress = 'checked="checked"';
+}
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
@@ -84,7 +90,7 @@
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_user_email" value="1"<?php if (!empty($data['yoti_user_email'])) { echo ' checked="checked"'; } ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
+              <label><input type="checkbox" name="yoti_user_email" value="1" <?php echo $checkUseEmailAddress ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
             </td>
           </tr>
           </tbody>
