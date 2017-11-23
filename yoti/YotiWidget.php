@@ -26,13 +26,14 @@ class YotiWidget extends WP_Widget
     {
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
         $config = YotiHelper::getConfig();
-        $titleHtml = '';
+        $widgetTitleHtml = '';
         $widgetDefaultTitle = 'New title';
+        // Make sure the title is no empty and is not the default text
         if(!empty($instance['title']) && $instance['title'] !== $widgetDefaultTitle){
-            $titleHtml = '<h3 class="yoti-widget-title">' . $instance['title']. '</h3>';
+            $widgetTitleHtml = '<h3 class="yoti-widget-title">' . $instance['title']. '</h3>';
         }
         if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
-            echo '<div class="yoti-connect-button">' . $titleHtml . YotiButton::render(NULL, TRUE) . '</div>';
+            echo '<div class="yoti-connect-button">' . $widgetTitleHtml . YotiButton::render(NULL, TRUE) . '</div>';
         }
         else {
             echo '<div class="yoti-missing-config"><p><strong>Yoti Connect not configured.</strong></p></div>';
