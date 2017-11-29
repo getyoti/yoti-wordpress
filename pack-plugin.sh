@@ -1,5 +1,5 @@
 #!/bin/bash
-NAME="yoti-wordpress-1.1.4-edge.zip"
+NAME="yoti-wordpress-1.1.5-edge.zip"
 SDK_RELATIVE_PATH="sdk"
 curl https://github.com/getyoti/yoti-php-sdk/archive/master.zip -O -L
 unzip master.zip -d sdk

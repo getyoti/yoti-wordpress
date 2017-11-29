@@ -5,11 +5,8 @@
  * @var array $errors
  */
 // Check link users by email address
-$useEmailAddressCheckBox = '';
-$yotiConfig = YotiHelper::getConfig();
-if(!$yotiConfig || !empty($data['yoti_user_email'])) {
-  $useEmailAddressCheckBox = 'checked="checked"';
-}
+$useEmailAddressCheckBox = !empty($data['yoti_user_email']) ? 'checked="checked"' : '';
+$onlyExistingUserCheckBox = !empty($data['yoti_only_existing']) ? 'checked="checked"' : '';
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
@@ -84,7 +81,7 @@ if(!$yotiConfig || !empty($data['yoti_user_email'])) {
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php if (!empty($data['yoti_only_existing'])) { echo ' checked="checked"'; } ?> /> Only allow existing Wordpress users to link their Yoti account</label>
+              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php echo $onlyExistingUserCheckBox ?> /> Only allow existing Wordpress users to link their Yoti account</label>
             </td>
           </tr>
           <tr>

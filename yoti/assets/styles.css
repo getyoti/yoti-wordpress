@@ -1,26 +1,14 @@
 
-.yoti-connect {
-     margin-bottom: 15px;
-}
-
 .yoti-connect .yoti-connect-button {
     text-align: center;
     display: inline-block;
     padding: 5px 10px;
-    border: 1px solid #ccc;
     background: #0085ba;
     border-radius: 3px;
     -webkit-box-shadow: 0 1px 0 #ccc;
     box-shadow: 0 1px 0 #ccc;
     text-decoration: none;
     color: #fff;
-}
-
-.yoti-connect-button .yoti-widget-title {
-    font-weight: 500;
-    margin: 0px 0px 10px 0px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 2px;
 }
 
 .yoti-connect .yoti-connect-button:hover {
