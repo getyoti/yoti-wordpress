@@ -4,8 +4,9 @@
  * @var string $updateMessage
  * @var array $errors
  */
-// Check link users by email address
+// Check if linking users by email address is set
 $useEmailAddressCheckBox = !empty($data['yoti_user_email']) ? 'checked="checked"' : '';
+// Check if linking existing users only is set
 $onlyExistingUserCheckBox = !empty($data['yoti_only_existing']) ? 'checked="checked"' : '';
 ?>
 <div class="wrap">
