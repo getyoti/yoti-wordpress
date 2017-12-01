@@ -1,18 +1,18 @@
 /* ------------ WP default widget ------------- */
-section.widget {
+.yoti_widget {
     padding-bottom: 3em;
 }
-section.widget ul {
+.yoti_widget ul {
     list-style: none;
     margin: 0;
 }
-section.widget ul li, section.widget ol li {
+.yoti_widget ul li, .yoti_widget ol li {
     border-bottom: 1px solid #ddd;
     border-top: 1px solid #ddd;
     padding: 0.5em 0;
 }
 
-section h2.widget-title {
+.yoti_widget h2.widget-title {
     color: #222;
     font-size: 13px;
     font-size: 0.8125rem;
