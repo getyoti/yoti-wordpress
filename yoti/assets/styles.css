@@ -1,25 +1,7 @@
 /* ------------ WP default widget ------------- */
-.yoti_widget {
-    padding-bottom: 3em;
-}
 .yoti_widget ul {
     list-style: none;
     margin: 0;
-}
-.yoti_widget ul li, .yoti_widget ol li {
-    border-bottom: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-    padding: 0.5em 0;
-}
-
-.yoti_widget h2.widget-title {
-    color: #222;
-    font-size: 13px;
-    font-size: 0.8125rem;
-    font-weight: 800;
-    letter-spacing: 0.1818em;
-    margin-bottom: 1.5em;
-    text-transform: uppercase;
 }
 
 /* ------------ Yoti Button -------------------- */
