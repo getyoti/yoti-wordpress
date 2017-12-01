@@ -1,4 +1,28 @@
+/* ------------ WP default widget ------------- */
+section.widget {
+    padding-bottom: 3em;
+}
+section.widget ul {
+    list-style: none;
+    margin: 0;
+}
+section.widget ul li, section.widget ol li {
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    padding: 0.5em 0;
+}
 
+section h2.widget-title {
+    color: #222;
+    font-size: 13px;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.1818em;
+    margin-bottom: 1.5em;
+    text-transform: uppercase;
+}
+
+/* ------------ Yoti Button -------------------- */
 .yoti-connect .yoti-connect-button {
     text-align: center;
     display: inline-block;
