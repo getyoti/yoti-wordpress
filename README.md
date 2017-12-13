@@ -30,7 +30,10 @@ Extra features in WordPress
 9) [API Coverage](#api-coverage)-
 Attributes defined
 
-10) [Support](#support)-
+10) [Yoti Docker](#yoti-docker)
+How to set up Yoti Docker module
+
+11) [Support](#support)-
 Please feel free to reach out
 
 ## An Architectural view
@@ -138,6 +141,31 @@ If left disabled, if a new user tries to scan the Yoti QR code, they will be red
         * [X] Address `postal_address`
         * [X] Gender `gender`
         * [X] Nationality `nationality`
+        
+## Yoti Docker
+This is a Docker module for WordPress including Yoti plugin.
+
+### Setup
+To try out our Docker module, clone this repos and run the following commands:
+
+`cd yoti-wordpress` if this is the directory where you cloned the repos.
+
+`docker-compose build` to rebuild the images if you have modified `docker-compose.yml` file.
+
+`docker-compose up -d` to build the containers.        
+
+After the command has finished running, browse the link below and follow the instructions.
+
+`http://localhost:7000`
+
+Yoti plugin will be installed along side WordPress, activate it and follow our plugin setup in [section 5](#yoti-plugin) to set it up.
+
+### Removing docker containers
+Run the following commands to remove docker containers:
+
+`docker-compose stop` and 
+
+`docker-compose rm`
 
 ## Support
 
