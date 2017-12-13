@@ -158,7 +158,7 @@ After the command has finished running, browse the link below and follow the ins
 
 `http://localhost:7000`
 
-Yoti plugin will be installed along side WordPress, activate it and follow our plugin setup in [section 5](#yoti-plugin) to set it up.
+Yoti plugin will be installed along side WordPress, activate it and follow our plugin setup in [section 5](#plugin-setup) to set it up.
 
 ### Removing docker containers
 Run the following commands to remove docker containers:
