@@ -47,7 +47,7 @@ The `Integration` tab - Here is where you specify the callback URL. This can be 
 
 ## Allowing new registrations
 
-`Only allow existing Wordpress users to link their Yoti account` - This setting allows a new user to Register and Log in by using thier Yoti. A new user who registeres this way will be set to the `Subscriber` role in WordPress. If left disabled, if a new user tries to scan the Yoti QR code, they will be redirected back to the login page with an error message displayed.
+`Only allow existing Wordpress users to link their Yoti account` - This setting allows a new user to Register and Log in by using their Yoti. A new user who registeres this way will be set to the `Subscriber` role in WordPress. If enabled, when a new user tries to scan the Yoti QR code, they will be redirected back to the login page with an error message displayed.
 
 `Attempt to link Yoti email address with Wordpress account for first time users` - This setting enables linking a Yoti account to a WordPress user if the email from both platforms is identical.
 
