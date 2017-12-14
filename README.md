@@ -68,7 +68,7 @@ cd yoti-wordpress
 Rebuild the images if you have modified the `docker-compose.yml` file:
 
 ```shell
-docker-compose build
+docker-compose build --no-cache
 ```
 
 Build the containers:
