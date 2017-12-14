@@ -3,8 +3,8 @@
 Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
-Tested up to: 4.8.1
-Stable tag: 1.1.4
+Tested up to: 4.8.2
+Stable tag: 1.1.5
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -86,6 +86,9 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 Here you can find the changes for each version:
 
     Version     Date            Changes
+
+    1.1.5       2017/04/12      Integrate the new inline QR style for Yoti button.
+                                Apply WordPress widget style to Yoti button widget.
 
     1.1.4       2017/08/11      Integrate SDK identifier to track plugin usage.
                                 Apply Yoti style to the unlink button.

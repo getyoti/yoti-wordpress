@@ -4,7 +4,7 @@
 Plugin Name: Yoti
 Plugin URI: https://wordpress.org/plugins/yoti/
 Description: Let Yoti users quickly register on your site.
-Version: 1.1.4
+Version: 1.1.5
 Author: Yoti SDK.
 Author URI: https://yoti.com
 */
@@ -25,7 +25,7 @@ function yoti_activation_hook()
     // Create upload dir
     if (!is_dir(YotiHelper::uploadDir()))
     {
-        mkdir(YotiHelper::uploadDir(), 0777, true);
+        mkdir(YotiHelper::uploadDir(), 0777, TRUE);
     }
 }
 
@@ -72,7 +72,7 @@ function yoti_init()
                 break;
 
             case 'bin-file':
-                $yc->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : null);
+                $yc->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
                 exit;
                 break;
         }
@@ -84,7 +84,7 @@ function yoti_init()
  */
 function yoti_admin_menu()
 {
-    wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
+    wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', FALSE);
     add_options_page('Yoti', 'Yoti', 'manage_options', 'yoti', 'YotiAdmin::init');
 }
 
@@ -112,7 +112,7 @@ function yoti_login_header()
         $companyName = $config['yoti_company_name'];
     }
 
-    $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : null;
+    $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : NULL;
 
     echo '<div style="margin: 0 0 25px 0" class="message">
         <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link your ' . $companyName . ' account to your Yoti account. Click the box below to keep them separate.</div>
@@ -125,7 +125,7 @@ function yoti_login_header()
  * @param $user_login
  * @param $user
  */
-function yoti_login($user_login=null, $user=null)
+function yoti_login($user_login=NULL, $user=NULL)
 {
     if (!$user) {
         return;
@@ -162,15 +162,16 @@ function show_user_profile($user)
 {
     $yotiId = get_user_meta($user->ID, 'yoti_user.identifier');
     $dbProfile = YotiHelper::getUserProfile($user->ID);
+    $profileUserId = $user->ID;
 
-    $profile = null;
+    $profile = NULL;
     if ($yotiId && $dbProfile)
     {
         $profile = new ActivityDetails($dbProfile, $yotiId);
     }
 
     // Add profile scope
-    $show = function () use ($profile, $dbProfile) {
+    $show = function () use ($profile, $dbProfile, $profileUserId) {
         require_once __DIR__ . '/views/profile.php';
     };
     $show();
@@ -183,7 +184,7 @@ function yoti_register_widget()
 
 function yoti_enqueue_scripts()
 {
-    wp_enqueue_script('yoti-asset-js', 'https://sdk.yoti.com/clients/browser.js', array(), null);
+    wp_enqueue_script('yoti-asset-js', YotiHelper::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL);
 }
 
 // Register hooks

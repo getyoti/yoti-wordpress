@@ -1,13 +1,14 @@
-
-.yoti-connect {
-     margin-bottom: 10px;
+/* ------------ WP default widget ------------- */
+.yoti_widget ul {
+    list-style: none;
+    margin: 0;
 }
 
+/* ------------ Yoti Button -------------------- */
 .yoti-connect .yoti-connect-button {
     text-align: center;
     display: inline-block;
     padding: 5px 10px;
-    border: 1px solid #ccc;
     background: #0085ba;
     border-radius: 3px;
     -webkit-box-shadow: 0 1px 0 #ccc;
