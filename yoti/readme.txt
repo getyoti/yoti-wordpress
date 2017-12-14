@@ -87,6 +87,7 @@ Here you can find the changes for each version:
 
     Version     Date            Changes
 
+
     1.1.5       2017/04/14      Integrate the new inline QR style for Yoti button.
                                 Apply WordPress widget style to Yoti button widget.
 
