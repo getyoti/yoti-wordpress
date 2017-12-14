@@ -2,15 +2,18 @@
 
 class YotiWidget extends WP_Widget
 {
+    const YOTI_WIDGET_DEFAULT_TITLE = 'Authenticate with Yoti';
+
     /**
      * Register widget with WordPress.
      */
     public function __construct()
     {
+        $widget_options = ['classname' => 'yoti_widget', 'description' => __('Yoti button')];
         parent::__construct(
-            'yoti_widget', // Base ID
+            'yoti-widget', // Base ID
             esc_html__('Yoti Widget'), // Name
-            ['description' => 'Yoti button']
+            $widget_options
         );
     }
 
@@ -24,14 +27,27 @@ class YotiWidget extends WP_Widget
      */
     public function widget($args, $instance)
     {
+        if ( ! isset( $args['widget_id'] ) ) {
+            $args['widget_id'] = $this->id;
+        }
+        $title = (!empty( $instance['title'])) ? $instance['title'] : __(self::YOTI_WIDGET_DEFAULT_TITLE);
+
+        $title = apply_filters('widget_title', $title, $instance, $this->id_base);
+
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
         $config = YotiHelper::getConfig();
+        $widgetTitleHtml = '';
+        $widgetContent = '<strong>Yoti not configured.</strong>';
+        // Apply widget title html
+        if(!empty($title)){
+            $widgetTitleHtml = $args['before_title'] . $title . $args['after_title'];
+        }
         if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
-            echo '<div class="yoti-connect-button">' . YotiButton::render(NULL, TRUE) . '</div>';
+            $widgetContent = YotiButton::render(NULL, TRUE);
         }
-        else {
-            echo '<div class="yoti-missing-config"><p><strong>Yoti Connect not configured.</strong></p></div>';
-        }
+        echo $args['before_widget'];
+        echo $widgetTitleHtml . "<ul><li>$widgetContent</li></ul>";
+        echo $args['after_widget'];
     }
 
     /**
@@ -43,11 +59,11 @@ class YotiWidget extends WP_Widget
      */
     public function form($instance)
     {
-        $title = !empty($instance['title']) ? $instance['title'] : esc_html__('New title', 'text_domain');
+        $title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
         ?>
       <p>
-		<label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_attr_e('Title:', 'text_domain'); ?></label>
-		<input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
+		<label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_attr_e('Title:'); ?></label>
+		<input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo $title; ?>">
 		</p>
         <?php
     }
@@ -65,7 +81,7 @@ class YotiWidget extends WP_Widget
     public function update($new_instance, $old_instance)
     {
         $instance = [];
-        $instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+        $instance['title'] = sanitize_text_field($new_instance['title']);
 
         return $instance;
     }

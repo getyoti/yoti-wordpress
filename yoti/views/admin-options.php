@@ -4,6 +4,10 @@
  * @var string $updateMessage
  * @var array $errors
  */
+// Check if linking users by email address is set
+$useEmailAddressCheckBox = !empty($data['yoti_user_email']) ? 'checked="checked"' : '';
+// Check if linking existing users only is set
+$onlyExistingUserCheckBox = !empty($data['yoti_only_existing']) ? 'checked="checked"' : '';
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
@@ -78,13 +82,13 @@
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php if (!empty($data['yoti_only_existing'])) { echo ' checked="checked"'; } ?> /> Only allow existing Wordpress users to link their Yoti account</label>
+              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php echo $onlyExistingUserCheckBox ?> /> Only allow existing Wordpress users to link their Yoti account</label>
             </td>
           </tr>
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_user_email" value="1"<?php if (!empty($data['yoti_user_email'])) { echo ' checked="checked"'; } ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
+              <label><input type="checkbox" name="yoti_user_email" value="1" <?php echo $useEmailAddressCheckBox ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
             </td>
           </tr>
           </tbody>
