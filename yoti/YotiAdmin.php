@@ -53,7 +53,7 @@ class YotiAdmin
         $config = YotiHelper::getConfig();
 
         // Check curl has preliminary extensions to run
-        $errors = array();
+        $errors = [];
         if (!function_exists('curl_version'))
         {
             $errors[] = "PHP module 'curl' not installed. Yoti requires it to work. Please contact your server administrator.";
@@ -148,17 +148,17 @@ class YotiAdmin
      * @param null $default
      * @return null
      */
-    protected function postVar($var, $default = null)
+    protected function postVar($var, $default = NULL)
     {
         return array_key_exists($var, $_POST) ? $_POST[$var] : $default;
     }
 
     /**
      * @param $var
-     * @param null $default
-     * @return null
+     * @param NULL $default
+     * @return NULL
      */
-    protected function filesVar($var, $default = null)
+    protected function filesVar($var, $default = NULL)
     {
         return (array_key_exists($var, $_FILES) && !empty($_FILES[$var]['name'])) ? $_FILES[$var] : $default;
     }
