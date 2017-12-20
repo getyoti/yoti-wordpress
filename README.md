@@ -1,18 +1,18 @@
 # Yoti WordPress Plugin
 
-This repository contains the tools you need to quickly integrate your WordPress backend with Yoti, so that your users can share their identity details with your application in a secure and trusted way. The plugin uses the Yoti PHP SDK. If you're interested in finding out more about the SDK, click [here](https://github.com/getyoti/yoti-php-sdk).
+This repository contains the tools you need to quickly integrate your WordPress backend with Yoti so that your users can share their identity details with your application in a secure and trusted way. The plugin uses the Yoti PHP SDK. If you're interested in finding out more about the SDK, click [here](https://github.com/getyoti/yoti-php-sdk).
 
 ## Requirements
 
-This SDK works with the WordPress Business Plan package.
+This plugin works with the WordPress Business Plan package.
 
-## Installing the SDK
+## Installing the plugin
 
-You can install the Yoti SDK in two ways:
+You can install the Yoti WordPress plugin in two ways:
 
-### By importing the Yoti SDK inside your project
+### By importing the plugin into your project
 
-1. Log on to your Wordpress Admin Dashboard e.g. https://www.wordpressurl.org.uk/wp-admin
+1. Log on to your Wordpress Admin Dashboard e.g. `https://www.wordpressurl.org.uk/wp-admin`
 2. Navigate to `Plugins > Add New`
 3. Search for Yoti, install and activate the plugin
 
@@ -21,8 +21,18 @@ You can install the Yoti SDK in two ways:
 1. Clone this repository
 2. Run `./pack-plugin.sh`. This will download the Yoti PHP SDK and place it in the plugin directory
 3. On completion of step 2, you will have a file called `yoti-wordpress-edge.zip`.
-4. Upload this file in your Wordpress Admin Dashboard at `Plugins > Add New`, then click `Upload Plugin`.
+4. Upload this file to your Wordpress Admin Dashboard at `Plugins > Add New`, then click `Upload Plugin`.
 5. Once installed, click on `Activate Plugin`.
+
+## Setting up your Yoti Application
+
+After you registered your [Yoti](https://www.yoti.com/), access the [dashboard](https://www.yoti.com/dashboard/login) to create a new application.
+
+Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you like and will not affect the plugin's functionality.
+
+The `Data` tab - Specify any attributes you'd like users to share. You must select at least one. If you plan to allow new user registrations, we recommended choosing `Given Name(s)`, `Family Name` and `Email Address` at a minimum.
+
+The `Integration` tab - Here is where you specify the callback URL. This can be found on your Yoti settings page in your WordPress admin dashboard. **NOTE**: If you get redirected to your WordPress frontpage instead of the Admin area, simply add `/wp-admin` to the URL.
 
 ## Plugin Setup
 
@@ -37,15 +47,7 @@ You will be asked to add the following information:
 
 Please do not open the .pem file as this might corrupt the key and you will need to create a new application.
 
-## Setting up your Yoti Application
-
-Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you like and will not affect the plugin's functionality.
-
-The `Data` tab - Specify any attributes you'd like users to share. You must select at least one. If you plan to allow new user registrations, we recommended choosing `Given Name(s)`, `Family Name` and `Email Address` at a minimum.
-
-The `Integration` tab - Here is where you specify the callback URL. This can be found on your Yoti settings page in your WordPress Admin Dashboard. **NOTE**: If you get redirected to your WordPress frontpage instead of the Admin area, simply add `/wp-admin` to the URL.
-
-## Allowing new registrations
+## Settings for new registrations
 
 `Only allow existing Wordpress users to link their Yoti account` - This setting allows a new user to Register and Log in by using their Yoti. A new user who registeres this way will be set to the `Subscriber` role in WordPress. If enabled, when a new user tries to scan the Yoti QR code, they will be redirected back to the login page with an error message displayed.
 
@@ -57,9 +59,7 @@ We provide a WordPress Docker container that includes the Yoti plugin.
 
 ### Setup
 
-To try out our Docker container, clone this repository and run the following commands:
-
-Go to the directory where the repo was cloned:
+Clone this repository and go into the folder:
 
 ```shell
 cd yoti-wordpress
