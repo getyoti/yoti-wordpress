@@ -82,13 +82,13 @@ $onlyExistingUserCheckBox = !empty($data['yoti_only_existing']) ? 'checked="chec
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php echo $onlyExistingUserCheckBox ?> /> Only allow existing Wordpress users to link their Yoti account</label>
+              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php echo $onlyExistingUserCheckBox ?> /> Only allow existing WordPress users to link their Yoti account</label>
             </td>
           </tr>
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_user_email" value="1" <?php echo $useEmailAddressCheckBox ?> /> Attempt to link Yoti email address with Wordpress account for first time users</label>
+              <label><input type="checkbox" name="yoti_user_email" value="1" <?php echo $useEmailAddressCheckBox ?> /> Attempt to link Yoti email address with WordPress account for first time users</label>
             </td>
           </tr>
           </tbody>
