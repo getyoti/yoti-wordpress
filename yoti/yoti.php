@@ -22,7 +22,8 @@ require_once __DIR__ . '/class.yoti.php';
 register_uninstall_hook(__FILE__, array('Yoti','yoti_uninstall_hook'));
 register_activation_hook(__FILE__, array('Yoti','yoti_activation_hook'));
 
-add_action( 'init', array('Yoti', 'init'));
+// Initiate all the hooks
+Yoti::initiate_hooks();
 
 /**
  * Activation hook
