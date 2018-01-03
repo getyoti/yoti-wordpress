@@ -1,6 +1,5 @@
 <?php
 
-require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 require_once __DIR__ . '/YotiHelper.php';
 require_once __DIR__ . '/YotiAdmin.php';
 require_once __DIR__ . '/YotiButton.php';
@@ -10,23 +9,6 @@ use Yoti\ActivityDetails;
 
 class Yoti
 {
-    /**
-     * Initializes WordPress hooks.
-     */
-    public static function initiate_hooks()
-    {
-        add_action('init', array('Yoti','yoti_init'));
-        add_action('admin_menu', array('Yoti','yoti_admin_menu'));
-        add_action('login_form', array('Yoti','yoti_login_header'));
-        add_action('wp_login', array('Yoti','yoti_login'), 10, 2);
-        add_action('wp_logout', array('Yoti','yoti_logout'), 10, 2);
-        add_action('show_user_profile', array('Yoti','show_user_profile'), 10, 1);
-        add_action('edit_user_profile', array('Yoti','show_user_profile'), 10, 1);
-        add_action('widgets_init', array('Yoti','yoti_register_widget'));
-        add_action('wp_enqueue_scripts', array('Yoti','yoti_enqueue_scripts'));
-        add_filter('plugin_action_links_' . plugin_basename(__FILE__), array('Yoti','yoti_plugin_action_links'), 10, 2);
-    }
-
     /**
      * Activation hook.
      */
@@ -215,6 +197,20 @@ class Yoti
     {
         $settings_link = '<a href="'. admin_url( 'options-general.php?page=yoti' ) . '">' . __('Settings', 'yoti') . '</a>';
         array_unshift( $links, $settings_link );
+
         return $links;
+    }
+
+    /**
+     * Display a success activate notice.
+     */
+    public static function yoti_admin_activate_notice()
+    {
+        $noticeHTML = '<div class="notice notice-success is-dismissible">' .
+            '<p><strong>Almost done</strong> - <a style="text-decoration: none;" href="'.
+            admin_url( 'options-general.php?page=yoti' ) .'">'. __('Set up Yoti here', 'yoti') .
+            '</a> .</p></div>';
+
+        echo $noticeHTML;
     }
 }
