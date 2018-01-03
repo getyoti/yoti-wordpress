@@ -9,38 +9,45 @@ Author: Yoti SDK.
 Author URI: https://yoti.com
 */
 
-use Yoti\ActivityDetails;
 
-require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-require_once __DIR__ . '/YotiHelper.php';
-require_once __DIR__ . '/YotiAdmin.php';
-require_once __DIR__ . '/YotiButton.php';
-require_once __DIR__ . '/YotiWidget.php';
+// Make sure we don't expose any info if called directly
+if ( !function_exists( 'add_action' ) ) {
+    echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+    exit;
+}
+
+require_once __DIR__ . '/class.yoti.php';
+
+// Register hooks
+register_uninstall_hook(__FILE__, array('Yoti','yoti_uninstall_hook'));
+register_activation_hook(__FILE__, array('Yoti','yoti_activation_hook'));
+
+add_action( 'init', array('Yoti', 'init'));
 
 /**
  * Activation hook
  */
-function yoti_activation_hook()
+/*function yoti_activation_hook()
 {
     // Create upload dir
     if (!is_dir(YotiHelper::uploadDir()))
     {
         mkdir(YotiHelper::uploadDir(), 0777, TRUE);
     }
-}
+}*/
 
 /**
  * Uninstall hook
  */
-function yoti_uninstall_hook()
+/*function yoti_uninstall_hook()
 {
     YotiHelper::deleteYotiConfigData();
-}
+}*/
 
 /**
  *  init
  */
-function yoti_init()
+/*function yoti_init()
 {
     if (!session_id())
     {
@@ -77,21 +84,21 @@ function yoti_init()
                 break;
         }
     }
-}
+}*/
 
 /**
  * Add items to admin menu
  */
-function yoti_admin_menu()
+/*function yoti_admin_menu()
 {
     wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', FALSE);
     add_options_page('Yoti', 'Yoti', 'manage_options', 'yoti', 'YotiAdmin::init');
-}
+}*/
 
 /**
  * add to login footer
  */
-function yoti_login_header()
+/*function yoti_login_header()
 {
     // Don't allow unless session
     if (!YotiHelper::getYotiUserFromStore())
@@ -119,13 +126,13 @@ function yoti_login_header()
         <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
         <label class="option" for="edit-yoti-link">Don\'t link my Yoti account</label>
     </div>';
-}
+}*/
 
 /**
  * @param $user_login
  * @param $user
  */
-function yoti_login($user_login=NULL, $user=NULL)
+/*function yoti_login($user_login=NULL, $user=NULL)
 {
     if (!$user) {
         return;
@@ -145,20 +152,20 @@ function yoti_login($user_login=NULL, $user=NULL)
     // Remove Yoti session
     unset($_SESSION['yoti_nolink']);
     YotiHelper::clearYotiUserStore();
-}
+}*/
 
 /**
  * WP logout hook
  */
-function yoti_logout()
+/*function yoti_logout()
 {
     YotiHelper::clearFlash();
-}
+}*/
 
 /**
  * @param WP_User $user
  */
-function show_user_profile($user)
+/*function show_user_profile($user)
 {
     $yotiId = get_user_meta($user->ID, 'yoti_user.identifier');
     $dbProfile = YotiHelper::getUserProfile($user->ID);
@@ -187,9 +194,16 @@ function yoti_enqueue_scripts()
     wp_enqueue_script('yoti-asset-js', YotiHelper::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL);
 }
 
+function yoti_plugin_action_links($links, $file)
+{
+    $settings_link = '<a href="'. admin_url( 'options-general.php?page=yoti' ) . '">' . __('Settings', 'yoti') . '</a>';
+    array_unshift( $links, $settings_link );
+    return $links;
+}*/
+
 // Register hooks
-register_uninstall_hook(__FILE__, 'yoti_uninstall_hook');
-register_activation_hook(__FILE__, 'yoti_activation_hook');
+/*register_uninstall_hook(__FILE__, ['Yoti','yoti_uninstall_hook']);
+register_activation_hook(__FILE__, ['Yoti','yoti_activation_hook']);
 add_action('admin_menu', 'yoti_admin_menu');
 add_action('init', 'yoti_init');
 add_action('login_form', 'yoti_login_header');
@@ -199,4 +213,5 @@ add_action('show_user_profile', 'show_user_profile', 10, 1);
 add_action('edit_user_profile', 'show_user_profile', 10, 1);
 add_action('widgets_init', 'yoti_register_widget');
 add_action('wp_enqueue_scripts', 'yoti_enqueue_scripts');
+add_filter('plugin_action_links_' . plugin_basename(__FILE__),'yoti_plugin_action_links', 10, 2);*/
 
