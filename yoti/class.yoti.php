@@ -11,12 +11,18 @@ use Yoti\ActivityDetails;
 class Yoti
 {
     private static $initiated = false;
+    private static $admin_initiated = false;
 
     public static function init() {
         if (!self::$initiated) {
             self::init_hooks();
         }
+
+        if(!self::$admin_initiated && is_admin()) {
+            self::init_admin_hooks();
+        }
     }
+
 
     /**
      * Initializes WordPress hooks.
@@ -25,7 +31,6 @@ class Yoti
     {
         self::$initiated = true;
 
-        add_action('admin_menu', array('Yoti','yoti_admin_menu'));
         add_action('init', array('Yoti','yoti_init'));
         add_action('login_form', array('Yoti','yoti_login_header'));
         add_action('wp_login', array('Yoti','yoti_login'), 10, 2);
@@ -34,7 +39,16 @@ class Yoti
         add_action('edit_user_profile', array('Yoti','show_user_profile'), 10, 1);
         add_action('widgets_init', array('Yoti','yoti_register_widget'));
         add_action('wp_enqueue_scripts', array('Yoti','yoti_enqueue_scripts'));
+    }
+
+    /**
+     * Initiate admin hooks.
+     */
+    public static function init_admin_hooks()
+    {
+        self::$admin_initiated = true;
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array('Yoti','yoti_plugin_action_links'), 10, 2);
+        add_action('admin_menu', array('Yoti','yoti_admin_menu'));
     }
 
     /**
