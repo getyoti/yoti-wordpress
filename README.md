@@ -93,7 +93,6 @@ docker-compose rm
 ## Support
 
 For any questions or support please email [sdksupport@yoti.com](mailto:sdksupport@yoti.com).
-
 Please provide the following to get you up and working as quickly as possible:
 
 * Computer type
