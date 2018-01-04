@@ -213,7 +213,7 @@ class Yoti
     /**
      * Display a notice for successful activation.
      */
-    public static function yoti_admin_activate_notice()
+    public static function yoti_plugin_activate_notice()
     {
         global $pagenow;
 
