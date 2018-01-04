@@ -4,7 +4,7 @@ Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
 Tested up to: 4.9.1
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -87,13 +87,17 @@ Here you can find the changes for each version:
 
     Version     Date            Changes
 
+    1.1.6       2018/01/04      Integrate the new inline QR code version 2.0.1.
+                                Refactor Yoti button widget to follow WordPress widget standard.
+                                Show Yoti settings link on the plugins page after activation.
+                                Add admin notice display after Yoti plugin activation.
 
     1.1.5       2017/04/14      Integrate the new inline QR style for Yoti button.
                                 Apply WordPress widget style to Yoti button widget.
 
     1.1.4       2017/08/11      Integrate SDK identifier to track plugin usage.
                                 Apply Yoti style to the unlink button.
-                                Add Company Name to Yoti settings
+                                Add Company Name to Yoti settings.
 
     1.1.3       2017/14/08      Change Yoti generic user ID to use the combination of user given names and family name.
                                 Change Yoti generic email to use user email address if provided.
@@ -104,7 +108,7 @@ Here you can find the changes for each version:
 
     1.1.1       2017/20/07      Fix a bug that was occurring when a user decides not to link their account to Yoti during the login process.
 
-    1.1.0       2017/20/07      Remove PHP module mcrypt dependency from WordPress plugin
+    1.1.0       2017/20/07      Remove PHP module mcrypt dependency from WordPress plugin.
 
     1.0.9       2017/19/05      Add plugin documentation.
 
