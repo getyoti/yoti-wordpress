@@ -7,6 +7,9 @@ require_once __DIR__ . '/YotiWidget.php';
 
 use Yoti\ActivityDetails;
 
+/**
+ * Class Yoti used in the plugin main file yoti.php
+ */
 class Yoti
 {
     /**
@@ -30,7 +33,7 @@ class Yoti
     }
 
     /**
-     * Init.
+     * Yoti WP init hook.
      */
     public static function yoti_init()
     {
@@ -41,7 +44,7 @@ class Yoti
 
         if (!empty($_GET['yoti-select']))
         {
-            $yc = new YotiHelper();
+            $yotiHelper = new YotiHelper();
 
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
@@ -49,14 +52,14 @@ class Yoti
             switch ($action)
             {
                 case 'link':
-                    if ($yc->link())
+                    if ($yotiHelper->link())
                     {
                         wp_safe_redirect($redirect);
                     }
                     break;
 
                 case 'unlink':
-                    if ($yc->unlink())
+                    if ($yotiHelper->unlink())
                     {
                         // Redirect
                         wp_safe_redirect($redirect);
@@ -64,7 +67,7 @@ class Yoti
                     break;
 
                 case 'bin-file':
-                    $yc->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
+                    $yotiHelper->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
                     exit;
                     break;
             }
@@ -85,7 +88,7 @@ class Yoti
      */
     public static function yoti_login_header()
     {
-        // Don't allow unless session
+        // Don't allow unless there is an existing session
         if (!YotiHelper::getYotiUserFromStore())
         {
             return;
@@ -104,7 +107,7 @@ class Yoti
             $companyName = $config['yoti_company_name'];
         }
 
-        $noLink = (!empty($_POST['yoti_nolink'])) ? 1 : NULL;
+        $noLink = !empty($_POST['yoti_nolink']);
 
         echo '<div style="margin: 0 0 25px 0" class="message">
         <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link your ' . $companyName . ' account to your Yoti account. If you don\'t want this to happen, tick the checkbox below.</div>
@@ -114,6 +117,8 @@ class Yoti
     }
 
     /**
+     * WP login hook.
+     *
      * @param null $user_login
      * @param null $user
      */
@@ -130,8 +135,8 @@ class Yoti
         if ($activityDetails && $yotiNoLinkIsNotChecked)
         {
             // Link account to Yoti
-            $helper = new YotiHelper();
-            $helper->createYotiUser($user->ID, $activityDetails);
+            $yotiHelper = new YotiHelper();
+            $yotiHelper->createYotiUser($user->ID, $activityDetails);
         }
 
         // Remove Yoti session
@@ -140,7 +145,7 @@ class Yoti
     }
 
     /**
-     * WP logout hook
+     * WP logout hook.
      */
     public static function yoti_logout()
     {
@@ -148,7 +153,9 @@ class Yoti
     }
 
     /**
-     * @param WP_User $user
+     * Display Yoti user profile.
+     *
+     * @param WP_User $user.
      */
     public static function show_user_profile($user)
     {
@@ -186,7 +193,7 @@ class Yoti
     }
 
     /**
-     * Add settings link to the admin plugins page.
+     * Add Yoti settings link to the admin plugins page.
      *
      * @param $links
      * @param $file
@@ -195,22 +202,29 @@ class Yoti
      */
     public static function yoti_plugin_action_links($links, $file)
     {
-        $settings_link = '<a href="'. admin_url( 'options-general.php?page=yoti' ) . '">' . __('Settings', 'yoti') . '</a>';
-        array_unshift( $links, $settings_link );
+        $settingsLink = '<a href="'. admin_url( 'options-general.php?page=yoti' ) . '">' .
+                __('Settings', 'yoti') . '</a>';
+        // Add Yoti settings to the plugin links.
+        array_unshift( $links, $settingsLink );
 
         return $links;
     }
 
     /**
-     * Display a success activate notice.
+     * Display a notice for successful activation.
      */
     public static function yoti_admin_activate_notice()
     {
-        $noticeHTML = '<div class="notice notice-success is-dismissible">' .
-            '<p><strong>Almost done</strong> - <a style="text-decoration: none;" href="'.
-            admin_url( 'options-general.php?page=yoti' ) .'">'. __('Set up Yoti here', 'yoti') .
-            '</a> .</p></div>';
+        global $pagenow;
 
-        echo $noticeHTML;
+        // Display the notice only on the plugins page.
+        if ($pagenow === "plugins.php") {
+            $noticeHTML = '<div class="notice notice-success is-dismissible">' .
+                '<p><strong>Almost done</strong> - Complete Yoti <a style="text-decoration: none;" href="'.
+                admin_url( 'options-general.php?page=yoti' ) .'">'. __('settings here', 'yoti') .
+                '</a>.</p></div>';
+
+            echo $noticeHTML;
+        }
     }
 }
