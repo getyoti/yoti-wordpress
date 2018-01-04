@@ -93,11 +93,12 @@ docker-compose rm
 ## Support
 
 For any questions or support please email [sdksupport@yoti.com](mailto:sdksupport@yoti.com).
-Please provide the following the get you up and working as quickly as possible:
 
-- Computer type
-- OS version
-- Version of WordPress being used
-- Screenshot
+Please provide the following to get you up and working as quickly as possible:
+
+* Computer type
+* OS version
+* Version of WordPress being used
+* Screenshot
 
 Once we have answered your question we may contact you again to discuss Yoti products and services. If you’d prefer us not to do this, please let us know when you e-mail.
