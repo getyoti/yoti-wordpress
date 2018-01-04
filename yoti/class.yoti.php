@@ -205,7 +205,7 @@ class Yoti
         $settingsLink = '<a href="'. admin_url( 'options-general.php?page=yoti' ) . '">' .
                 __('Settings', 'yoti') . '</a>';
         // Add Yoti settings to the plugin links.
-        array_unshift( $links, $settingsLink );
+        array_unshift($links, $settingsLink);
 
         return $links;
     }
