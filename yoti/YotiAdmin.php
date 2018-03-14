@@ -76,9 +76,10 @@ class YotiAdmin
             $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
             $data['yoti_company_name'] = $this->postVar('yoti_company_name');
             $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
-            $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
             $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
             $data['yoti_user_email'] = $this->postVar('yoti_user_email');
+            $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
+            $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
 
             // Validation
             if (!$data['yoti_app_id'])
@@ -119,15 +120,9 @@ class YotiAdmin
                     $contents = $config['yoti_pem']['contents'];
                 }
 
-                $data = $config = [
-                    'yoti_app_id'        => $data['yoti_app_id'],
-                    'yoti_scenario_id'   => $data['yoti_scenario_id'],
-                    'yoti_sdk_id'        => $data['yoti_sdk_id'],
-                    'yoti_company_name'  => $data['yoti_company_name'],
-                    'yoti_only_existing' => $data['yoti_only_existing'],
-                    'yoti_user_email'    => $data['yoti_user_email'],
-                    'yoti_pem'           => compact('name', 'contents'),
-                ];
+                $data['yoti_pem'] = compact('name', 'contents');
+                $config = $data;
+                unset($config['yoti_delete_pem']);
 
                 // Save config
                 update_option(YotiHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));

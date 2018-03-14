@@ -5,9 +5,10 @@
  * @var array $errors
  */
 // Check if linking users by email address is set
-$useEmailAddressCheckBox = !empty($data['yoti_user_email']) ? 'checked="checked"' : '';
+$useEmailAddressCheckbox = !empty($data['yoti_user_email']) ? 'checked="checked"' : '';
 // Check if linking existing users only is set
-$onlyExistingUserCheckBox = !empty($data['yoti_only_existing']) ? 'checked="checked"' : '';
+$onlyExistingUserCheckbox = !empty($data['yoti_only_existing']) ? 'checked="checked"' : '';
+$ageVerificationCheckbox = isset($data['yoti_age_verification']) ? 'checked="checked"' : '';
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
@@ -82,14 +83,21 @@ $onlyExistingUserCheckBox = !empty($data['yoti_only_existing']) ? 'checked="chec
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php echo $onlyExistingUserCheckBox ?> /> Only allow existing WordPress users to link their Yoti account</label>
+              <label><input type="checkbox" name="yoti_only_existing" value="1"<?php echo $onlyExistingUserCheckbox ?> /> Only allow existing WordPress users to link their Yoti account</label>
             </td>
           </tr>
           <tr>
             <th scope="row"></th>
             <td>
-              <label><input type="checkbox" name="yoti_user_email" value="1" <?php echo $useEmailAddressCheckBox ?> /> Attempt to link Yoti email address with WordPress account for first time users</label>
+              <label><input type="checkbox" name="yoti_user_email" value="1" <?php echo $useEmailAddressCheckbox ?> /> Attempt to link Yoti email address with WordPress account for first time users</label>
             </td>
+          </tr>
+          <tr>
+              <th scope="row"></th>
+              <td>
+                  <label><input type="checkbox" name="yoti_age_verification" value="1" <?php echo $ageVerificationCheckbox ?> /> Prevent users who have not passed age verification to access your site</label>
+                  <p>(Requires Age verify condition to be set in the Yoti Dashboard)</p>
+              </td>
           </tr>
           </tbody>
       </table>

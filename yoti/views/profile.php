@@ -12,7 +12,7 @@ $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
 $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : NULL;
 
 // Set userId if admin user is viewing his own profile
-//   and the userId is NULL
+// and the userId is NULL
 if(
     $isAdmin
     && $profileUserId === $currentUser->ID
@@ -21,14 +21,18 @@ if(
     $userId = $profileUserId;
 }
 
-if ($profile)
+if ($dbProfile)
 {
-    echo '<h2>' . __('Yoti User Profile') . '</h2>';
-    echo '<table class="form-table">';
+    $profileFields = YotiHelper::$profileFields;
+    $profileFields[YotiHelper::AGE_VERIFICATION_ATTR] = 'Age Verified';
 
-    foreach (YotiHelper::$profileFields as $param => $label)
+    $profileHTML = '<h2>' . __('Yoti User Profile') . '</h2>';
+    $profileHTML .= '<table class="form-table">';
+
+    foreach ($profileFields as $param => $label)
     {
-        $value = $profile->getProfileAttribute($param);
+        $value = isset($dbProfile[$param]) ? $dbProfile[$param] : '' ;
+
         if ($param === ActivityDetails::ATTR_SELFIE)
         {
             $selfieFullPath = YotiHelper::uploadDir() . "/{$dbProfile['selfie_filename']}";
@@ -42,14 +46,17 @@ if ($profile)
                 $value = '';
             }
         }
-        echo '<tr><th><label>' . esc_html($label) . '</label></th>';
-        echo '<td>' . ($value ? $value : '<i>(empty)</i>') . '</td></tr>';
+
+        $profileHTML .= '<tr><th><label>' . esc_html($label) . '</label></th>';
+        $profileHTML .= '<td>' . ($value ? $value : '<i>(empty)</i>') . '</td></tr>';
     }
 
     if (!$userId || $currentUser->ID === $userId || !$isAdmin)
     {
-        echo '<tr><th></th>';
-        echo '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
+        $profileHTML .= '<tr><th></th>';
+        $profileHTML .= '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
     }
-    echo '</table>';
+    $profileHTML .= '</table>';
+
+    echo $profileHTML;
 }

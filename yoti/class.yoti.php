@@ -48,22 +48,25 @@ class Yoti
 
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
-            $redirect = (!empty($_GET['redirect'])) ? $_GET['redirect'] : home_url();
+            $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
             switch ($action)
             {
                 case 'link':
-                    if ($yotiHelper->link())
+                    if (!$yotiHelper->link())
                     {
-                        wp_safe_redirect($redirect);
+                        $redirect = home_url();
                     }
+                    wp_safe_redirect($redirect);
+                    exit;
                     break;
 
                 case 'unlink':
-                    if ($yotiHelper->unlink())
+                    if (!$yotiHelper->unlink())
                     {
-                        // Redirect
-                        wp_safe_redirect($redirect);
+                        $redirect = home_url();
                     }
+                    wp_safe_redirect($redirect);
+                    exit;
                     break;
 
                 case 'bin-file':
@@ -159,19 +162,12 @@ class Yoti
      */
     public static function show_user_profile($user)
     {
-        $yotiId = get_user_meta($user->ID, 'yoti_user.identifier');
         $dbProfile = YotiHelper::getUserProfile($user->ID);
         $profileUserId = $user->ID;
 
-        $profile = NULL;
-        if ($yotiId && $dbProfile)
-        {
-            $profile = new ActivityDetails($dbProfile, $yotiId);
-        }
-
         // Add profile scope
-        $show = function () use ($profile, $dbProfile, $profileUserId) {
-            require_once __DIR__ . '/views/profile.php';
+        $show = function () use ($dbProfile, $profileUserId) {
+            include_once __DIR__ . '/views/profile.php';
         };
         $show();
     }
