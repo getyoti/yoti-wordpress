@@ -35,15 +35,12 @@ if ($dbProfile)
 
         if ($param === ActivityDetails::ATTR_SELFIE)
         {
+            $value = '';
             $selfieFullPath = YotiHelper::uploadDir() . "/{$dbProfile['selfie_filename']}";
             if ($dbProfile['selfie_filename'] && file_exists($selfieFullPath))
             {
                 $selfieUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . ($isAdmin ? "&user_id=$userId" : '');
                 $value = '<img src="' . $selfieUrl . '" width="100" />';
-            }
-            else
-            {
-                $value = '';
             }
         }
 
@@ -56,6 +53,7 @@ if ($dbProfile)
         $profileHTML .= '<tr><th></th>';
         $profileHTML .= '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
     }
+
     $profileHTML .= '</table>';
 
     echo $profileHTML;

@@ -246,8 +246,7 @@ class YotiHelper
     public function passedAgeVerification(ActivityDetails $activityDetails)
     {
         $ageVerified = $activityDetails->isAgeVerified();
-        $passedVerification = $this->config['yoti_age_verification'] && (is_bool($ageVerified) && $ageVerified);
-        if (!$passedVerification)
+        if ($this->config['yoti_age_verification'] && is_bool($ageVerified) && !$ageVerified)
         {
             $verifiedAge = $activityDetails->getVerifiedAge();
             self::setFlash("Could not log you in as you haven't passed the age verification ({$verifiedAge})", 'error');

@@ -5,8 +5,6 @@ require_once __DIR__ . '/YotiAdmin.php';
 require_once __DIR__ . '/YotiButton.php';
 require_once __DIR__ . '/YotiWidget.php';
 
-use Yoti\ActivityDetails;
-
 /**
  * Class Yoti used in the plugin main file yoti.php
  */
@@ -45,7 +43,6 @@ class Yoti
         if (!empty($_GET['yoti-select']))
         {
             $yotiHelper = new YotiHelper();
-
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
             $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
