@@ -526,8 +526,6 @@ class YotiHelper
             $meta['selfie_filename'] = $selfieFilename;
         }
 
-        $this->formatDateOfBirth($meta);
-
         // Extract age verification values if the option is set in the dashboard
         // and in the Yoti's config in WP admin
         $meta[self::AGE_VERIFICATION_ATTR] = 'N/A';
@@ -538,6 +536,8 @@ class YotiHelper
             $verifiedAge = $activityDetails->getVerifiedAge();
             $meta[self::AGE_VERIFICATION_ATTR] = "({$verifiedAge}) : $ageVerified";
         }
+
+        $this->formatDateOfBirth($meta);
 
         update_user_meta($userId, 'yoti_user.profile', $meta);
         update_user_meta($userId, 'yoti_user.identifier', $activityDetails->getUserId());
