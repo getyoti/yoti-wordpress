@@ -22,19 +22,23 @@ class YotiHelper
      */
     const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://sdk.yoti.com/clients/browser.2.0.1.js';
 
+    const AGE_VERIFICATION_ATTR = 'age_verified';
+
     /**
      * @var array
      */
     public static $profileFields = [
         ActivityDetails::ATTR_SELFIE => 'Selfie',
-        ActivityDetails::ATTR_PHONE_NUMBER => 'Phone number',
-        ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date of birth',
-        ActivityDetails::ATTR_GIVEN_NAMES => 'Given names',
-        ActivityDetails::ATTR_FAMILY_NAME => 'Family name',
-        ActivityDetails::ATTR_NATIONALITY => 'Nationality',
-        ActivityDetails::ATTR_GENDER => 'Gender',
+        ActivityDetails::ATTR_FULL_NAME => 'Full Name',
+        ActivityDetails::ATTR_GIVEN_NAMES => 'Given Names',
+        ActivityDetails::ATTR_FAMILY_NAME => 'Family Name',
+        ActivityDetails::ATTR_PHONE_NUMBER => 'Mobile Number',
         ActivityDetails::ATTR_EMAIL_ADDRESS => 'Email Address',
+        ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+        self::AGE_VERIFICATION_ATTR => 'Age Verified',
         ActivityDetails::ATTR_POSTAL_ADDRESS => 'Postal Address',
+        ActivityDetails::ATTR_GENDER => 'Gender',
+        ActivityDetails::ATTR_NATIONALITY => 'Nationality',
     ];
 
     /**
@@ -42,15 +46,11 @@ class YotiHelper
      */
     const SDK_IDENTIFIER = 'WordPress';
 
+    private $config;
 
-    /**
-     * Running mock requests instead of going to yoti
-     *
-     * @return bool
-     */
-    public static function mockRequests()
+    public function __construct()
     {
-        return defined('YOTI_MOCK_REQUEST') && YOTI_MOCK_REQUEST;
+        $this->config = self::getConfig();
     }
 
     /**
@@ -66,7 +66,6 @@ class YotiHelper
             $currentUser = wp_get_current_user();
         }
 
-        $config = self::getConfig();
         $token = (!empty($_GET['token'])) ? $_GET['token'] : NULL;
 
         // If no token then ignore
@@ -77,16 +76,15 @@ class YotiHelper
             return FALSE;
         }
 
-        // Init yoti client and attempt to request user details
+        // Init Yoti client and attempt to request user details
         try
         {
             $yotiClient = new YotiClient(
-                $config['yoti_sdk_id'],
-                $config['yoti_pem']['contents'],
+                $this->config['yoti_sdk_id'],
+                $this->config['yoti_pem']['contents'],
                 YotiClient::DEFAULT_CONNECT_API,
                 self::SDK_IDENTIFIER
             );
-            $yotiClient->setMockRequests(self::mockRequests());
             $activityDetails = $yotiClient->getActivityDetails($token);
         }
         catch (Exception $e)
@@ -97,10 +95,12 @@ class YotiHelper
         }
 
         // If unsuccessful then bail
-        if ($yotiClient->getOutcome() !== YotiClient::OUTCOME_SUCCESS)
-        {
-            self::setFlash('Yoti failed to connect to your account.', 'error');
+        if (!$this->yotiApiCallIsSuccessfull($yotiClient->getOutcome())) {
+            return FALSE;
+        }
 
+        if(!$this->passedAgeVerification($activityDetails))
+        {
             return FALSE;
         }
 
@@ -122,13 +122,13 @@ class YotiHelper
             {
                 $errMsg = NULL;
                 // Attempt to connect by email
-                $wpYotiUid = $this->shouldLoginByEmail($activityDetails, $config['yoti_user_email']);
+                $wpYotiUid = $this->shouldLoginByEmail($activityDetails, $this->config['yoti_user_email']);
 
                 // If config only existing enabled then check if user exists, if not then redirect
                 // to login page
                 if (!$wpYotiUid)
                 {
-                    if (empty($config['yoti_only_existing']))
+                    if (empty($this->config['yoti_only_existing']))
                     {
                         try
                         {
@@ -171,7 +171,6 @@ class YotiHelper
             elseif (!$wpYotiUid)
             {
                 $this->createYotiUser($currentUser->ID, $activityDetails);
-                self::setFlash('Your Yoti account has been successfully linked.');
             }
         }
 
@@ -189,7 +188,7 @@ class YotiHelper
         if (is_user_logged_in())
         {
             $this->deleteYotiUser($currentUser->ID);
-            self::setFlash('Your Yoti profile is successfully unlinked from your account.');
+            self::setFlash('Your Yoti profile was successfully unlinked from your account.');
 
             return TRUE;
         }
@@ -236,6 +235,43 @@ class YotiHelper
         header('Content-Length: ' . filesize($file));
         readfile($file);
     }
+
+    /**
+     * Check if age verification applies and is valid.
+     *
+     * @param ActivityDetails $activityDetails
+     *
+     * @return bool
+     */
+    public function passedAgeVerification(ActivityDetails $activityDetails)
+    {
+        $ageVerified = $activityDetails->isAgeVerified();
+        if ($this->config['yoti_age_verification'] && is_bool($ageVerified) && !$ageVerified)
+        {
+            $verifiedAge = $activityDetails->getVerifiedAge();
+            self::setFlash("Could not log you in as you haven't passed the age verification ({$verifiedAge})", 'error');
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    /**
+     * Check if call to Yoti API has been successful.
+     *
+     * @param string $outcome
+     *
+     * @return bool
+     */
+    protected function yotiApiCallIsSuccessfull($outcome)
+    {
+        if ($outcome !== YotiClient::OUTCOME_SUCCESS)
+        {
+            self::setFlash('Yoti could not successfully connect to your account.', 'error');
+            return FALSE;
+        }
+        return TRUE;
+    }
+
 
     /**
      * Save Yoti user data in the session.
@@ -287,9 +323,8 @@ class YotiHelper
         if (!empty($_SESSION['yoti-connect-flash']))
         {
             $message = $_SESSION['yoti-connect-flash'];
-            $_SESSION['yoti-connect-flash'] = NULL;
+            self::clearFlash();
         }
-
         return $message;
     }
 
@@ -491,7 +526,18 @@ class YotiHelper
             $meta['selfie_filename'] = $selfieFilename;
         }
 
-        $meta = $this->formatDateOfBirth($meta);
+        // Extract age verification values if the option is set in the dashboard
+        // and in the Yoti's config in WP admin
+        $meta[self::AGE_VERIFICATION_ATTR] = 'N/A';
+        $ageVerified = $activityDetails->isAgeVerified();
+        if (is_bool($ageVerified) && $this->config['yoti_age_verification'])
+        {
+            $ageVerified = $ageVerified ? 'yes' : 'no';
+            $verifiedAge = $activityDetails->getVerifiedAge();
+            $meta[self::AGE_VERIFICATION_ATTR] = "({$verifiedAge}) : $ageVerified";
+        }
+
+        $this->formatDateOfBirth($meta);
 
         update_user_meta($userId, 'yoti_user.profile', $meta);
         update_user_meta($userId, 'yoti_user.identifier', $activityDetails->getUserId());
@@ -500,17 +546,14 @@ class YotiHelper
     /**
      * Format Date Of birth to d-m-Y.
      *
-     * @param array $profileArr
-     * @return array
+     * @param $profileArr
      */
-    private function formatDateOfBirth(array $profileArr)
+    private function formatDateOfBirth(&$profileArr)
     {
         if (isset($profileArr[ActivityDetails::ATTR_DATE_OF_BIRTH])) {
             $dateOfBirth = $profileArr[ActivityDetails::ATTR_DATE_OF_BIRTH];
-            // Format date of birth to d-m-Y
             $profileArr[ActivityDetails::ATTR_DATE_OF_BIRTH] = date('d-m-Y', strtotime($dateOfBirth));
         }
-        return $profileArr;
     }
 
     /**
@@ -579,12 +622,6 @@ class YotiHelper
      */
     public static function getConfig()
     {
-        if (self::mockRequests())
-        {
-            $config = require __DIR__ . '/sdk/sample-data/config.php';
-            return $config;
-        }
-
         return maybe_unserialize(get_option(YotiHelper::YOTI_CONFIG_OPTION_NAME));
     }
 

@@ -29,14 +29,9 @@ class YotiButton
      */
     public static function render($redirect = NULL, $fromWidget = FALSE)
     {
-        $testToken = NULL;
-        if (YotiHelper::mockRequests()) {
-            $testToken = file_get_contents(__DIR__ . '/sdk/sample-data/connect-token.txt');
-        }
-
         // No config? no button
         $config = YotiHelper::getConfig();
-        if (!$config && !$testToken) {
+        if (!$config) {
             return NULL;
         }
 
