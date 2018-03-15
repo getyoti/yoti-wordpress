@@ -29,15 +29,16 @@ class YotiHelper
      */
     public static $profileFields = [
         ActivityDetails::ATTR_SELFIE => 'Selfie',
-        ActivityDetails::ATTR_PHONE_NUMBER => 'Phone Number',
-        ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+        ActivityDetails::ATTR_FULL_NAME => 'Full Name',
         ActivityDetails::ATTR_GIVEN_NAMES => 'Given Names',
         ActivityDetails::ATTR_FAMILY_NAME => 'Family Name',
-        ActivityDetails::ATTR_FULL_NAME => 'Full Name',
-        ActivityDetails::ATTR_NATIONALITY => 'Nationality',
-        ActivityDetails::ATTR_GENDER => 'Gender',
+        ActivityDetails::ATTR_PHONE_NUMBER => 'Mobile Number',
         ActivityDetails::ATTR_EMAIL_ADDRESS => 'Email Address',
+        ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+        self::AGE_VERIFICATION_ATTR => 'Age Verified',
         ActivityDetails::ATTR_POSTAL_ADDRESS => 'Postal Address',
+        ActivityDetails::ATTR_GENDER => 'Gender',
+        ActivityDetails::ATTR_NATIONALITY => 'Nationality',
     ];
 
     /**
@@ -170,7 +171,6 @@ class YotiHelper
             elseif (!$wpYotiUid)
             {
                 $this->createYotiUser($currentUser->ID, $activityDetails);
-                self::setFlash('Your Yoti account has been successfully linked.');
             }
         }
 
@@ -188,7 +188,7 @@ class YotiHelper
         if (is_user_logged_in())
         {
             $this->deleteYotiUser($currentUser->ID);
-            self::setFlash('Your Yoti profile is successfully unlinked from your account.');
+            self::setFlash('Your Yoti profile was successfully unlinked from your account.');
 
             return TRUE;
         }

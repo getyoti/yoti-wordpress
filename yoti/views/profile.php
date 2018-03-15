@@ -24,8 +24,6 @@ if(
 if ($dbProfile)
 {
     $profileFields = YotiHelper::$profileFields;
-    $profileFields[YotiHelper::AGE_VERIFICATION_ATTR] = 'Age Verified';
-
     $profileHTML = '<h2>' . __('Yoti User Profile') . '</h2>';
     $profileHTML .= '<table class="form-table">';
 
