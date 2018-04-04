@@ -4,6 +4,7 @@ Contributors: Moussa Sidibe, yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
 Tested up to: 4.9.1
+Requires PHP: 5.6
 Stable tag: 1.1.7
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
