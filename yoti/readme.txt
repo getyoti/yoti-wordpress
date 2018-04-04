@@ -18,7 +18,7 @@ This plugin also allows functionality to link your current followers to their Yo
 
 Here is a quick video on how to install the plugin in less than 5 minutes:
 
-[Please click here](https://www.youtube.com/watch?v=kzltLNws1cQ)
+https://www.youtube.com/watch?v=kzltLNws1cQ
 
 == Features ==
 
@@ -119,11 +119,8 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Screenshots ==
 
 1. Settings to set up and configure the plugin
-
 2. Yoti widget added by the plugin
-
 3. Example of logging in with Yoti by scanning the QR code
-
 4. Yoti profile page with all the user attributes
 
 == Changelog ==
