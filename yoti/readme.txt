@@ -117,10 +117,10 @@ For further support please feel free to email us at: sdksupport@yoti.com
 For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs)
 
 == Screenshots ==
-1. Attributes you can add in Yoti Dashboard
-2. Settings to add into WordPress from Yoti Dashboard
-3. Example of logging in with Yoti
-4. Add Yoti button for faster login experience
+1. Settings to set up and configure the plugin
+2. Yoti widget added by the plugin
+3. Example of logging in with Yoti by scanning the QR code
+4. Yoti profile page with all the user attributes
 
 == Changelog ==
 
