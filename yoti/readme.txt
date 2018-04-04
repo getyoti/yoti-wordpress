@@ -5,7 +5,7 @@ Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA,
 Requires at least: 3.0.1
 Tested up to: 4.9.1
 Requires PHP: 5.6
-Stable tag: 1.1.7
+Stable tag: 1.1.8
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -127,6 +127,13 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Changelog ==
 
 Here you can find the changes for each version:
+
+1.1.8
+
+Release Date - 4 April 2018
+
+* Update documentation for Yoti's plugin page on WordPress
+* Update screenshots for Yoti's plugin page on WordPress
 
 1.1.7
 
