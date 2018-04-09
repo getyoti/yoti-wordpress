@@ -2,10 +2,6 @@
 
 This repository contains the tools you need to quickly integrate your WordPress backend with Yoti so that your users can share their identity details with your application in a secure and trusted way. The plugin uses the Yoti PHP SDK. If you're interested in finding out more about the SDK, click [here](https://github.com/getyoti/yoti-php-sdk).
 
-## Requirements
-
-This plugin works with the WordPress Business Plan package.
-
 ## Installing the plugin
 
 You can install the Yoti WordPress plugin in two ways:
