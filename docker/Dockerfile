@@ -2,6 +2,10 @@ FROM php:7.1-apache
 
 ARG BRANCH
 
+ADD default.conf /etc/apache2/sites-available/000-default.conf
+COPY ./keys/server.crt /etc/apache2/ssl/server.crt
+COPY ./keys/server.key /etc/apache2/ssl/server.key
+
 # install the PHP extensions we need
 RUN set -ex; \
 	\
@@ -29,7 +33,7 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN a2enmod rewrite expires
+RUN a2enmod rewrite expires ssl
 
 VOLUME /var/www/html
 
@@ -66,10 +70,12 @@ RUN set -ex; \
         unzip ${PLUGIN_PACKAGE_NAME}; \
         rm -f ${PLUGIN_PACKAGE_NAME}
 
-
 COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
+
+EXPOSE 80
+EXPOSE 443
