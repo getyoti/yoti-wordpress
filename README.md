@@ -45,9 +45,9 @@ Please do not open the .pem file as this might corrupt the key and you will need
 
 ## Settings for new registrations
 
-`Only allow existing Wordpress users to link their Yoti account` - This setting allows a new user to Register and Log in by using their Yoti. A new user who registeres this way will be set to the `Subscriber` role in WordPress. If enabled, when a new user tries to scan the Yoti QR code, they will be redirected back to the login page with an error message displayed.
+`Only allow existing WordPress users to link their Yoti account` - This setting allows a new user to Register and Log in by using their Yoti. A new user who registeres this way will be set to the `Subscriber` role in WordPress. If enabled, when a new user tries to scan the Yoti QR code, they will be redirected back to the login page with an error message displayed.
 
-`Attempt to link Yoti email address with Wordpress account for first time users` - This setting enables linking a Yoti account to a WordPress user if the email from both platforms is identical.
+`Attempt to link Yoti email address with WordPress account for first time users` - This setting enables linking a Yoti account to a WordPress user if the email from both platforms is identical.
 
 ## Docker
 
@@ -58,22 +58,22 @@ We provide a WordPress Docker container that includes the Yoti plugin.
 Clone this repository and go into the folder:
 
 ```shell
-cd yoti-wordpress
+$ cd yoti-wordpress
 ```
 
 Rebuild the images if you have modified the `docker-compose.yml` file:
 
 ```shell
-docker-compose build --no-cache
+$ docker-compose build --no-cache
 ```
 
 Build the containers:
 
 ```shell
-docker-compose up -d
+$ docker-compose up -d
 ```
 
-After the command has finished running, go to [http://localhost:7000](http://localhost:7000) and follow the instructions.
+After the command has finished running, go to [https://localhost:7001](https://localhost:7001) and follow the instructions.
 
 The Yoti plugin will be installed alongside WordPress. Activate it and follow our [plugin setup process](#plugin-setup).
 
@@ -82,8 +82,8 @@ The Yoti plugin will be installed alongside WordPress. Activate it and follow ou
 Run the following commands to remove docker containers:
 
 ```shell
-docker-compose stop
-docker-compose rm
+$ docker-compose stop
+$ docker-compose rm
 ```
 
 ## Support

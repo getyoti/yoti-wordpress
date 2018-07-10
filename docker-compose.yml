@@ -5,7 +5,6 @@ services:
      image: mysql:latest
      ports:
        - "3306:3306"
-     restart: always
      environment:
        MYSQL_ROOT_PASSWORD: root
        MYSQL_DATABASE: wordpress
@@ -22,7 +21,7 @@ services:
          BRANCH: "master"
      ports:
        - "7000:80"
-     restart: always
+       - "7001:443"
      environment:
        WORDPRESS_DB_HOST: wordpress-db:3306
        WORDPRESS_DB_USER: wordpress
