@@ -8,9 +8,10 @@ You can install the Yoti WordPress plugin in two ways:
 
 ### By importing the plugin into your project
 
-1. Log on to your Wordpress Admin Dashboard e.g. `https://www.wordpressurl.org.uk/wp-admin`
-2. Navigate to `Plugins > Add New`
-3. Search for Yoti, install and activate the plugin
+1. Download the Yoti plugin from [wordpress.org](https://wordpress.org/plugins/yoti/)
+2. Log on to your Wordpress Admin Dashboard e.g. `https://www.wordpressurl.org.uk/wp-admin`
+3. Navigate to `Plugins > Add New`
+4. Search for Yoti, install and activate the plugin
 
 ### By using this repository (For MacOS and Linux users)
 
@@ -51,13 +52,14 @@ Please do not open the .pem file as this might corrupt the key and you will need
 
 ## Docker
 
-We provide a WordPress Docker container that includes the Yoti plugin.
+We provide a WordPress [Docker](https://docs.docker.com/) container that includes the Yoti plugin.
 
 ### Setup
 
-Clone this repository and go into the folder:
+Clone this repository and go into the folder `yoti-wordpress`:
 
 ```shell
+$ git clone https://github.com/getyoti/yoti-wordpress.git
 $ cd yoti-wordpress
 ```
 

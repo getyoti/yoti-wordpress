@@ -15,7 +15,7 @@ $dashboardLink = '<a href="' . \Yoti\YotiClient::DASHBOARD_URL . '" target="_bla
     <h1>Yoti Settings</h1>
     <p>You need to first create a Yoti App at <?php echo $dashboardLink ?>.</p>
     <p>Note: On the Yoti Dashboard the callback URL should be set to: <code><?php echo site_url('wp-login.php?yoti-select=1&action=link', 'https'); ?></code></p>
-    <p>Warning: Yoti user ID is only valid within the scope of the application. Changing your Yoti application will result to a different Yoti user ID.</p>
+    <p>Warning: User IDs provided by Yoti are unique to each Yoti Application. Using a different Yoti Application means you will receive a different Yoti User ID for all of your users.</p>
     <?php
     if ($updateMessage) {
         echo '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible">' .
