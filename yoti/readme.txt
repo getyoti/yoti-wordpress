@@ -23,8 +23,8 @@ https://www.youtube.com/watch?v=kzltLNws1cQ
 
 == Why does your website need Yoti ==
 
-* Stops keyloggers. By not having to type usernames and passwords.
-* Stops phishing attacks. Safer website access without usernames and passwords.
+* Stops keyloggers, by not having to type usernames and passwords.
+* Stops phishing attacks, safer website access without usernames and passwords.
 * Privacy by design. We use advanced hybrid 256-bit encryption to secure your personal information.
 * No Passwords. Your users login securely by scanning a QR code.
 * KYC checks. Verify the identities of your website users.
@@ -42,17 +42,17 @@ Download the free Yoti app [IOS](https://itunes.apple.com/us/app/yoti/id98398080
 
 = Step 2: Setting up your Yoti Application =
 
-Visit the Yoti Dashboard [here](https://www.yoti.com/dashboard/login) to create a new application for your organisation/business.
+Visit the Yoti Dashboard [here](https://www.yoti.com/dashboard/login-organisations) to create a new application for your organisation/business.
 
 Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you desire and will not affect the plugin’s functionality.
 
 The main page - Edit the application and set your website URL in the 'Application domain' section, e.g https:yourwebsite.com
 
-The Scenarios tab - Edit the default scenario and fill in the following sections:
+The Scenarios tab -  Scenarios are different instances where you request users for information using Yoti. e.g verify your users' age online or in person or quickly sign in users to your website without passwords. This plugin only support single scenario.
 
-1. User Information section – Specify any attributes you’d like users to share. You must select at least one. If you plan to allow new user registrations, we recommended choosing Given Name(s), Family Name and Email Address at a minimum.
-
-2. Callback URL section – Here is where you add the callback URL endpoint to the application domain e.g 'https:yourwebsite.com/wp-admin/link'. The URL endpoint can be found by going to your Yoti settings page which is located in your WordPress admin dashboard.
+* Specify a name for your scenario.
+* Specify what information you want to request with this scenario.
+* And finally, provide a callback URL so we know where to send your users after they have used Yoti. This URL must be a subdomain of your applications' domain.
 
 The Keys tab – Here is where your keys are generated which will be inputted into the plugin settings. You will need to download your pem file and store it somewhere safe as it will be used as part of the plugin set up.
 

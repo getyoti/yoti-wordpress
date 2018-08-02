@@ -23,13 +23,20 @@ You can install the Yoti WordPress plugin in two ways:
 
 ## Setting up your Yoti Application
 
-After you registered your [Yoti](https://www.yoti.com/), access the [dashboard](https://www.yoti.com/dashboard/login) to create a new application.
+Visit the Yoti Dashboard [here](https://www.yoti.com/dashboard/login-organisations) to create a new application for your organisation/business.
 
-Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you like and will not affect the plugin's functionality.
+Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you desire and will not affect the plugin’s functionality.
 
-The `Data` tab - Specify any attributes you'd like users to share. You must select at least one. If you plan to allow new user registrations, we recommended choosing `Given Name(s)`, `Family Name` and `Email Address` at a minimum.
+The main page - Edit the application and set your website URL in the 'Application domain' section, e.g https:yourwebsite.com
 
-The `Integration` tab - Here is where you specify the callback URL. This can be found on your Yoti settings page in your WordPress admin dashboard. **NOTE**: If you get redirected to your WordPress frontpage instead of the Admin area, simply add `/wp-admin` to the URL.
+The Scenarios tab -  Scenarios are different instances where you request users for information using Yoti. e.g verify your users' age online or in person or quickly sign in users to your website without passwords. This plugin only support single scenario.
+
+* Specify a name for your scenario.
+* Specify what information you want to request with this scenario.
+* And finally, provide a callback URL so we know where to send your users after they have used Yoti. This URL must be a subdomain of your applications' domain.
+
+The Keys tab – Here is where your keys are generated which will be inputted into the plugin settings. You will need to download your pem file and store it somewhere safe as it will be used as part of the plugin set up.
+
 
 ## Plugin Setup
 
