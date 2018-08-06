@@ -5,7 +5,7 @@ Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA,
 Requires at least: 3.0.1
 Tested up to: 4.9.1
 Requires PHP: 5.6
-Stable tag: 1.1.8
+Stable tag: 1.1.9
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -13,101 +13,48 @@ Yoti is a digital identity platform that simply allows a user to securely log in
 
 == Description ==
 
-Yoti is a digital identity platform that allows users to log in to your WordPress site—simply, securely and password free! Using a combination of our free identity app and our web based dashboard, we verify customer details against government issued ID documents before securely sending their details to you. Click here to learn [more.](https://www.yoti.com)
-
-This plugin also allows functionality to link your current followers to their Yoti accounts making registration and blogging quicker with a fancy button!
+Yoti is a digital identity app that lets people log in to websites without a password and prove their identity online.
+Just click on the login with Yoti button, scan secure QR code with the Yoti app and that’s it.
+Get the Yoti plugin and let people log in to your WordPress websites without entering a password. Click here to learn [more.](https://www.yoti.com)
 
 Here is a quick video on how to install the plugin in less than 5 minutes:
 
 https://www.youtube.com/watch?v=kzltLNws1cQ
 
-== Features ==
+== Why does your website need Yoti ==
 
-* Faster logon using your Yoti app
-* KYC and verification of your users
-* Anonymous verification
-* Automatic login to create blogs with ease
-* No need for passwords
-* Remember me functionality
-* The ability for user to link and unlink WordPress account to Yoti account
+* Stops keyloggers, by not having to type usernames and passwords.
+* Stops phishing attacks, safer website access without usernames and passwords.
+* Privacy by design. We use advanced hybrid 256-bit encryption to secure your personal information.
+* No Passwords. Your users login securely by scanning a QR code.
+* KYC checks. Verify the identities of your website users.
+* Age verification. Verify the age of users of your website and control access to age-restricted content.
+
+Download the free Yoti app [Android](https://play.google.com/store/apps/details?id=com.yoti.mobile.android.live)
+Download the free Yoti app [IOS](https://itunes.apple.com/us/app/yoti/id983980808?ls=1&mt=8)
 
 == Installation ==
 
-We have a few simple steps we need you to fill before you get started:
-
-= Requirements =
-
-* This plugin works with the WordPress Business Plan package.
-* You must also have downloaded the Yoti app with an ID document attached.
-
 = Step1: Installing the plugin =
 
-Import the plugin into your WordPress dashboard:
-
-1. Log on to your Wordpress Admin Dashboard: e.g. https://www.wordpress-url.org.uk/wp-admin
-2. Navigate on the left hand side to Plugins > Add New
-3. Search for Yoti and install it
-4. Activate the plugin on the same screen
+* From the “Plugins” menu search for “Yoti”,
+* click “Install Now” and then “Activate”.
 
 = Step 2: Setting up your Yoti Application =
 
-If you are a business, please create a Yoti organisation by visiting [here.](https://www.yoti.com/dashboard/login-organisations)
+Visit the Yoti Dashboard [here](https://www.yoti.com/dashboard/login-organisations) to create a new application for your organisation/business.
 
-For information on how to create an organisation please visit our [developer site.](https://www.yoti.com/developers/documentation/#introduction)
+Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you desire and will not affect the plugin’s functionality.
 
-Once this is completed, or for personal use please access the [dashboard](https://www.yoti.com/dashboard/login) to create a new application. Note: if you have completed your organisation steps above you will need to ensure you are within your organisation dashboard by:
+The main page - Edit the application and set your website URL in the 'Application domain' section, e.g https:yourwebsite.com
 
-* Clicking your profile photo on the top right
-* Select organisation
+The Scenarios tab -  Scenarios are different instances where you request users for information using Yoti. e.g verify your users' age online or in person or quickly sign in users to your website without passwords. This plugin only support single scenario.
 
-This will then lead you to create a new application.
+* Specify a name for your scenario.
+* Specify what information you want to request with this scenario.
+* And finally, provide a callback URL so we know where to send your users after they have used Yoti. This URL must be a subdomain of your applications' domain.
 
-Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you desire and will not affect the plugin's functionality.
-
-The Data tab - Specify any attributes you'd like users to share. You must select at least one. If you plan to allow new user registrations, we recommended choosing Given Name(s), Family Name and Email Address at a minimum.
-
-The Integration tab - Here is where you specify the callback URL. The URL can be found by going to your Yoti settings page which is located in your WordPress admin dashboard.
-
-NOTE: If you get redirected to your WordPress frontpage instead of the Admin area, simply add /wp-admin to the URL.
-
-The Key tab - Here is where your keys are generated which will be inputted into the plugin settings. You will need to download your pem file and store it somewhere safe as it will be used as part of the plugin set up.
-
-= Step 3: Plugin Setup =
-
-To set things up, navigate on WordPress to Settings > Yoti. You will be asked to add the following information:
-
-* Yoti App ID is the unique identifier of your specific application.
-* Yoti Scenario ID is used to render the inline QR code.
-* Yoti SDK ID is the SDK identifier generated by Yoti Dashboard in the Key tab when you create your app. Note this is not your Application Identifier, which is needed by your client-side code.
-* Company Name will replace WordPress wording in the warning message displayed on the custom login form.
-* Yoti PEM File is the application pem file. It can be downloaded only once from the Keys tab in your Yoti Dashboard. Please do not include the Zip File, just the pem file is adequate.
-* Change your call back URL on Yoti Dashboard: Log in to your dashboard and change your call back URL to the one provided on your Yoti Settings page. This is located within your application, on the Integration tab
-
-= Step 4: Adding the widget =
-
-Now your Yoti plugin is all set up you will need to add the button to your WordPress page.
-
-To do this navigate to Appearance -> Widgets.
-
-Please place the Yoti Widget where you deem appropriate.
-
-= Step 5: Testing =
-
-Log out of your WordPress account and go back to your site.
-
-Test the Yoti button.
-
-= Extras: =
-
-The Yoti plugin has been developed to allow existing users to link their account with the below use cases:
-
-1) Only allow existing WordPress users to link their Yoti account - This setting will prevent a new user to register and/or login using Yoti if they don't already have an account on your WordPress website. If enabled, when a new user tries to scan the Yoti QR code, they will be redirected to the login/register page with an error message displayed.
-
-2) Attempt to link Yoti email address with Wordpress account for first time users - This setting enables linking a Yoti account to a WordPress user if the email from both platforms is identical.
-
-3) Prevent users who have not passed age verification to access your site - This setting will not allow someone who does not pass the age verification condition set in the Yoti Dashboard (e.g. over 18) to register or link their account with Yoti.
-
-This is found in Yoti plugin settings.
+The Keys tab – Here is where your keys are generated which will be inputted into the plugin settings. You will need to download your pem file and store it somewhere safe as it will be used as part of the plugin set up.
 
 == Frequently Asked Questions ==
 
@@ -127,6 +74,13 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Changelog ==
 
 Here you can find the changes for each version:
+
+1.1.9
+
+Release Date - 1 August 2018
+
+* Update the Details and Installation section on the plugin page to reflect the changes from Yoti dashboard
+* Update the banner on the plugin page
 
 1.1.8
 
