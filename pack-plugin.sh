@@ -1,10 +1,20 @@
 #!/bin/bash
 NAME="yoti-wordpress-edge.zip"
+
+TAG=$1
 SDK_RELATIVE_PATH="sdk"
-curl https://github.com/getyoti/yoti-php-sdk/archive/master.zip -O -L
-unzip master.zip -d sdk
-mv sdk/yoti-php-sdk-master/src/* sdk
-rm -rf sdk/yoti-php-sdk-master
+DEFAULT_TAG='1.2.1'
+
+if [ "$TAG" = "" ]; then
+    TAG=$DEFAULT_TAG
+fi
+
+echo pulling tag $TAG.zip
+
+curl https://github.com/getyoti/yoti-php-sdk/archive/$TAG.zip -O -L
+unzip $TAG.zip -d sdk
+mv sdk/yoti-php-sdk-$TAG/src/* sdk
+rm -rf sdk/yoti-php-sdk-$TAG
 
 if [ ! -d "./yoti" ]; then
     echo "ERROR: Must be in directory containing ./yoti folder"
