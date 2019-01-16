@@ -57,6 +57,11 @@ Please do not open the .pem file as this might corrupt the key and you will need
 
 `Attempt to link Yoti email address with WordPress account for first time users` - This setting enables linking a Yoti account to a WordPress user if the email from both platforms is identical.
 
+## How to retrieve user data provided by Yoti
+Upon registration using Yoti, user data will be stored as serialized data into `wp_usermeta` table: the `meta_value` field corresponding to the `meta_key` value `yoti_user.profile` and WordPress `user_id`.
+
+You can write a query to retrieve all data stored in `wp_usermeta.meta_value` where `wp_usermeta.meta_key` value is `yoti_user.profile`, which will return a list of serialized data.
+
 ## Docker
 
 We provide a WordPress [Docker](https://docs.docker.com/) container that includes the Yoti plugin.
