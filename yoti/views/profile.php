@@ -1,11 +1,11 @@
 <?php
 /**
- * @var ActivityDetails $profile
+ * @var Profile $profile
  * @var array $dbProfile
  */
 
 // Display these fields
-use Yoti\ActivityDetails;
+use Yoti\Entity\Profile;
 
 $currentUser = wp_get_current_user();
 $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
@@ -21,21 +21,31 @@ if(
     $userId = $profileUserId;
 }
 
-if ($dbProfile)
-{
+if ($dbProfile) {
     $profileFields = YotiHelper::$profileFields;
+
     $profileHTML = '<h2>' . __('Yoti User Profile') . '</h2>';
     $profileHTML .= '<table class="form-table">';
+    $selfieFileName = '';
 
-    foreach ($profileFields as $param => $label)
+    if (isset($dbProfile['selfie_filename'])) {
+        $selfieFileName = $dbProfile['selfie_filename'];
+        $dbProfile = array_merge(
+            [Profile::ATTR_SELFIE => $selfieFileName],
+            $dbProfile
+        );
+        unset($dbProfile['selfie_filename']);
+    }
+
+    foreach ($dbProfile as $attrName => $value)
     {
-        $value = isset($dbProfile[$param]) ? $dbProfile[$param] : '' ;
+        $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
 
-        if ($param === ActivityDetails::ATTR_SELFIE)
-        {
+        if ($attrName === Profile::ATTR_SELFIE) {
             $value = '';
-            $selfieFullPath = YotiHelper::uploadDir() . "/{$dbProfile['selfie_filename']}";
-            if ($dbProfile['selfie_filename'] && file_exists($selfieFullPath))
+
+            $selfieFullPath = YotiHelper::uploadDir() . "/{$selfieFileName}";
+            if (!empty($selfieFileName) && file_exists($selfieFullPath))
             {
                 $selfieUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . ($isAdmin ? "&user_id=$userId" : '');
                 $value = '<img src="' . $selfieUrl . '" width="100" />';
@@ -46,8 +56,7 @@ if ($dbProfile)
         $profileHTML .= '<td>' . ($value ? $value : '<i>(empty)</i>') . '</td></tr>';
     }
 
-    if (!$userId || $currentUser->ID === $userId || !$isAdmin)
-    {
+    if (!$userId || $currentUser->ID === $userId || !$isAdmin) {
         $profileHTML .= '<tr><th></th>';
         $profileHTML .= '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
     }
