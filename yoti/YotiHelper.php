@@ -19,6 +19,8 @@ class YotiHelper
      */
     const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
 
+    const SELFIE_FILENAME = 'selfie_filename';
+
     /**
      * Yoti SDK javascript library.
      */
@@ -95,6 +97,7 @@ class YotiHelper
         }
 
         if (!$this->passedAgeVerification($profile)) {
+            self::setFlash('Could not log you in as you haven\'t passed the age verification', 'error');
             return FALSE;
         }
 
@@ -211,7 +214,7 @@ class YotiHelper
             return;
         }
 
-        $field = ($field === 'selfie') ? 'selfie_filename' : $field;
+        $field = ($field === 'selfie') ? self::SELFIE_FILENAME : $field;
         $dbProfile = self::getUserProfile($user->ID);
         if (!$dbProfile || !array_key_exists($field, $dbProfile))
         {
@@ -504,6 +507,7 @@ class YotiHelper
         }
 
         $meta = [];
+
         foreach (self::$profileFields as $param => $label)
         {
             if ($attrObj = $profile->getProfileAttribute($param)) {
@@ -512,19 +516,23 @@ class YotiHelper
         }
 
         $selfieFilename = NULL;
-        $selfie = $profile->getSelfie()->getValue();
+        $selfie = $profile->getSelfie();
         if ($selfie)
         {
             $selfieFilename = md5("selfie_$wpUserId") . '.png';
-            file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie);
+            file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie->getValue());
             unset($meta[Profile::ATTR_SELFIE]);
-            $meta['selfie_filename'] = $selfieFilename;
+            $meta = array_merge(
+                [self::SELFIE_FILENAME => $selfieFilename],
+                $meta
+            );
         }
 
         // Extract age verification values if the option is set in the dashboard
         // and in the Yoti's config in WP admin
         $ageVerificationsArr = $this->getAgeVerificationsResults($profile);
         foreach($ageVerificationsArr as $ageAttr => $result) {
+            $ageAttr = ucwords($ageAttr, '_');
             $meta[$ageAttr] = $result;
         }
 
