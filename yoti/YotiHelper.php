@@ -241,7 +241,7 @@ class YotiHelper
      */
     public function passedAgeVerification(Profile $profile)
     {
-        $ageVerificationsResults = $this->getAgeVerificationsResults($profile);
+        $ageVerificationsResults = $this->processAgeVerifications($profile);
 
         if (empty($ageVerificationsResults) || !$this->config['yoti_age_verification']) {
             return TRUE;
@@ -257,13 +257,19 @@ class YotiHelper
         return FALSE;
     }
 
-    private function getAgeVerificationsResults(Profile $profile) {
+    /**
+     * @param Profile $profile
+     *
+     * @return array
+     */
+    private function processAgeVerifications(Profile $profile)
+    {
         $ageVerifications = $profile->getAgeVerifications();
-        $ageVerificationsResults = [];
+        $ageVerificationsAttr = [];
         foreach($ageVerifications as $attr => $ageVerification) { /** @var AgeVerification $ageVerification*/
-            $ageVerificationsResults[$attr] = $ageVerification->getResult() ? 'Yes' : 'No';
+            $ageVerificationsAttr[$attr] = $ageVerification->getResult() ? 'Yes' : 'No';
         }
-        return $ageVerificationsResults;
+        return $ageVerificationsAttr;
     }
 
 
@@ -530,7 +536,7 @@ class YotiHelper
 
         // Extract age verification values if the option is set in the dashboard
         // and in the Yoti's config in WP admin
-        $ageVerificationsArr = $this->getAgeVerificationsResults($profile);
+        $ageVerificationsArr = $this->processAgeVerifications($profile);
         foreach($ageVerificationsArr as $ageAttr => $result) {
             $ageAttr = ucwords($ageAttr, '_');
             $meta[$ageAttr] = $result;
