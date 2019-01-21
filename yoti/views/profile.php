@@ -26,27 +26,29 @@ if ($dbProfile) {
 
     $profileHTML = '<h2>' . __('Yoti User Profile') . '</h2>';
     $profileHTML .= '<table class="form-table">';
-    $selfieFileName = '';
 
-    if (isset($dbProfile['selfie_filename'])) {
-        $selfieFileName = $dbProfile['selfie_filename'];
+    // Move selfie attr to the top
+    if (isset($dbProfile[YotiHelper::SELFIE_FILENAME])) {
+        $selfieDataArr = [YotiHelper::SELFIE_FILENAME => $dbProfile[YotiHelper::SELFIE_FILENAME]];
+        unset($dbProfile[YotiHelper::SELFIE_FILENAME]);
         $dbProfile = array_merge(
-            [Profile::ATTR_SELFIE => $selfieFileName],
+            $selfieDataArr,
             $dbProfile
         );
-        unset($dbProfile['selfie_filename']);
     }
 
     foreach ($dbProfile as $attrName => $value)
     {
         $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
 
-        if ($attrName === Profile::ATTR_SELFIE) {
+        // Display selfie as an image
+        if ($attrName === YotiHelper::SELFIE_FILENAME) {
             $value = '';
+            $label = $profileFields[Profile::ATTR_SELFIE];
+            $selfieFileName = $dbProfile[YotiHelper::SELFIE_FILENAME];
 
             $selfieFullPath = YotiHelper::uploadDir() . "/{$selfieFileName}";
-            if (!empty($selfieFileName) && file_exists($selfieFullPath))
-            {
+            if (!empty($selfieFileName) && file_exists($selfieFullPath)) {
                 $selfieUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . ($isAdmin ? "&user_id=$userId" : '');
                 $value = '<img src="' . $selfieUrl . '" width="100" />';
             }
