@@ -241,20 +241,13 @@ class YotiHelper
      */
     public function passedAgeVerification(Profile $profile)
     {
-        $ageVerificationsResults = $this->processAgeVerifications($profile);
+        return !($this->config['yoti_age_verification'] && !$this->oneAgeIsVerified($profile));
+    }
 
-        if (empty($ageVerificationsResults) || !$this->config['yoti_age_verification']) {
-            return TRUE;
-        }
-        if ($this->config['yoti_age_verification']) {
-            foreach($ageVerificationsResults as $attr => $res) { /** @var AgeVerification $ageVerification*/
-                if ($res === 'Yes') {
-                    return TRUE;
-                }
-            }
-        }
-
-        return FALSE;
+    private function oneAgeIsVerified(Profile $profile)
+    {
+        $ageVerificationsArr = self::processAgeVerifications($profile);
+        return empty($ageVerificationsArr) || in_array('Yes', array_values($ageVerificationsArr));
     }
 
     /**
@@ -507,24 +500,26 @@ class YotiHelper
     {
         $profile = $activityDetails->getProfile();
         // Create upload dir
-        if (!is_dir(self::uploadDir()))
-        {
+        if (!is_dir(self::uploadDir())) {
             mkdir(self::uploadDir(), 0777, TRUE);
         }
 
         $meta = [];
+        $attrsArr = array_keys(self::$profileFields);
 
-        foreach (self::$profileFields as $param => $label)
-        {
-            if ($attrObj = $profile->getProfileAttribute($param)) {
-                $meta[$param] = $attrObj->getValue();
+        foreach ($attrsArr as $attrName) {
+            if ($attrObj = $profile->getProfileAttribute($attrName)) {
+                $value = $attrObj->getValue();
+                if (NULL !== $value && $attrName === Profile::ATTR_DATE_OF_BIRTH) {
+                    $value = $value->format('d-m-Y');
+                }
+                $meta[$attrName] = $value;
             }
         }
 
         $selfieFilename = NULL;
         $selfie = $profile->getSelfie();
-        if ($selfie)
-        {
+        if ($selfie) {
             $selfieFilename = md5("selfie_$wpUserId") . '.png';
             file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie->getValue());
             unset($meta[Profile::ATTR_SELFIE]);
@@ -538,27 +533,12 @@ class YotiHelper
         // and in the Yoti's config in WP admin
         $ageVerificationsArr = $this->processAgeVerifications($profile);
         foreach($ageVerificationsArr as $ageAttr => $result) {
-            $ageAttr = ucwords($ageAttr, '_');
+            $ageAttr = str_replace(':', '_', ucwords($ageAttr, '_'));
             $meta[$ageAttr] = $result;
         }
 
-        $this->formatDateOfBirth($meta);
-
         update_user_meta($wpUserId, 'yoti_user.profile', $meta);
         update_user_meta($wpUserId, 'yoti_user.identifier', $activityDetails->getRememberMeId());
-    }
-
-    /**
-     * Format Date Of birth to d-m-Y.
-     *
-     * @param $profileArr
-     */
-    private function formatDateOfBirth(&$profileArr)
-    {
-        if (isset($profileArr[Profile::ATTR_DATE_OF_BIRTH])) {
-            $dateOfBirth = $profileArr[Profile::ATTR_DATE_OF_BIRTH];
-            $profileArr[Profile::ATTR_DATE_OF_BIRTH] = date('d-m-Y', strtotime($dateOfBirth));
-        }
     }
 
     /**
@@ -646,8 +626,7 @@ class YotiHelper
     public static function getLoginUrl()
     {
         $config = self::getConfig();
-        if (empty($config['yoti_app_id']))
-        {
+        if (empty($config['yoti_app_id'])) {
             return NULL;
         }
 
