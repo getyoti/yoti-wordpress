@@ -75,6 +75,12 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 
 Here you can find the changes for each version:
 
+1.2.0
+
+Release Date - 23 January 2019
+
+* Update the Yoti PHP SDK to version 2
+
 1.1.9
 
 Release Date - 1 August 2018
