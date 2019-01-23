@@ -1,7 +1,9 @@
 <?php
 
-use Yoti\ActivityDetails;
 use Yoti\YotiClient;
+use Yoti\ActivityDetails;
+use Yoti\Entity\Profile;
+use Yoti\Entity\AgeVerification;
 
 require_once __DIR__ . '/sdk/boot.php';
 
@@ -17,28 +19,27 @@ class YotiHelper
      */
     const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
 
+    const SELFIE_FILENAME = 'selfie_filename';
+
     /**
      * Yoti SDK javascript library.
      */
     const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://sdk.yoti.com/clients/browser.2.1.0.js';
 
-    const AGE_VERIFICATION_ATTR = 'age_verified';
-
     /**
      * @var array
      */
     public static $profileFields = [
-        ActivityDetails::ATTR_SELFIE => 'Selfie',
-        ActivityDetails::ATTR_FULL_NAME => 'Full Name',
-        ActivityDetails::ATTR_GIVEN_NAMES => 'Given Names',
-        ActivityDetails::ATTR_FAMILY_NAME => 'Family Name',
-        ActivityDetails::ATTR_PHONE_NUMBER => 'Mobile Number',
-        ActivityDetails::ATTR_EMAIL_ADDRESS => 'Email Address',
-        ActivityDetails::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
-        self::AGE_VERIFICATION_ATTR => 'Age Verified',
-        ActivityDetails::ATTR_POSTAL_ADDRESS => 'Postal Address',
-        ActivityDetails::ATTR_GENDER => 'Gender',
-        ActivityDetails::ATTR_NATIONALITY => 'Nationality',
+        Profile::ATTR_SELFIE => 'Selfie',
+        Profile::ATTR_FULL_NAME => 'Full Name',
+        Profile::ATTR_GIVEN_NAMES => 'Given Names',
+        Profile::ATTR_FAMILY_NAME => 'Family Name',
+        Profile::ATTR_PHONE_NUMBER => 'Mobile Number',
+        Profile::ATTR_EMAIL_ADDRESS => 'Email Address',
+        Profile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+        Profile::ATTR_POSTAL_ADDRESS => 'Postal Address',
+        Profile::ATTR_GENDER => 'Gender',
+        Profile::ATTR_NATIONALITY => 'Nationality',
     ];
 
     /**
@@ -86,6 +87,7 @@ class YotiHelper
                 self::SDK_IDENTIFIER
             );
             $activityDetails = $yotiClient->getActivityDetails($token);
+            $profile = $activityDetails->getProfile();
         }
         catch (Exception $e)
         {
@@ -94,18 +96,13 @@ class YotiHelper
             return FALSE;
         }
 
-        // If unsuccessful then bail
-        if (!$this->yotiApiCallIsSuccessfull($yotiClient->getOutcome())) {
-            return FALSE;
-        }
-
-        if(!$this->passedAgeVerification($activityDetails))
-        {
+        if (!$this->passedAgeVerification($profile)) {
+            self::setFlash('Could not log you in as you haven\'t passed the age verification', 'error');
             return FALSE;
         }
 
         // Check if Yoti user exists
-        $wpYotiUid = $this->getUserIdByYotiId($activityDetails->getUserId());
+        $wpYotiUid = $this->getUserIdByYotiId($activityDetails->getRememberMeId());
 
         // If Yoti user exists in db but isn't an actual account then remove it from yoti table
         if ($wpYotiUid && $currentUser->ID !== $wpYotiUid && !get_user_by('id', $wpYotiUid))
@@ -217,7 +214,7 @@ class YotiHelper
             return;
         }
 
-        $field = ($field === 'selfie') ? 'selfie_filename' : $field;
+        $field = ($field === 'selfie') ? self::SELFIE_FILENAME : $field;
         $dbProfile = self::getUserProfile($user->ID);
         if (!$dbProfile || !array_key_exists($field, $dbProfile))
         {
@@ -239,37 +236,33 @@ class YotiHelper
     /**
      * Check if age verification applies and is valid.
      *
-     * @param ActivityDetails $activityDetails
-     *
+     * @param Profile $profile
      * @return bool
      */
-    public function passedAgeVerification(ActivityDetails $activityDetails)
+    public function passedAgeVerification(Profile $profile)
     {
-        $ageVerified = $activityDetails->isAgeVerified();
-        if ($this->config['yoti_age_verification'] && is_bool($ageVerified) && !$ageVerified)
-        {
-            $verifiedAge = $activityDetails->getVerifiedAge();
-            self::setFlash("Could not log you in as you haven't passed the age verification ({$verifiedAge})", 'error');
-            return FALSE;
-        }
-        return TRUE;
+        return !($this->config['yoti_age_verification'] && !$this->oneAgeIsVerified($profile));
+    }
+
+    private function oneAgeIsVerified(Profile $profile)
+    {
+        $ageVerificationsArr = self::processAgeVerifications($profile);
+        return empty($ageVerificationsArr) || in_array('Yes', array_values($ageVerificationsArr));
     }
 
     /**
-     * Check if call to Yoti API has been successful.
+     * @param Profile $profile
      *
-     * @param string $outcome
-     *
-     * @return bool
+     * @return array
      */
-    protected function yotiApiCallIsSuccessfull($outcome)
+    private function processAgeVerifications(Profile $profile)
     {
-        if ($outcome !== YotiClient::OUTCOME_SUCCESS)
-        {
-            self::setFlash('Yoti could not successfully connect to your account.', 'error');
-            return FALSE;
+        $ageVerifications = $profile->getAgeVerifications();
+        $ageVerificationsAttr = [];
+        foreach($ageVerifications as $attr => $ageVerification) { /** @var AgeVerification $ageVerification*/
+            $ageVerificationsAttr[$attr] = $ageVerification->getResult() ? 'Yes' : 'No';
         }
-        return TRUE;
+        return $ageVerificationsAttr;
     }
 
 
@@ -339,15 +332,15 @@ class YotiHelper
     /**
      * Generate Yoti unique username.
      *
-     * @param ActivityDetails $activityDetails
+     * @param Profile $profile
      * @param string $prefix
      *
      * @return null|string
      */
-    private function generateUsername(ActivityDetails $activityDetails, $prefix = 'yoti.user')
+    private function generateUsername(Profile $profile, $prefix = 'yoti.user')
     {
-        $givenName = $this->getUserGivenNames($activityDetails);
-        $familyName = $activityDetails->getFamilyName();
+        $givenName = $this->getUserGivenNames($profile);
+        $familyName = $profile->getFamilyName()->getValue();
 
         // If GivenName and FamilyName are provided use as user nickname/login
         if(NULL !== $givenName && NULL !== $familyName) {
@@ -385,13 +378,13 @@ class YotiHelper
     /**
      * If user has more than one given name return the first one
      *
-     * @param ActivityDetails $activityDetails
+     * @param Profile $profile
      * @return null|string
      */
-    private function getUserGivenNames(ActivityDetails $activityDetails)
+    private function getUserGivenNames(Profile $profile)
     {
-        $givenNames = $activityDetails->getGivenNames();
-        $givenNamesArr = explode(' ', $activityDetails->getGivenNames());
+        $givenNames = $profile->getGivenNames()->getValue();
+        $givenNamesArr = explode(' ', $profile->getGivenNames()->getValue());
         return (count($givenNamesArr) > 1) ? $givenNamesArr[0] : $givenNames;
     }
 
@@ -456,23 +449,24 @@ class YotiHelper
      */
     private function createUser(ActivityDetails $activityDetails)
     {
-        $username = $this->generateUsername($activityDetails);
+        $profile = $activityDetails->getProfile();
+        $username = $this->generateUsername($profile);
         $password = $this->generatePassword();
-        $userProvidedEmail = $activityDetails->getEmailAddress();
+        $userProvidedEmail = $profile->getEmailAddress()->getValue();
         // If user has provided an email address and it's not in use then use it,
         // otherwise use Yoti generic email
         $userProvidedEmailCanBeUsed = is_email($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
         $email = $userProvidedEmailCanBeUsed ? $userProvidedEmail : $this->generateEmail();
 
-        $userId = wp_create_user($username, $password, $email);
+        $wpUserId = wp_create_user($username, $password, $email);
         // If there has been an error creating the user, stop the process
-        if(is_wp_error($userId)) {
-            throw new \Exception($userId->get_error_message(), 401);
+        if(is_wp_error($wpUserId)) {
+            throw new \Exception($wpUserId->get_error_message(), 401);
         }
 
-        $this->createYotiUser($userId, $activityDetails);
+        $this->createYotiUser($wpUserId, $activityDetails);
 
-        return $userId;
+        return $wpUserId;
     }
 
     /**
@@ -499,61 +493,52 @@ class YotiHelper
     /**
      * Create Yoti user profile.
      *
-     * @param $userId
+     * @param $wpUserId
      * @param ActivityDetails $activityDetails
      */
-    public function createYotiUser($userId, ActivityDetails $activityDetails)
+    public function createYotiUser($wpUserId, ActivityDetails $activityDetails)
     {
+        $profile = $activityDetails->getProfile();
         // Create upload dir
-        if (!is_dir(self::uploadDir()))
-        {
+        if (!is_dir(self::uploadDir())) {
             mkdir(self::uploadDir(), 0777, TRUE);
         }
 
         $meta = [];
-        foreach (self::$profileFields as $param => $label)
-        {
-            $meta[$param] = $activityDetails->getProfileAttribute($param);
+        $attrsArr = array_keys(self::$profileFields);
+
+        foreach ($attrsArr as $attrName) {
+            if ($attrObj = $profile->getProfileAttribute($attrName)) {
+                $value = $attrObj->getValue();
+                if (NULL !== $value && $attrName === Profile::ATTR_DATE_OF_BIRTH) {
+                    $value = $value->format('d-m-Y');
+                }
+                $meta[$attrName] = $value;
+            }
         }
 
         $selfieFilename = NULL;
-        $selfie = $activityDetails->getSelfie();
-        if ($selfie)
-        {
-            $selfieFilename = md5("selfie_$userId") . '.png';
-            file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie);
-            unset($meta[ActivityDetails::ATTR_SELFIE]);
-            $meta['selfie_filename'] = $selfieFilename;
+        $selfie = $profile->getSelfie();
+        if ($selfie) {
+            $selfieFilename = md5("selfie_$wpUserId") . '.png';
+            file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie->getValue());
+            unset($meta[Profile::ATTR_SELFIE]);
+            $meta = array_merge(
+                [self::SELFIE_FILENAME => $selfieFilename],
+                $meta
+            );
         }
 
         // Extract age verification values if the option is set in the dashboard
         // and in the Yoti's config in WP admin
-        $meta[self::AGE_VERIFICATION_ATTR] = 'N/A';
-        $ageVerified = $activityDetails->isAgeVerified();
-        if (is_bool($ageVerified) && $this->config['yoti_age_verification'])
-        {
-            $ageVerified = $ageVerified ? 'yes' : 'no';
-            $verifiedAge = $activityDetails->getVerifiedAge();
-            $meta[self::AGE_VERIFICATION_ATTR] = "({$verifiedAge}) : $ageVerified";
+        $ageVerificationsArr = $this->processAgeVerifications($profile);
+        foreach($ageVerificationsArr as $ageAttr => $result) {
+            $ageAttr = str_replace(':', '_', ucwords($ageAttr, '_'));
+            $meta[$ageAttr] = $result;
         }
 
-        $this->formatDateOfBirth($meta);
-
-        update_user_meta($userId, 'yoti_user.profile', $meta);
-        update_user_meta($userId, 'yoti_user.identifier', $activityDetails->getUserId());
-    }
-
-    /**
-     * Format Date Of birth to d-m-Y.
-     *
-     * @param $profileArr
-     */
-    private function formatDateOfBirth(&$profileArr)
-    {
-        if (isset($profileArr[ActivityDetails::ATTR_DATE_OF_BIRTH])) {
-            $dateOfBirth = $profileArr[ActivityDetails::ATTR_DATE_OF_BIRTH];
-            $profileArr[ActivityDetails::ATTR_DATE_OF_BIRTH] = date('d-m-Y', strtotime($dateOfBirth));
-        }
+        update_user_meta($wpUserId, 'yoti_user.profile', $meta);
+        update_user_meta($wpUserId, 'yoti_user.identifier', $activityDetails->getRememberMeId());
     }
 
     /**
@@ -641,8 +626,7 @@ class YotiHelper
     public static function getLoginUrl()
     {
         $config = self::getConfig();
-        if (empty($config['yoti_app_id']))
-        {
+        if (empty($config['yoti_app_id'])) {
             return NULL;
         }
 
@@ -652,7 +636,7 @@ class YotiHelper
     /**
      * Attempt to connect by email
      *
-     * @param ActivityDetails $activityDetails
+     * @param Profile $profile
      * @param string $emailConfig
      *
      * @return int|null
@@ -660,7 +644,7 @@ class YotiHelper
     private function shouldLoginByEmail(ActivityDetails $activityDetails, $emailConfig)
     {
         $wpYotiUid = NULL;
-        $email = $activityDetails->getEmailAddress();
+        $email = $activityDetails->getProfile()->getEmailAddress()->getValue();
 
         if ($email && !empty($emailConfig)) {
             $byMail = get_user_by('email', $email);

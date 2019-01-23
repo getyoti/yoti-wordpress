@@ -3,7 +3,7 @@ NAME="yoti-wordpress-edge.zip"
 
 SDK_TAG=$1
 SDK_RELATIVE_PATH="sdk"
-DEFAULT_SDK_TAG='1.2.1'
+DEFAULT_SDK_TAG='2.0.0'
 
 if [ "$SDK_TAG" = "" ]; then
     SDK_TAG=$DEFAULT_SDK_TAG
