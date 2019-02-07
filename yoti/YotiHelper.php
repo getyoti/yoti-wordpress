@@ -339,8 +339,10 @@ class YotiHelper
      */
     private function generateUsername(Profile $profile, $prefix = 'yoti.user')
     {
-        $givenName = $this->getUserGivenNames($profile);
-        $familyName = $profile->getFamilyName()->getValue();
+        $givenName = $this->getUserGivenName($profile);
+        if ($familyNameAttr = $profile->getFamilyName()) {
+            $familyName = $familyNameAttr->getValue();
+        }
 
         // If GivenName and FamilyName are provided use as user nickname/login
         if(NULL !== $givenName && NULL !== $familyName) {
@@ -381,11 +383,13 @@ class YotiHelper
      * @param Profile $profile
      * @return null|string
      */
-    private function getUserGivenNames(Profile $profile)
+    private function getUserGivenName(Profile $profile)
     {
-        $givenNames = $profile->getGivenNames()->getValue();
-        $givenNamesArr = explode(' ', $profile->getGivenNames()->getValue());
-        return (count($givenNamesArr) > 1) ? $givenNamesArr[0] : $givenNames;
+        $givenName = NULL;
+        if ($givenNamesAttr = $profile->getGivenNames()) {
+            $givenName = explode(' ', $givenNamesAttr->getValue())[0];
+        }
+        return $givenName;
     }
 
     /**
