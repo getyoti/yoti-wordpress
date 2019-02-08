@@ -456,10 +456,16 @@ class YotiHelper
         $profile = $activityDetails->getProfile();
         $username = $this->generateUsername($profile);
         $password = $this->generatePassword();
-        $userProvidedEmail = $profile->getEmailAddress()->getValue();
+
+        // Check that email is available and valid.
+        $userProvidedEmailCanBeUsed = FALSE;
+        if ($emailAttr = $profile->getEmailAddress()) {
+            $userProvidedEmail = $emailAttr->getValue();
+            $userProvidedEmailCanBeUsed = is_email($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
+        }
+
         // If user has provided an email address and it's not in use then use it,
         // otherwise use Yoti generic email
-        $userProvidedEmailCanBeUsed = is_email($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
         $email = $userProvidedEmailCanBeUsed ? $userProvidedEmail : $this->generateEmail();
 
         $wpUserId = wp_create_user($username, $password, $email);
@@ -648,7 +654,11 @@ class YotiHelper
     private function shouldLoginByEmail(ActivityDetails $activityDetails, $emailConfig)
     {
         $wpYotiUid = NULL;
-        $email = $activityDetails->getProfile()->getEmailAddress()->getValue();
+        $email = NULL;
+
+        if ($emailAttr = $activityDetails->getProfile()->getEmailAddress()) {
+            $email = $emailAttr->getValue();
+        }
 
         if ($email && !empty($emailConfig)) {
             $byMail = get_user_by('email', $email);
