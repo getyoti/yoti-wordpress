@@ -5,7 +5,7 @@ Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA,
 Requires at least: 3.0.1
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -74,6 +74,12 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Changelog ==
 
 Here you can find the changes for each version:
+
+1.2.2
+
+Release Date - 11 February 2019
+
+* Fixed login by email when email is not available
 
 1.2.1
 
