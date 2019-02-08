@@ -75,6 +75,12 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 
 Here you can find the changes for each version:
 
+1.2.1
+
+Release Date - 8 February 2019
+
+* Fixed username generation when given names or family name are unavailable
+
 1.2.0
 
 Release Date - 23 January 2019
