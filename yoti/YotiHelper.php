@@ -530,8 +530,8 @@ class YotiHelper
         $selfieFilename = NULL;
         $selfie = $profile->getSelfie();
         if ($selfie) {
-            $selfieFilename = md5("selfie_$wpUserId") . '.png';
-            file_put_contents(self::uploadDir() . "/$selfieFilename", $selfie->getValue());
+            $selfieFilename = self::getUniqueFilename("selfie_$wpUserId", 'png');
+            file_put_contents(self::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
             unset($meta[Profile::ATTR_SELFIE]);
             $meta = array_merge(
                 [self::SELFIE_FILENAME => $selfieFilename],
@@ -552,12 +552,42 @@ class YotiHelper
     }
 
     /**
+     * Get a unique file name.
+     *
+     * @param string $prefix
+     * @param string $extension
+     * @return string
+     *
+     * @throws Exception
+     */
+    private function getUniqueFilename($prefix, $extension)
+    {
+        // Get last user meta ID to prevent filename collision.
+        global $wpdb;
+        $suffix = '0';
+        if ($maxId = $wpdb->get_var('SELECT MAX(umeta_id) FROM wp_usermeta')) {
+            $suffix = (int) $maxId;
+        }
+
+        return md5($prefix . uniqid(TRUE)) . '-' . ((string) $suffix) . '.' . $extension;
+    }
+
+    /**
      * Delete Yoti user profile.
      *
      * @param int $userId WP user id
      */
     private function deleteYotiUser($userId)
     {
+        // Remove user image.
+        $dbProfile = self::getUserProfile($userId);
+        $filePath = isset($dbProfile[self::SELFIE_FILENAME]) ? self::uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME] : FALSE;
+        if ($filePath && is_file($filePath)) {
+            if (!unlink($filePath)) {
+                self::setFlash('Could not delete user image.', 'error');
+            }
+        }
+        // Remove user metadata.
         delete_user_meta($userId, 'yoti_user.identifier');
         delete_user_meta($userId, 'yoti_user.profile');
     }
@@ -597,17 +627,48 @@ class YotiHelper
      */
     public static function uploadDir()
     {
-        return WP_CONTENT_DIR . '/uploads/yoti';
+        if (!defined('YOTI_UPLOAD_DIR')) {
+            return WP_CONTENT_DIR . '/uploads/yoti';
+        }
+        return rtrim(YOTI_UPLOAD_DIR, '/');
+    }
+
+    /**
+     * Get Selfie URL.
+     *
+     * @param string $userId
+     * @return string
+     */
+    public static function selfieUrl($userId)
+    {
+        $currentUser = wp_get_current_user();
+        $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
+        $userIdUrlPart = ($isAdmin ? '&user_id=' . esc_html($userId) : '');
+        return site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . $userIdUrlPart;
     }
 
     /**
      * Get Yoti upload dir URL.
      *
      * @return string
+     *
+     * @throws Exception
      */
     public static function uploadUrl()
     {
-        return content_url('/uploads/yoti');
+        if (!defined('YOTI_UPLOAD_DIR')) {
+            return content_url('/uploads/yoti');
+        }
+
+        $realpath = realpath(YOTI_UPLOAD_DIR);
+        if (strpos($realpath, WP_CONTENT_DIR) === 1) {
+            return content_url(substr_replace($realpath, '', 0, strlen(WP_CONTENT_DIR)));
+        }
+
+        throw new \Exception(sprintf(
+            '%s cannot be used when YOTI_UPLOAD_DIR is defined outside the web root',
+            __METHOD__
+        ));
     }
 
     /**

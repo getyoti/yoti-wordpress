@@ -39,6 +39,11 @@ Download the free Yoti app [IOS](https://itunes.apple.com/us/app/yoti/id98398080
 
 * From the “Plugins” menu search for “Yoti”,
 * click “Install Now” and then “Activate”.
+* To store images in a custom directory, edit your `wp-config.php` file and add a new constant called YOTI_UPLOAD_DIR with an absolute path:
+
+  define('YOTI_UPLOAD_DIR', '/path/to/images/');
+
+  By default, images are stored in `WP_CONTENT_DIR . '/uploads/yoti'`
 
 = Step 2: Setting up your Yoti Application =
 
