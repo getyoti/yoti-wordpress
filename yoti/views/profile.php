@@ -49,8 +49,7 @@ if ($dbProfile) {
 
             $selfieFullPath = YotiHelper::uploadDir() . "/{$selfieFileName}";
             if (!empty($selfieFileName) && file_exists($selfieFullPath)) {
-                $selfieUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . ($isAdmin ? "&user_id=$userId" : '');
-                $value = '<img src="' . $selfieUrl . '" width="100" />';
+                $value = '<img src="' . YotiHelper::selfieUrl($userId) . '" width="100" />';
             }
         }
 
