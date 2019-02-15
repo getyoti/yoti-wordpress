@@ -661,7 +661,7 @@ class YotiHelper
         }
 
         $realpath = realpath(YOTI_UPLOAD_DIR);
-        if (strpos($realpath, WP_CONTENT_DIR) === 1) {
+        if (strpos($realpath, WP_CONTENT_DIR) === 0) {
             return content_url(substr_replace($realpath, '', 0, strlen(WP_CONTENT_DIR)));
         }
 
