@@ -557,8 +557,6 @@ class YotiHelper
      * @param string $prefix
      * @param string $extension
      * @return string
-     *
-     * @throws Exception
      */
     private function getUniqueFilename($prefix, $extension)
     {
@@ -569,7 +567,7 @@ class YotiHelper
             $suffix = (int) $maxId;
         }
 
-        return md5($prefix . uniqid(TRUE)) . '-' . ((string) $suffix) . '.' . $extension;
+        return md5(uniqid($prefix, TRUE)) . '-' . ((string) $suffix) . '.' . $extension;
     }
 
     /**
