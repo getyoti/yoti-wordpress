@@ -530,7 +530,7 @@ class YotiHelper
         $selfieFilename = NULL;
         $selfie = $profile->getSelfie();
         if ($selfie) {
-            $selfieFilename = self::getUniqueFilename("selfie_$wpUserId", 'png');
+            $selfieFilename = self::createUniqueFilename("selfie_$wpUserId", 'png');
             file_put_contents(self::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
             unset($meta[Profile::ATTR_SELFIE]);
             $meta = array_merge(
@@ -558,7 +558,7 @@ class YotiHelper
      * @param string $extension
      * @return string
      */
-    private function getUniqueFilename($prefix, $extension)
+    private function createUniqueFilename($prefix, $extension)
     {
         // Get last user meta ID to prevent filename collision.
         global $wpdb;
