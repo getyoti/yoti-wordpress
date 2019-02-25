@@ -530,7 +530,7 @@ class YotiHelper
         $selfieFilename = NULL;
         $selfie = $profile->getSelfie();
         if ($selfie) {
-            $selfieFilename = self::createUniqueFilename("selfie_$wpUserId", 'png');
+            $selfieFilename = self::createUniqueFilename($selfie->getValue()->getBase64Content(), 'png');
             file_put_contents(self::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
             unset($meta[Profile::ATTR_SELFIE]);
             $meta = array_merge(
