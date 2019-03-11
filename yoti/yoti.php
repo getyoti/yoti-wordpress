@@ -4,7 +4,7 @@
 Plugin Name: Yoti
 Plugin URI: https://wordpress.org/plugins/yoti/
 Description: Let Yoti users quickly register on your site.
-Version: 1.2.2
+Version: 1.3.0
 Author: Yoti SDK.
 Author URI: https://yoti.com
 */
