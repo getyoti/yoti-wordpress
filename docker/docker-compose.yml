@@ -1,0 +1,55 @@
+version: '3.7'
+  
+services:
+  wordpress-db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_PORT: 3306
+
+  wordpress-base:
+    depends_on:
+      - wordpress-db
+    build:
+      context: ./
+      dockerfile: app.base.dockerfile
+      target: wordpress_base
+
+  wordpress:
+    depends_on:
+      - wordpress-db
+      - wordpress-base
+    build:
+      context: ./
+      dockerfile: app.base.dockerfile
+      args:
+        BRANCH: "master"
+    ports:
+      - "7001:443"
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+
+  wordpress-dev:
+    build:
+      context: ../
+      dockerfile: docker/app.dev.dockerfile
+    depends_on:
+       - wordpress-db
+       - wordpress-base
+    environment:
+       WORDPRESS_DB_HOST: wordpress-db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+    ports:
+     - "7002:443"
+    volumes:
+      - ../yoti/:/var/www/html/wp-content/plugins/yoti
+      - ./profiler_output:/tmp/profiler_output
+  
