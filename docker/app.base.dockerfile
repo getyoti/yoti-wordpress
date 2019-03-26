@@ -1,6 +1,4 @@
-FROM php:7.1-apache
-
-ARG BRANCH
+FROM php:7.1-apache AS wordpress_base
 
 ADD default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./keys/server.crt /etc/apache2/ssl/server.crt
@@ -39,14 +37,7 @@ VOLUME /var/www/html
 
 ENV WORDPRESS_VERSION 5.1.1
 ENV WORDPRESS_SHA1 f1bff89cc360bf5ef7086594e8a9b68b4cbf2192
-ENV DEFAULT_BRANCH master
 ENV DIRPATH /var/www/html
-ENV PLUGIN_PACKAGE_NAME yoti-wordpress-edge.zip
-
-RUN if [ "$BRANCH" = "" ]; then \
-  $BRANCH = $DEFAULT_BRANCH; \
-fi
-
 
 RUN set -ex; \
 	curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz"; \
@@ -57,18 +48,9 @@ RUN set -ex; \
 	chown -R www-data:www-data /usr/src/wordpress; \
         chown -R www-data:www-data /var/www/html
 
-RUN set -ex; \
-        git clone -b ${BRANCH} https://github.com/getyoti/yoti-wordpress.git --single-branch /usr/src/yoti-wordpress; \
-        echo "Finished cloning ${BRANCH}"; \
-	chown -R www-data:www-data /usr/src/yoti-wordpress; \
-       	cd /usr/src/yoti-wordpress; \
-        mkdir __sdk-sym; \
-        ./pack-plugin.sh; \
-   	echo "Finished packing the plugin"; \
-        mv ./${PLUGIN_PACKAGE_NAME} /usr/src/wordpress/wp-content/plugins; \
-        cd /usr/src/wordpress/wp-content/plugins; \
-        unzip ${PLUGIN_PACKAGE_NAME}; \
-        rm -f ${PLUGIN_PACKAGE_NAME}
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install- dir=/usr/local/bin --filename=composer \
+    && mv composer /usr/local/bin
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
