@@ -91,6 +91,36 @@ After the command has finished running, go to [https://localhost:7001](https://l
 
 The Yoti plugin will be installed alongside WordPress. Activate it and follow our [plugin setup process](#plugin-setup).
 
+### Local Development
+
+#### Fetching the SDK
+
+To fetch the latest SDK and place in `./yoti/sdk` directory:
+
+```shell
+$ ./checkout-sdk.sh
+```
+
+#### Running the local working plugin
+
+To run the local working copy of the plugin:
+
+```shell
+$ docker-compose up wordpress-dev
+```
+
+After the command has finished running, go to <https://localhost:7002>
+
+To use Xdebug in an IDE, map the `/var/www/html/wp-content/plugins/yoti` volume to the module directory on the host machine.
+
+#### Running Tests
+
+To check coding standards:
+
+```shell
+$ ./run-tests.sh
+```
+
 ### Removing the Docker containers
 
 Run the following commands to remove docker containers:
