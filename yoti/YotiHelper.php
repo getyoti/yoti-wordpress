@@ -600,7 +600,7 @@ class YotiHelper
         $user = get_user_by('id', $userId);
         wp_set_current_user($userId, $user->user_login);
         wp_set_auth_cookie($userId);
-        do_action('wp_login', $user->user_login);
+        do_action('wp_login', $user->user_login, $user);
     }
 
     /**
