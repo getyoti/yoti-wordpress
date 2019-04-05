@@ -36,11 +36,10 @@ class YotiButton
         }
 
         // If connect url starts with 'https://staging' then we are in staging mode
-        $isStaging = strpos(\Yoti\YotiClient::CONNECT_BASE_URL, 'https://staging') === 0;
-        if ($isStaging)
+        if (getenv('YOTI_CONNECT_BASE_URL'))
         {
             // Base url for connect
-            $baseUrl = preg_replace('/^(.+)\/connect$/', '$1', \Yoti\YotiClient::CONNECT_BASE_URL);
+            $baseUrl = preg_replace('/^(.+)\/connect$/', '$1', getenv('YOTI_CONNECT_BASE_URL'));
 
             $script[] = sprintf('_ybg.config.qr = "%s/qr/";', $baseUrl);
             $script[] = sprintf('_ybg.config.service = "%s/connect/";', $baseUrl);
@@ -48,14 +47,27 @@ class YotiButton
 
         // Add init()
         $script[] = '_ybg.init();';
-        $linkButton = '<span
-            data-yoti-application-id="' . $config['yoti_app_id'] . '"
-            data-yoti-type="inline"
-            data-yoti-scenario-id="' . $config['yoti_scenario_id'] . '"
-            data-size="small">
-            %s
-        </span>
-        <script>' . implode("\r\n", $script) . '</script>';
+
+        // Required button attributes.
+        $button_attributes = [
+            'data-yoti-application-id' => $config['yoti_app_id'],
+            'data-yoti-scenario-id' => $config['yoti_scenario_id'],
+            'data-size' => 'small',
+        ];
+
+        // Markup for the QR type.
+        $qr_type = empty($config['yoti_qr_type']) ? 'inline' : $config['yoti_qr_type'];
+        if (!empty($qr_type) && $qr_type !== 'connect') {
+            $button_attributes['data-yoti-type'] = !empty($config['yoti_qr_type']) ? $config['yoti_qr_type'] : 'inline';
+        }
+
+        $button_attributes_markup = [];
+        foreach ($button_attributes as $key => $value) {
+            $button_attributes_markup[] = $key . '="' . htmlspecialchars($value) . '"';
+        }
+
+        $linkButton = '<span ' . implode(' ', $button_attributes_markup) .  '>%s</span>
+          <script>' . implode("\r\n", $script) . '</script>';
 
         if (!is_user_logged_in()) {
             $button = sprintf($linkButton, YotiButton::YOTI_LINK_BUTTON_TEXT);
