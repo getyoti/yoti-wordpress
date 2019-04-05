@@ -67,6 +67,16 @@ $dashboardLink = '<a href="' . \Yoti\YotiClient::DASHBOARD_URL . '" target="_bla
               </td>
           </tr>
           <tr>
+              <th scope="row"><label for="yoti_qr_type">QR Type</label></th>
+              <td>
+                  <select name="yoti_qr_type" id="yoti_qr_type" value="<?php echo htmlspecialchars($data['yoti_qr_type']); ?>" class="regular-text code">
+                  <?php foreach (YotiAdmin::qrTypes() as $key => $value) { ?>
+                    <option <?php echo $key == $data['yoti_qr_type'] ? 'selected="selected" ' : '' ?>value="<?php echo htmlspecialchars($key); ?>"><?php echo htmlspecialchars($value); ?></option>
+                  <?php } ?>
+                  </select>
+              </td>
+          </tr>
+          <tr>
               <th scope="row"><label for="yoti_pem">Yoti PEM File</label></th>
               <td>
                   <?php
