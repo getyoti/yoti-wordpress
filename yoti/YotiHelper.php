@@ -83,7 +83,7 @@ class YotiHelper
             $yotiClient = new YotiClient(
                 $this->config['yoti_sdk_id'],
                 $this->config['yoti_pem']['contents'],
-                YotiClient::DEFAULT_CONNECT_API,
+                !empty(getenv('YOTI_CONNECT_API')) ? getenv('YOTI_CONNECT_API') : YotiClient::DEFAULT_CONNECT_API,
                 self::SDK_IDENTIFIER
             );
             $activityDetails = $yotiClient->getActivityDetails($token);
