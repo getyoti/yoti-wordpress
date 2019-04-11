@@ -35,7 +35,7 @@ class YotiButton
             return NULL;
         }
 
-        // If connect url starts with 'https://staging' then we are in staging mode
+        // Use YOTI_CONNECT_BASE_URL environment variable if configured.
         if (getenv('YOTI_CONNECT_BASE_URL'))
         {
             // Base url for connect
