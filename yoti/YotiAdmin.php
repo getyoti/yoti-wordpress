@@ -117,7 +117,7 @@ class YotiAdmin
 
             if (!in_array($data['yoti_qr_type'], array_keys(YotiAdmin::qrTypes())))
             {
-                $errors['yoti_qr_type'] = 'QR type "' . htmlspecialchars($data['yoti_qr_type']) . '" is invalid. Allowed types: ' .  implode(', ', YotiAdmin::qrTypes());
+                $errors['yoti_qr_type'] = 'QR type "' . esc_html($data['yoti_qr_type']) . '" is invalid. Allowed types: ' .  implode(', ', YotiAdmin::qrTypes());
             }
 
             // No errors? proceed

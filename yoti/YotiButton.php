@@ -63,7 +63,7 @@ class YotiButton
 
         $button_attributes_markup = [];
         foreach ($button_attributes as $key => $value) {
-            $button_attributes_markup[] = $key . '="' . htmlspecialchars($value) . '"';
+            $button_attributes_markup[] = $key . '="' . esc_attr($value) . '"';
         }
 
         $linkButton = '<span ' . implode(' ', $button_attributes_markup) .  '>%s</span>
