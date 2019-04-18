@@ -10,6 +10,8 @@ $useEmailAddressCheckbox = !empty($data['yoti_user_email']) ? 'checked="checked"
 $onlyExistingUserCheckbox = !empty($data['yoti_only_existing']) ? 'checked="checked"' : '';
 $ageVerificationCheckbox = isset($data['yoti_age_verification']) ? 'checked="checked"' : '';
 $dashboardLink = '<a href="' . \Yoti\YotiClient::DASHBOARD_URL . '" target="_blank">Yoti Dashboard</a>';
+// Get the default QR type.
+$qrType = isset($data['yoti_qr_type']) ? $data['yoti_qr_type'] : YotiHelper::getQrType();
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
@@ -69,9 +71,9 @@ $dashboardLink = '<a href="' . \Yoti\YotiClient::DASHBOARD_URL . '" target="_bla
           <tr>
               <th scope="row"><label for="yoti_qr_type">QR Type</label></th>
               <td>
-                  <select name="yoti_qr_type" id="yoti_qr_type" value="<?php echo esc_attr($data['yoti_qr_type']); ?>" class="regular-text code">
+                  <select name="yoti_qr_type" id="yoti_qr_type" class="regular-text code">
                   <?php foreach (YotiAdmin::qrTypes() as $key => $value) { ?>
-                    <option <?php echo $key == $data['yoti_qr_type'] ? 'selected="selected" ' : '' ?>value="<?php echo esc_attr($key); ?>"><?php echo esc_html($value); ?></option>
+                    <option <?php echo $key == $qrType ? 'selected="selected" ' : '' ?>value="<?php echo esc_attr($key); ?>"><?php echo esc_html($value); ?></option>
                   <?php } ?>
                   </select>
               </td>

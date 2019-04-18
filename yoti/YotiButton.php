@@ -56,9 +56,8 @@ class YotiButton
         ];
 
         // Markup for the QR type.
-        $qr_type = empty($config['yoti_qr_type']) ? 'inline' : $config['yoti_qr_type'];
-        if (!empty($qr_type) && $qr_type !== 'connect') {
-            $button_attributes['data-yoti-type'] = !empty($config['yoti_qr_type']) ? $config['yoti_qr_type'] : 'inline';
+        if (($qr_type = YotiHelper::getQrType()) && $qr_type !== 'connect') {
+            $button_attributes['data-yoti-type'] = $qr_type;
         }
 
         $button_attributes_markup = [];
