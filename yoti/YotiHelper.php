@@ -680,6 +680,29 @@ class YotiHelper
     }
 
     /**
+     * Get QR Type.
+     *
+     * @return string
+     */
+    public static function getQrType()
+    {
+        $config = self::getConfig();
+
+        // Default value when the plugin is first enabled.
+        if (empty($config)) {
+            return 'inline';
+        }
+
+        // Default value when the QR type has not yet been specified.
+        if (empty($config['yoti_qr_type'])) {
+            return 'inline';
+        }
+
+        // The configured value.
+        return $config['yoti_qr_type'];
+    }
+
+    /**
      * Remove Yoti config option data from WordPress option table.
      */
     public static function deleteYotiConfigData()
