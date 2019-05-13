@@ -47,6 +47,7 @@ services:
        WORDPRESS_DB_HOST: wordpress-db:3306
        WORDPRESS_DB_USER: wordpress
        WORDPRESS_DB_PASSWORD: wordpress
+       WP_PLUGIN_DIR: /var/www/html/wp-content/plugins/yoti
        # YOTI_CONNECT_API and YOTI_CONNECT_BASE_URL can be overridden using the .env file
        YOTI_CONNECT_API:
        YOTI_CONNECT_BASE_URL:
@@ -54,5 +55,5 @@ services:
      - "7002:443"
     volumes:
       - ../yoti/:/var/www/html/wp-content/plugins/yoti
+      - ../tests/:/var/www/html/tests
       - ./profiler_output:/tmp/profiler_output
-  

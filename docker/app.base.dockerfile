@@ -1,4 +1,4 @@
-FROM php:7.1-apache AS wordpress_base
+FROM php:7.3-apache AS wordpress_base
 
 ADD default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./keys/server.crt /etc/apache2/ssl/server.crt
@@ -17,7 +17,7 @@ RUN set -ex; \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-install gd mysqli opcache; \
  	apt-get update; \
-	apt-get install -y git zip unzip vim nano
+	apt-get install -y git subversion zip unzip vim nano
 # TODO consider removing the *-dev deps and only keeping the necessary lib* packages
 
 # set recommended PHP.ini settings
@@ -33,8 +33,6 @@ RUN { \
 
 RUN a2enmod rewrite expires ssl
 
-VOLUME /var/www/html
-
 ENV WORDPRESS_VERSION 5.1.1
 ENV WORDPRESS_SHA1 f1bff89cc360bf5ef7086594e8a9b68b4cbf2192
 ENV DIRPATH /var/www/html
@@ -46,7 +44,7 @@ RUN set -ex; \
 	tar -xzf wordpress.tar.gz -C /usr/src/; \
 	rm wordpress.tar.gz; \
 	chown -R www-data:www-data /usr/src/wordpress; \
-        chown -R www-data:www-data /var/www/html
+        chown -R www-data:www-data ${DIRPATH}
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install- dir=/usr/local/bin --filename=composer \
