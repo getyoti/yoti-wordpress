@@ -12,6 +12,13 @@ class YotiAdmin
     private static $_instance;
 
     /**
+     * POST data.
+     *
+     * @var array
+     */
+    private $postData;
+
+    /**
      * init
      */
     public static function init()
@@ -84,40 +91,49 @@ class YotiAdmin
         // Get data
         $data = $config;
         $updateMessage = '';
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
         {
-            $data['yoti_app_id'] = $this->postVar('yoti_app_id');
-            $data['yoti_scenario_id'] = $this->postVar('yoti_scenario_id');
-            $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
-            $data['yoti_company_name'] = $this->postVar('yoti_company_name');
-            $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
-            $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
-            $data['yoti_user_email'] = $this->postVar('yoti_user_email');
-            $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
-            $data['yoti_qr_type'] = $this->postVar('yoti_qr_type');
-            $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
+            try
+            {
+                $this->setPostData();
 
-            // Validation
-            if (!$data['yoti_app_id'])
-            {
-                $errors['yoti_app_id'] = 'App ID is required.';
-            }
-            if (!$data['yoti_sdk_id'])
-            {
-                $errors['yoti_sdk_id'] = 'SDK ID is required.';
-            }
-            if (empty($pemFile['name']))
-            {
-                $errors['yoti_pem'] = 'PEM file is required.';
-            }
-            elseif (!empty($pemFile['tmp_name']) && !openssl_get_privatekey(file_get_contents($pemFile['tmp_name'])))
-            {
-                $errors['yoti_pem'] = 'PEM file is invalid.';
-            }
+                $data['yoti_app_id'] = $this->postVar('yoti_app_id');
+                $data['yoti_scenario_id'] = $this->postVar('yoti_scenario_id');
+                $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
+                $data['yoti_company_name'] = $this->postVar('yoti_company_name');
+                $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
+                $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
+                $data['yoti_user_email'] = $this->postVar('yoti_user_email');
+                $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
+                $data['yoti_qr_type'] = $this->postVar('yoti_qr_type');
+                $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
 
-            if (!in_array($data['yoti_qr_type'], array_keys(YotiAdmin::qrTypes())))
-            {
-                $errors['yoti_qr_type'] = 'QR type "' . esc_html($data['yoti_qr_type']) . '" is invalid. Allowed types: ' .  implode(', ', YotiAdmin::qrTypes());
+                // Validation
+                if (!$data['yoti_app_id'])
+                {
+                    $errors['yoti_app_id'] = 'App ID is required.';
+                }
+                if (!$data['yoti_sdk_id'])
+                {
+                    $errors['yoti_sdk_id'] = 'SDK ID is required.';
+                }
+                if (empty($pemFile['name']))
+                {
+                    $errors['yoti_pem'] = 'PEM file is required.';
+                }
+                elseif (!empty($pemFile['tmp_name']) && !openssl_get_privatekey(file_get_contents($pemFile['tmp_name'])))
+                {
+                    $errors['yoti_pem'] = 'PEM file is invalid.';
+                }
+
+                if (!in_array($data['yoti_qr_type'], array_keys(YotiAdmin::qrTypes())))
+                {
+                    $errors['yoti_qr_type'] = 'QR type "' . $data['yoti_qr_type'] . '" is invalid. Allowed types: ' .  implode(', ', YotiAdmin::qrTypes());
+                }
+            }
+            catch (\Exception $e) {
+                $errors['yoti_admin_options'] = 'There was a problem saving form data. Please try again.';
             }
 
             // No errors? proceed
@@ -160,13 +176,27 @@ class YotiAdmin
     }
 
     /**
-     * @param $var
+     * Sets POST data from request.
+     */
+    private function setPostData()
+    {
+        if (
+            !isset($_POST['yoti_verify'])
+            || !wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')
+        ) {
+            throw new \Exception('Could not verify request');
+        }
+        $this->postData = $_POST;
+    }
+
+    /**
+     * @param string $var
      * @param null $default
      * @return null
      */
     protected function postVar($var, $default = NULL)
     {
-        return array_key_exists($var, $_POST) ? $_POST[$var] : $default;
+        return array_key_exists($var, $this->postData) ? $this->postData[$var] : $default;
     }
 
     /**
