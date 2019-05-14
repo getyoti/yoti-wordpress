@@ -1,68 +1,52 @@
 <?php
 /**
- * @var Profile $profile
  * @var array $dbProfile
+ * @var bool $displayButton
+ * @var int $userId
  */
 
 // Display these fields
 use Yoti\Entity\Profile;
 
-$currentUser = wp_get_current_user();
-$isAdmin = in_array('administrator', $currentUser->roles, TRUE);
-$userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : NULL;
+$profileFields = YotiHelper::$profileFields;
+?>
+<h2><?php esc_html_e('Yoti User Profile'); ?></h2>
+<table class="form-table">
+<?php
+foreach ($dbProfile as $attrName => $value)
+{
+    $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
 
-// Set userId if admin user is viewing his own profile
-// and the userId is NULL
-if(
-    $isAdmin
-    && $profileUserId === $currentUser->ID
-    && is_null($userId)
-) {
-    $userId = $profileUserId;
-}
-
-if ($dbProfile) {
-    $profileFields = YotiHelper::$profileFields;
-
-    $profileHTML = '<h2>' . __('Yoti User Profile') . '</h2>';
-    $profileHTML .= '<table class="form-table">';
-
-    // Move selfie attr to the top
-    if (isset($dbProfile[YotiHelper::SELFIE_FILENAME])) {
-        $selfieDataArr = [YotiHelper::SELFIE_FILENAME => $dbProfile[YotiHelper::SELFIE_FILENAME]];
-        unset($dbProfile[YotiHelper::SELFIE_FILENAME]);
-        $dbProfile = array_merge(
-            $selfieDataArr,
-            $dbProfile
-        );
-    }
-
-    foreach ($dbProfile as $attrName => $value)
-    {
-        $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
-
-        // Display selfie as an image
-        if ($attrName === YotiHelper::SELFIE_FILENAME) {
-            $value = '';
-            $label = $profileFields[Profile::ATTR_SELFIE];
-            $selfieFileName = $dbProfile[YotiHelper::SELFIE_FILENAME];
-
-            $selfieFullPath = YotiHelper::uploadDir() . "/{$selfieFileName}";
-            if (!empty($selfieFileName) && file_exists($selfieFullPath)) {
-                $value = '<img src="' . YotiHelper::selfieUrl($userId) . '" width="100" />';
-            }
+    // Display selfie as an image
+    if ($attrName === YotiHelper::SELFIE_FILENAME) {
+        $selfieUrl = '';
+        $label = $profileFields[Profile::ATTR_SELFIE];
+        $selfieFileName = $dbProfile[YotiHelper::SELFIE_FILENAME];
+        $selfieFullPath = YotiHelper::uploadDir() . '/' . $selfieFileName;
+        if (!empty($selfieFileName) && is_file($selfieFullPath)) {
+            $selfieUrl = YotiHelper::selfieUrl($userId);
         }
-
-        $profileHTML .= '<tr><th><label>' . esc_html($label) . '</label></th>';
-        $profileHTML .= '<td>' . ($value ? $value : '<i>(empty)</i>') . '</td></tr>';
     }
-
-    if (!$userId || $currentUser->ID === $userId || !$isAdmin) {
-        $profileHTML .= '<tr><th></th>';
-        $profileHTML .= '<td>' . YotiButton::render($_SERVER['REQUEST_URI']) . '</td></tr>';
-    }
-
-    $profileHTML .= '</table>';
-
-    echo $profileHTML;
+    ?>
+    <tr>
+        <th><label><?php esc_html_e($label); ?></label></th>
+        <td>
+            <?php if ($attrName === YotiHelper::SELFIE_FILENAME && !empty($selfieUrl)) { ?>
+                <img src="<?php esc_attr_e($selfieUrl); ?>" width="100" />
+            <?php } elseif (!empty($value)) { ?>
+                <?php esc_html_e($value); ?>
+            <?php } else { ?>
+                <i>(empty)</i>
+            <?php } ?>
+        </td>
+    </tr>
+<?php
 }
+?>
+<?php if ($displayButton) { ?>
+    <tr>
+        <th></th>
+        <td><?php YotiButton::render($_SERVER['REQUEST_URI']); ?></td>
+    </tr>
+<?php } ?>
+</table>
