@@ -40,6 +40,9 @@ class Yoti
             session_start();
         }
 
+        // Verifiy the action.
+        $verified = !empty($_GET['yoti_verify']) && wp_verify_nonce($_GET['yoti_verify'], 'yoti_verify');
+
         if (!empty($_GET['yoti-select']))
         {
             $yotiHelper = new YotiHelper();
@@ -58,17 +61,25 @@ class Yoti
                     break;
 
                 case 'unlink':
-                    if (!$yotiHelper->unlink())
+                    if (!$verified)
+                    {
+                        YotiHelper::setFlash('Yoti profile could not be unlinked, please try again.');
+                        $redirect = home_url();
+                    }
+                    elseif (!$yotiHelper->unlink())
                     {
                         $redirect = home_url();
                     }
+
                     wp_safe_redirect($redirect);
                     exit;
                     break;
 
                 case 'bin-file':
-                    $yotiHelper->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
-                    exit;
+                    if ($verified) {
+                        $yotiHelper->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
+                        exit;
+                    }
                     break;
             }
         }
@@ -107,13 +118,19 @@ class Yoti
             $companyName = $config['yoti_company_name'];
         }
 
-        $noLink = !empty($_POST['yoti_nolink']);
+        // Verifiy the action.
+        $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');
+        if ($verified) {
+            $noLink = !empty($_POST['yoti_nolink']);
+        }
+        else {
+            $noLink = FALSE;
+        }
 
-        echo '<div style="margin: 0 0 25px 0" class="message">
-        <div style="font-weight: bold; margin-bottom: 5px;">Warning: You are about to link your ' . $companyName . ' account to your Yoti account. If you don\'t want this to happen, tick the checkbox below.</div>
-        <input type="checkbox" id="edit-yoti-link" name="yoti_nolink" value="1" class="form-checkbox"' . ($noLink ? ' checked="checked"' : '') . '>
-        <label class="option" for="edit-yoti-link">Don\'t link my Yoti account</label>
-    </div>';
+        $view = function () use ($companyName, $noLink) {
+            require_once __DIR__ . '/views/login-header.php';
+        };
+        $view();
     }
 
     /**
@@ -128,15 +145,22 @@ class Yoti
             return;
         }
 
-        $activityDetails = YotiHelper::getYotiUserFromStore();
-        $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
+        // Verifiy the action.
+        $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');
+        if (!$verified) {
+            YotiHelper::setFlash('Yoti profile could not be linked, please try again.');
+        }
+        else {
+            $activityDetails = YotiHelper::getYotiUserFromStore();
+            $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
 
-        // Check that activityDetails exists and yoti_nolink button is not checked
-        if ($activityDetails && $yotiNoLinkIsNotChecked)
-        {
-            // Link account to Yoti
-            $yotiHelper = new YotiHelper();
-            $yotiHelper->createYotiUser($user->ID, $activityDetails);
+            // Check that activityDetails exists and yoti_nolink button is not checked
+            if ($activityDetails && $yotiNoLinkIsNotChecked)
+            {
+                // Link account to Yoti
+                $yotiHelper = new YotiHelper();
+                $yotiHelper->createYotiUser($user->ID, $activityDetails);
+            }
         }
 
         // Remove Yoti session
@@ -159,14 +183,61 @@ class Yoti
      */
     public static function show_user_profile($user)
     {
-        $dbProfile = YotiHelper::getUserProfile($user->ID);
+        // Do not display profile if account is not linked.
+        if (empty(get_user_meta($user->ID, 'yoti_user.identifier'))) {
+            return;
+        }
+
+        $dbProfile = (array) YotiHelper::getUserProfile($user->ID);
+
         $profileUserId = $user->ID;
+        $currentUser = wp_get_current_user();
+        $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
+        $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : NULL;
+
+        // Set userId if admin user is viewing his own profile
+        // and the userId is NULL
+        if(
+            $isAdmin
+            && $profileUserId === $currentUser->ID
+            && is_null($userId)
+        ) {
+            $userId = $profileUserId;
+        }
+
+        if (!empty($dbProfile)) {
+            // Move selfie attr to the top
+            if (isset($dbProfile[YotiHelper::SELFIE_FILENAME])) {
+                $selfieDataArr = [YotiHelper::SELFIE_FILENAME => $dbProfile[YotiHelper::SELFIE_FILENAME]];
+                unset($dbProfile[YotiHelper::SELFIE_FILENAME]);
+                $dbProfile = array_merge(
+                    $selfieDataArr,
+                    $dbProfile
+                );
+            }
+        }
+
+        // Flag to display button.
+        $displayButton = FALSE;
+
+        if (!$isAdmin) {
+            // Display for non-admin accounts.
+            $displayButton = TRUE;
+        }
+        elseif (!$userId) {
+            // Display for anonymous users.
+            $displayButton = TRUE;
+        }
+        elseif ($currentUser->ID === $userId) {
+            // Display for current user.
+            $displayButton = TRUE;
+        }
 
         // Add profile scope
-        $show = function () use ($dbProfile, $profileUserId) {
+        $view = function () use ($dbProfile, $displayButton, $userId) {
             include_once __DIR__ . '/views/profile.php';
         };
-        $show();
+        $view();
     }
 
     /**
@@ -212,12 +283,10 @@ class Yoti
 
         // Display the notice only on the plugins page.
         if ($pagenow === "plugins.php") {
-            $noticeHTML = '<div class="notice notice-success is-dismissible">' .
-                '<p><strong>Almost done</strong> - Complete Yoti <a style="text-decoration: none;" href="'.
-                admin_url( 'options-general.php?page=yoti' ) .'">'. __('settings here', 'yoti') .
-                '</a>.</p></div>';
-
-            echo $noticeHTML;
+            $view = function () {
+                include_once __DIR__ . '/views/activate-notice.php';
+            };
+            $view();
         }
     }
 }

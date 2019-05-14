@@ -31,23 +31,16 @@ class YotiWidget extends WP_Widget
             $args['widget_id'] = $this->id;
         }
         $title = (!empty( $instance['title'])) ? $instance['title'] : __(self::YOTI_WIDGET_DEFAULT_TITLE);
-
         $title = apply_filters('widget_title', $title, $instance, $this->id_base);
 
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
         $config = YotiHelper::getConfig();
-        $widgetTitleHtml = '';
-        $widgetContent = '<strong>Yoti not configured.</strong>';
-        // Apply widget title html
-        if(!empty($title)){
-            $widgetTitleHtml = $args['before_title'] . $title . $args['after_title'];
-        }
-        if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) {
-            $widgetContent = YotiButton::render(NULL, TRUE);
-        }
-        echo $args['before_widget'];
-        echo $widgetTitleHtml . "<ul><li>$widgetContent</li></ul>";
-        echo $args['after_widget'];
+
+        $view = function () use ($args, $config, $title)
+        {
+            require_once __DIR__ . '/views/widget.php';
+        };
+        $view();
     }
 
     /**
@@ -59,11 +52,15 @@ class YotiWidget extends WP_Widget
      */
     public function form($instance)
     {
-        $title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+        $title = isset( $instance['title'] ) ? $instance['title'] : '';
         ?>
-      <p>
-		<label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_attr_e('Title:'); ?></label>
-		<input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo $title; ?>">
+        <p>
+        <label for="<?php esc_attr_e($this->get_field_id('title')); ?>">Title:</label>
+        <input
+          class="widefat"
+          id="<?php esc_attr_e($this->get_field_id('title')); ?>"
+          name="<?php esc_attr_e($this->get_field_name('title')); ?>"
+          type="text" value="<?php esc_attr_e($title); ?>">
 		</p>
         <?php
     }

@@ -139,7 +139,8 @@ class YotiHelper
                     else
                     {
                         self::storeYotiUser($activityDetails);
-                        wp_redirect(wp_login_url(!empty($_GET['redirect']) ? $_GET['redirect'] : home_url()));
+                        $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
+                        wp_safe_redirect(wp_login_url($redirect));
                         exit;
                     }
                 }
@@ -642,7 +643,8 @@ class YotiHelper
         $currentUser = wp_get_current_user();
         $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
         $userIdUrlPart = ($isAdmin ? '&user_id=' . esc_html($userId) : '');
-        return site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . $userIdUrlPart;
+        $siteUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . $userIdUrlPart;
+        return wp_nonce_url($siteUrl, 'yoti_verify', 'yoti_verify');
     }
 
     /**
