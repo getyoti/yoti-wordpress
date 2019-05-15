@@ -21,6 +21,9 @@ class YotiTestBase extends WP_UnitTestCase
         'yoti_age_verification' => 0,
         'yoti_company_name' => 'company_name',
         'yoti_qr_type' => 'inline',
+        'yoti_pem' => [
+            'contents' => 'some-pem-contents',
+        ],
     ];
 
     /**
@@ -68,6 +71,9 @@ class YotiTestBase extends WP_UnitTestCase
         $adminUserId = wp_create_user('admin_user', 'some_password', 'admin_user@example.com');
         $this->adminUser = get_user_by('id', $adminUserId);
         $this->adminUser->set_role('administrator');
+
+        // Run as anonymous user by default.
+        wp_set_current_user(0);
     }
 
     /**
@@ -127,5 +133,21 @@ class YotiTestBase extends WP_UnitTestCase
     {
         $result = $this->getXpathResult($query, $html);
         $this->assertTrue($result->length == 0, "{$query} XPath query returned results");
+    }
+
+    /**
+     * Get the button XPath base query.
+     *
+     * @return string
+     */
+    protected function getButtonXpath()
+    {
+        $button_attributes = [
+            sprintf("[@data-yoti-application-id='app_id']", $this->config['yoti_app_id']),
+            sprintf("[@data-yoti-scenario-id='scenario_id']", $this->config['yoti_scenario_id']),
+            sprintf("[@data-yoti-type='inline']", $this->config['yoti_qr_type']),
+            "[@data-size='small']",
+        ];
+        return "//div[@class='yoti-connect']/span" . implode('', $button_attributes);
     }
 }
