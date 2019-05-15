@@ -94,6 +94,9 @@ class YotiTestBase extends WP_UnitTestCase
         global $pagenow;
         $pagenow = "index.php";
 
+        // Clear environment variables.
+        putenv('YOTI_CONNECT_BASE_URL');
+
         parent::teardown();
     }
 

@@ -20,17 +20,11 @@
         <span data-yoti-application-id="<?php esc_attr_e($config['yoti_app_id']); ?>"
             data-yoti-scenario-id="<?php esc_attr_e($config['yoti_scenario_id']); ?>"
             data-size="small"
-            <?php if($qr_type !== 'connect') { ?>
-            data-yoti-type="<?php esc_html_e($qr_type); ?>"
-            <?php } ?>
-        ><?php esc_html_e($button_text); ?></span>
+            <?php if($qr_type !== 'connect') { ?>data-yoti-type="<?php esc_html_e($qr_type); ?>"<?php } ?>
+            ><?php esc_html_e($button_text); ?></span>
         <script>
-            <?php if (!empty($qr_url)) { ?>
-            _ybg.config.qr = <?php wp_json_encode($qr_url); ?>
-            <?php } ?>
-            <?php if (!empty($service_url)) { ?>
-            _ybg.config.service = <?php wp_json_encode($service_url); ?>
-            <?php } ?>
+            <?php if (!empty($qr_url)) { ?>_ybg.config.qr = <?php echo wp_json_encode($qr_url); ?>;<?php } ?>
+            <?php if (!empty($service_url)) { ?>_ybg.config.service = <?php echo wp_json_encode($service_url); ?>;<?php } ?>
             _ybg.init();
         </script>
     <?php } elseif($from_widget) { ?>
