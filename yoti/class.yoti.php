@@ -128,7 +128,7 @@ class Yoti
         }
 
         $view = function () use ($companyName, $noLink) {
-            require_once __DIR__ . '/views/login-header.php';
+            require __DIR__ . '/views/login-header.php';
         };
         $view();
     }
@@ -235,7 +235,7 @@ class Yoti
 
         // Add profile scope
         $view = function () use ($dbProfile, $displayButton, $userId) {
-            include_once __DIR__ . '/views/profile.php';
+            require __DIR__ . '/views/profile.php';
         };
         $view();
     }

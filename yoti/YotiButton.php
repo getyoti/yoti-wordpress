@@ -27,6 +27,8 @@ class YotiButton
         }
 
         // Use YOTI_CONNECT_BASE_URL environment variable if configured.
+        $qr_url = NULL;
+        $service_url = NULL;
         if (getenv('YOTI_CONNECT_BASE_URL'))
         {
             // Base url for connect
@@ -47,9 +49,23 @@ class YotiButton
         $qr_type = YotiHelper::getQrType();
         $message = YotiHelper::getFlash();
 
-        $view = function () use ($is_linked, $qr_type, $service_url, $qr_url, $message, $button_text, $from_widget, $config)
+        // Build unlink URL.
+        $unlink_url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
+        $unlink_url = wp_nonce_url($unlink_url, 'yoti_verify', 'yoti_verify');
+
+        $view = function () use (
+            $is_linked,
+            $qr_type,
+            $service_url,
+            $qr_url,
+            $message,
+            $button_text,
+            $from_widget,
+            $config,
+            $unlink_url
+        )
         {
-            require_once __DIR__ . '/views/button.php';
+            require __DIR__ . '/views/button.php';
         };
         $view();
     }
