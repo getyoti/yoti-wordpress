@@ -9,21 +9,6 @@ class YotiButtonTest extends YotiTestBase
 {
 
     /**
-     * Get the button XPath base query.
-     *
-     * @return string
-     */
-    private function getButtonXpath() {
-        $button_attributes = [
-            "[@data-yoti-application-id='app_id']",
-            "[@data-yoti-scenario-id='scenario_id']",
-            "[@data-size='small']",
-            "[@data-yoti-type='inline']",
-        ];
-        return "//div[@class='yoti-connect']/span" . implode('', $button_attributes);
-    }
-
-    /**
      * @covers ::render
      */
     public function testButtonUnlinked()

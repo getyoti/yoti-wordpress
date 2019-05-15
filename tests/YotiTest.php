@@ -13,7 +13,8 @@ class YotiTest extends YotiTestBase
      *
      * @return string
      */
-    private function getUnlinkXpath() {
+    private function getUnlinkXpath()
+    {
         $link_attributes = [
             "[@class='yoti-connect-button']",
             "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&redirect&yoti_verify=')]",
@@ -26,7 +27,8 @@ class YotiTest extends YotiTestBase
      *
      * @param string $html
      */
-    private function assertProfileAttributes($html) {
+    private function assertProfileAttributes($html)
+    {
         foreach (YotiHelper::$profileFields as $attrLabel) {
             $this->assertXpath(
                 "//tr/th/label[contains(text(),'{$attrLabel}')]/parent::th/parent::tr/td[contains(text(),'{$attrLabel} value')]",
@@ -98,7 +100,8 @@ class YotiTest extends YotiTestBase
     /**
      * @covers ::yoti_login_header
      */
-    public function testLoginHeaderSessionData() {
+    public function testLoginHeaderSessionData()
+    {
         $_REQUEST['REQUEST_METHOD'] = 'GET';
         $_REQUEST['redirect_to'] = home_url();
         $_SESSION['yoti-user'] = serialize($this->createMock(Yoti\ActivityDetails::class));
@@ -130,7 +133,8 @@ class YotiTest extends YotiTestBase
     /**
      * @covers ::yoti_login_header
      */
-    public function testLoginHeaderNoSessionData() {
+    public function testLoginHeaderNoSessionData()
+    {
         ob_start();
         Yoti::yoti_login_header();
         $this->assertEmpty(ob_get_clean());
@@ -139,7 +143,8 @@ class YotiTest extends YotiTestBase
     /**
      * @covers ::yoti_login_header
      */
-    public function testLoginHeaderClearSessionDataOnReload() {
+    public function testLoginHeaderClearSessionDataOnReload()
+    {
         $_REQUEST['REQUEST_METHOD'] = 'GET';
         $_SESSION['yoti-user'] = serialize($this->createMock(Yoti\ActivityDetails::class));
 
@@ -156,7 +161,8 @@ class YotiTest extends YotiTestBase
     /**
      * @covers ::yoti_login_header
      */
-    public function testLoginHeaderNoLinkChecked() {
+    public function testLoginHeaderNoLinkChecked()
+    {
         $_REQUEST['REQUEST_METHOD'] = 'POST';
         $_POST['yoti_nolink'] = '1';
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
@@ -173,7 +179,8 @@ class YotiTest extends YotiTestBase
     /**
      * @covers ::yoti_plugin_activate_notice
      */
-    public function testActivateNotice() {
+    public function testActivateNotice()
+    {
         global $pagenow;
         $pagenow = "plugins.php";
 
