@@ -17,9 +17,10 @@ class YotiTestBase extends WP_UnitTestCase
         'yoti_only_existing' => 1,
         'yoti_success_url' => '/user',
         'yoti_fail_url' => '/',
-        'yoti_user_email' => 'user@example.com',
+        'yoti_user_email' => 1,
         'yoti_age_verification' => 0,
         'yoti_company_name' => 'company_name',
+        'yoti_qr_type' => 'inline',
     ];
 
     /**

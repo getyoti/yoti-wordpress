@@ -58,7 +58,7 @@ $qrType = isset($data['yoti_qr_type']) ? $data['yoti_qr_type'] : YotiHelper::get
               </td>
           </tr>
           <tr>
-              <th scope="row"><label for="yoti_sdk_id">Company Name</label></th>
+              <th scope="row"><label for="yoti_company_name">Company Name</label></th>
               <td>
                   <input name="yoti_company_name" type="text" id="yoti_company_name" value="<?php esc_attr_e($data['yoti_company_name']); ?>" class="regular-text code" />
                   <p><code>Company Name</code> to replace WordPress wording in the warning message on the login form.</p>
@@ -69,7 +69,7 @@ $qrType = isset($data['yoti_qr_type']) ? $data['yoti_qr_type'] : YotiHelper::get
               <td>
                   <select name="yoti_qr_type" id="yoti_qr_type" class="regular-text code">
                   <?php foreach (YotiAdmin::qrTypes() as $key => $value) { ?>
-                    <option <?php selected($key == $qrType); ?>value="<?php esc_attr_e($key); ?>"><?php esc_html_e($value); ?></option>
+                    <option <?php selected($key == $qrType); ?> value="<?php esc_attr_e($key); ?>"><?php esc_html_e($value); ?></option>
                   <?php } ?>
                   </select>
               </td>
