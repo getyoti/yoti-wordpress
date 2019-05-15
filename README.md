@@ -72,7 +72,7 @@ Clone this repository and go into the folder `yoti-wordpress`:
 
 ```shell
 $ git clone https://github.com/getyoti/yoti-wordpress.git
-$ cd yoti-wordpress
+$ cd yoti-wordpress/docker
 ```
 
 Rebuild the images if you have modified the `docker-compose.yml` file:
@@ -98,7 +98,7 @@ The Yoti plugin will be installed alongside WordPress. Activate it and follow ou
 To fetch the latest SDK and place in `./yoti/sdk` directory:
 
 ```shell
-$ ./checkout-sdk.sh
+$ ./bin/checkout-sdk.sh
 ```
 
 #### Running the local working plugin
