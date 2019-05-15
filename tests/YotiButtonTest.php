@@ -29,8 +29,6 @@ class YotiButtonTest extends YotiTestBase
      */
     public function testButtonAnonymous()
     {
-        wp_set_current_user(0);
-
         ob_start();
         YotiButton::render();
 
@@ -38,6 +36,36 @@ class YotiButtonTest extends YotiTestBase
             $this->getButtonXpath() . "[contains(text(), 'Use Yoti')]",
             ob_get_clean()
         );
+    }
+
+    /**
+     * @covers ::render
+     */
+    public function testButtonScript()
+    {
+        ob_start();
+        YotiButton::render();
+        $html = ob_get_clean();
+
+        $this->assertXpath("//script[contains(.,'_ybg.init();')]", $html);
+        $this->assertXpath("//script[not(contains(.,'_ybg.config.qr'))]", $html);
+        $this->assertXpath("//script[not(contains(.,'_ybg.config.service'))]", $html);
+    }
+
+    /**
+     * @covers ::render
+     */
+    public function testButtonScriptStaging()
+    {
+        putenv('YOTI_CONNECT_BASE_URL=https://www.example.com/connect');
+
+        ob_start();
+        YotiButton::render();
+        $html = ob_get_clean();
+
+        $this->assertXpath('//script[contains(.,"_ybg.init();")]', $html);
+        $this->assertXpath("//script[contains(.,'_ybg.config.qr = \"https:\/\/www.example.com\/qr\/\";')]", $html);
+        $this->assertXpath("//script[contains(.,'_ybg.config.service = \"https:\/\/www.example.com\/connect\/\";')]", $html);
     }
 
     /**
