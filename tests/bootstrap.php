@@ -30,3 +30,6 @@ tests_add_filter('muplugins_loaded', '_manually_load_plugin');
 
 // Start up the WP testing environment.
 require $tests_dir . '/includes/bootstrap.php';
+
+// Include test base class.
+require_once 'YotiTestBase.php';

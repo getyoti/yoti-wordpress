@@ -7,6 +7,7 @@
  * @var string $button_text
  * @var array $config
  * @var bool $from_widget
+ * @var string $unlink_url
  */
 ?>
 <div class="yoti-connect">
@@ -35,12 +36,8 @@
     <?php } elseif($from_widget) { ?>
         <strong>Yoti</strong> Linked
     <?php } else { ?>
-        <?php
-        $url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
-        $url = wp_nonce_url($url, 'yoti_verify', 'yoti_verify');
-        ?>
         <a class="yoti-connect-button"
-            href="<?php esc_attr_e($url); ?>"
+            href="<?php esc_attr_e($unlink_url); ?>"
             onclick="return confirm('This will unlink your account from Yoti.')"
             >Unlink Yoti Account</a>
     <?php } ?>
