@@ -38,7 +38,7 @@ class YotiWidget extends WP_Widget
 
         $view = function () use ($args, $config, $title)
         {
-            require_once __DIR__ . '/views/widget.php';
+            require __DIR__ . '/views/widget.php';
         };
         $view();
     }
