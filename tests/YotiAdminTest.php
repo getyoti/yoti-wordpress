@@ -50,10 +50,7 @@ class YotiAdminTest extends YotiTestBase
             'yoti_user_email' => 'Prevent users who have not passed age verification to access your site',
         ];
         foreach ($checkbox_fields as $id => $label) {
-            $label_query = sprintf(
-                "//label[contains(text(),'%s')]",
-                $label
-            );
+            $label_query = sprintf("//label[contains(text(),'%s')]", $label);
             $this->assertXpath($label_query, $html);
 
             $checked = !empty($this->config[$id]) ? "[@checked='checked']" : "[not(@checked)]";

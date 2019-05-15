@@ -146,9 +146,9 @@ class YotiTestBase extends WP_UnitTestCase
     protected function getButtonXpath()
     {
         $button_attributes = [
-            sprintf("[@data-yoti-application-id='app_id']", $this->config['yoti_app_id']),
-            sprintf("[@data-yoti-scenario-id='scenario_id']", $this->config['yoti_scenario_id']),
-            sprintf("[@data-yoti-type='inline']", $this->config['yoti_qr_type']),
+            sprintf("[@data-yoti-application-id='%s']", $this->config['yoti_app_id']),
+            sprintf("[@data-yoti-scenario-id='%s']", $this->config['yoti_scenario_id']),
+            sprintf("[@data-yoti-type='%s']", $this->config['yoti_qr_type']),
             "[@data-size='small']",
         ];
         return "//div[@class='yoti-connect']/span" . implode('', $button_attributes);
