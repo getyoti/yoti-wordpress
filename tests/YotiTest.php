@@ -169,4 +169,31 @@ class YotiTest extends YotiTestBase
         // Check the checkbox is checked.
         $this->assertXpath('//input[@name="yoti_nolink"][@checked="checked"]', $html);
     }
+
+    /**
+     * @covers ::yoti_plugin_activate_notice
+     */
+    public function testActivateNotice() {
+        global $pagenow;
+        $pagenow = "plugins.php";
+
+        ob_start();
+        Yoti::yoti_plugin_activate_notice();
+        $html = ob_get_clean();
+
+        $base_query = '//div[@class="notice notice-success is-dismissible"]';
+
+        // Check the text is correct.
+        $this->assertXpath(
+            $base_query . '/p[contains(.,"Almost done - Complete Yoti")]',
+            $html
+        );
+
+        // Check the link is correct.
+        $this->assertXpath(
+            $base_query .'/p/a[contains(@href,"/wp-admin/options-general.php?page=yoti")][contains(.,"settings here")]',
+            $html
+        );
+
+    }
 }

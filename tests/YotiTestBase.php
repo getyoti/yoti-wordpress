@@ -84,6 +84,10 @@ class YotiTestBase extends WP_UnitTestCase
         // Reset session.
         $_SESSION = [];
 
+        // Reset pagenow.
+        global $pagenow;
+        $pagenow = "index.php";
+
         parent::teardown();
     }
 
