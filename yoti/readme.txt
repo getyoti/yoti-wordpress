@@ -83,6 +83,7 @@ Here you can find the changes for each version:
 1.4.0
 
 * Allow QR type to be configured
+* Display unlink button on profile when only Remember Me ID is shared
 
 1.3.1
 
