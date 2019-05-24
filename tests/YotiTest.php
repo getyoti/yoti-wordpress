@@ -135,7 +135,7 @@ class YotiTest extends YotiTestBase
     /**
      * @covers ::yoti_login
      */
-    public function testLoginNoVerify()
+    public function testLoginNotVerified()
     {
         wp_create_nonce('yoti_verify');
         $_POST['yoti_nolink'] = '0';
@@ -152,6 +152,15 @@ class YotiTest extends YotiTestBase
         $this->assertEquals('message', $flash['type']);
         $this->assertEmpty(YotiHelper::getYotiUserFromStore());
         $this->assertFalse(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+    }
+
+    /**
+     * @covers ::yoti_login
+     */
+    public function testLoginNoVerification()
+    {
+        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+        $this->assertEmpty(YotiHelper::getFlash());
     }
 
     /**
