@@ -176,7 +176,7 @@ class YotiTest extends YotiTestBase
 
         $this->assertEmpty(YotiHelper::getFlash());
         $this->assertEmpty(YotiHelper::getYotiUserFromStore());
-        $this->assertIsArray(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+        $this->assertTrue(is_array(YotiHelper::getUserProfile($this->unlinkedUser->ID)));
     }
 
     /**
