@@ -145,9 +145,13 @@ class Yoti
             return;
         }
 
-        // Verifiy the action.
-        $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');
-        if (!$verified) {
+        // Return when the login form doesn't have yoti verification.
+        if (empty($_POST['yoti_verify'])) {
+            return;
+        }
+
+        // Verify the action.
+        if (!wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')) {
             YotiHelper::setFlash('Yoti profile could not be linked, please try again.');
         }
         else {
@@ -164,7 +168,6 @@ class Yoti
         }
 
         // Remove Yoti session
-        unset($_SESSION['yoti_nolink']);
         YotiHelper::clearYotiUserStore();
     }
 
