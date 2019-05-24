@@ -1,4 +1,6 @@
 <?php
+use Yoti\ActivityDetails;
+use Yoti\Entity\Profile;
 
 /**
  * @coversDefaultClass Yoti
@@ -104,7 +106,7 @@ class YotiTest extends YotiTestBase
     {
         $_REQUEST['REQUEST_METHOD'] = 'GET';
         $_REQUEST['redirect_to'] = home_url();
-        $_SESSION['yoti-user'] = serialize($this->createMock(Yoti\ActivityDetails::class));
+        $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
         Yoti::yoti_login_header();
@@ -131,6 +133,60 @@ class YotiTest extends YotiTestBase
     }
 
     /**
+     * @covers ::yoti_login
+     */
+    public function testLoginNoVerify()
+    {
+        wp_create_nonce('yoti_verify');
+        $_POST['yoti_nolink'] = '0';
+        $_POST['yoti_verify'] = 'invalid-verification';
+        YotiHelper::storeYotiUser($this->createMockActivityDetails());
+
+        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+
+        $flash = YotiHelper::getFlash();
+        $this->assertEquals(
+            'Yoti profile could not be linked, please try again.',
+            $flash['message']
+        );
+        $this->assertEquals('message', $flash['type']);
+        $this->assertEmpty(YotiHelper::getYotiUserFromStore());
+        $this->assertFalse(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+    }
+
+    /**
+     * @covers ::yoti_login
+     */
+    public function testLoginVerified()
+    {
+        $_POST['yoti_nolink'] = '0';
+        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        YotiHelper::storeYotiUser($this->createMockActivityDetails());
+
+        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+
+        $this->assertEmpty(YotiHelper::getFlash());
+        $this->assertEmpty(YotiHelper::getYotiUserFromStore());
+        $this->assertIsArray(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+    }
+
+    /**
+     * @covers ::yoti_login
+     */
+    public function testLoginVerifiedNoLink()
+    {
+        $_POST['yoti_nolink'] = '1';
+        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        YotiHelper::storeYotiUser($this->createMockActivityDetails());
+
+        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+
+        $this->assertEmpty(YotiHelper::getFlash());
+        $this->assertEmpty(YotiHelper::getYotiUserFromStore());
+        $this->assertFalse(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+    }
+
+    /**
      * @covers ::yoti_login_header
      */
     public function testLoginHeaderNoSessionData()
@@ -146,7 +202,7 @@ class YotiTest extends YotiTestBase
     public function testLoginHeaderClearSessionDataOnReload()
     {
         $_REQUEST['REQUEST_METHOD'] = 'GET';
-        $_SESSION['yoti-user'] = serialize($this->createMock(Yoti\ActivityDetails::class));
+        $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
         Yoti::yoti_login_header();
@@ -166,7 +222,7 @@ class YotiTest extends YotiTestBase
         $_REQUEST['REQUEST_METHOD'] = 'POST';
         $_POST['yoti_nolink'] = '1';
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
-        $_SESSION['yoti-user'] = serialize($this->createMock(Yoti\ActivityDetails::class));
+        $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
         Yoti::yoti_login_header();
@@ -202,5 +258,25 @@ class YotiTest extends YotiTestBase
             $html
         );
 
+    }
+
+    /**
+     * Create mock activity details.
+     *
+     * @return \Yoti\ActivityDetails
+     */
+    private function createMockActivityDetails() {
+        $activityDetails = $this->createMock(ActivityDetails::class);
+
+        $profile = $this->createMock(Profile::class);
+        $profile
+          ->method('getAgeVerifications')
+          ->willReturn([]);
+
+        $activityDetails
+          ->method('getProfile')
+          ->willReturn($profile);
+
+        return $activityDetails;
     }
 }
