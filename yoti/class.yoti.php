@@ -145,7 +145,7 @@ class Yoti
             return;
         }
 
-        // Return when the login form doesn't have yoti verification.
+        // Return when the login form doesn't have Yoti verification.
         if (empty($_POST['yoti_verify'])) {
             return;
         }
