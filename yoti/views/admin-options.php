@@ -4,9 +4,6 @@
  * @var string $updateMessage
  * @var array $errors
  */
-
-// Get the default QR type.
-$qrType = isset($data['yoti_qr_type']) ? $data['yoti_qr_type'] : YotiHelper::getQrType();
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
@@ -62,16 +59,6 @@ $qrType = isset($data['yoti_qr_type']) ? $data['yoti_qr_type'] : YotiHelper::get
               <td>
                   <input name="yoti_company_name" type="text" id="yoti_company_name" value="<?php esc_attr_e($data['yoti_company_name']); ?>" class="regular-text code" />
                   <p><code>Company Name</code> to replace WordPress wording in the warning message on the login form.</p>
-              </td>
-          </tr>
-          <tr>
-              <th scope="row"><label for="yoti_qr_type">QR Type</label></th>
-              <td>
-                  <select name="yoti_qr_type" id="yoti_qr_type" class="regular-text code">
-                  <?php foreach (YotiAdmin::qrTypes() as $key => $value) { ?>
-                    <option <?php selected($key == $qrType); ?> value="<?php esc_attr_e($key); ?>"><?php esc_html_e($value); ?></option>
-                  <?php } ?>
-                  </select>
               </td>
           </tr>
           <tr>

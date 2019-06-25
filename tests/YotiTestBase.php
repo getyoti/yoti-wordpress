@@ -20,7 +20,6 @@ class YotiTestBase extends WP_UnitTestCase
         'yoti_user_email' => 1,
         'yoti_age_verification' => 0,
         'yoti_company_name' => 'company_name',
-        'yoti_qr_type' => 'inline',
         'yoti_pem' => [
             'contents' => 'some-pem-contents',
         ],
@@ -148,7 +147,7 @@ class YotiTestBase extends WP_UnitTestCase
         $button_attributes = [
             sprintf("[@data-yoti-application-id='%s']", $this->config['yoti_app_id']),
             sprintf("[@data-yoti-scenario-id='%s']", $this->config['yoti_scenario_id']),
-            sprintf("[@data-yoti-type='%s']", $this->config['yoti_qr_type']),
+            "[@data-yoti-type='inline']",
             "[@data-size='small']",
         ];
         return "//div[@class='yoti-connect']/span" . implode('', $button_attributes);
