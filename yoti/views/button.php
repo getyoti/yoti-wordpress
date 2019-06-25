@@ -20,7 +20,7 @@
         <span data-yoti-application-id="<?php esc_attr_e($config['yoti_app_id']); ?>"
             data-yoti-scenario-id="<?php esc_attr_e($config['yoti_scenario_id']); ?>"
             data-size="small"
-            <?php if($qr_type !== 'connect') { ?>data-yoti-type="<?php esc_html_e($qr_type); ?>"<?php } ?>
+            data-yoti-type="inline"
             ><?php esc_html_e($button_text); ?></span>
         <script>
             <?php if (!empty($qr_url)) { ?>_ybg.config.qr = <?php echo wp_json_encode($qr_url); ?>;<?php } ?>
