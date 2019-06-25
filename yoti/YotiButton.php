@@ -46,7 +46,6 @@ class YotiButton
             $is_linked = !empty(get_user_meta($currentUser->ID, 'yoti_user.identifier'));
         }
 
-        $qr_type = YotiHelper::getQrType();
         $message = YotiHelper::getFlash();
 
         // Build unlink URL.
@@ -55,7 +54,6 @@ class YotiButton
 
         $view = function () use (
             $is_linked,
-            $qr_type,
             $service_url,
             $qr_url,
             $message,

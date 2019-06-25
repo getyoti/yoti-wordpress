@@ -62,21 +62,6 @@ class YotiAdminTest extends YotiTestBase
             $this->assertXpath($input_query, $html);
         }
 
-        // Check QR type field.
-        $this->assertXpath("//label[contains(text(),'QR Type')]", $html);
-        foreach (YotiAdmin::qrTypes() as $value => $label) {
-            $selected = $value == $this->config['yoti_qr_type'] ? "[@selected='selected']" : "[not(@selected)]";
-            $this->assertXpath(
-                sprintf(
-                    "//select[@name='yoti_qr_type']/option[@value='%s'][contains(text(),'%s')]%s",
-                    $value,
-                    $label,
-                    $selected
-                ),
-                $html
-            );
-        }
-
     }
 
 }

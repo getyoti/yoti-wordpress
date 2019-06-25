@@ -106,7 +106,6 @@ class YotiAdmin
                 $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
                 $data['yoti_user_email'] = $this->postVar('yoti_user_email');
                 $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
-                $data['yoti_qr_type'] = $this->postVar('yoti_qr_type');
                 $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
 
                 // Validation
@@ -125,11 +124,6 @@ class YotiAdmin
                 elseif (!empty($pemFile['tmp_name']) && !openssl_get_privatekey(file_get_contents($pemFile['tmp_name'])))
                 {
                     $errors['yoti_pem'] = 'PEM file is invalid.';
-                }
-
-                if (!in_array($data['yoti_qr_type'], array_keys(YotiAdmin::qrTypes())))
-                {
-                    $errors['yoti_qr_type'] = 'QR type "' . $data['yoti_qr_type'] . '" is invalid. Allowed types: ' .  implode(', ', YotiAdmin::qrTypes());
                 }
             }
             catch (\Exception $e) {
