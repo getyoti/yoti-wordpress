@@ -46,21 +46,6 @@ class YotiAdmin
     }
 
     /**
-     * List of QR Types.
-     *
-     * @return array
-     */
-    public static function qrTypes()
-    {
-        return [
-            'inline' => 'Inline',
-            'connect' => 'Connect Page',
-            'popout' => 'Popout',
-            'instant' => 'Instant',
-        ];
-    }
-
-    /**
      * options page for admin
      */
     private function options()
