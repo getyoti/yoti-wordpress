@@ -26,7 +26,7 @@ services:
       - wordpress-base
     build:
       context: ./
-      dockerfile: app.base.dockerfile
+      dockerfile: app.dockerfile
       args:
         BRANCH: "master"
     ports:
