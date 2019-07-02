@@ -46,7 +46,7 @@ foreach ($dbProfile as $attrName => $value)
 <?php if ($displayButton) { ?>
     <tr>
         <th></th>
-        <td><?php YotiButton::render($_SERVER['REQUEST_URI']); ?></td>
+        <td><?php YotiButton::render($_SERVER['REQUEST_URI'], FALSE, TRUE); ?></td>
     </tr>
 <?php } ?>
 </table>
