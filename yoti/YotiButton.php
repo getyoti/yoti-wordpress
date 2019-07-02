@@ -17,8 +17,11 @@ class YotiButton
      *
      * @param null $redirect
      * @param bool $from_widget
+     * @param boolean $echo
+     *
+     * @return string|null
      */
-    public static function render($redirect = NULL, $from_widget = FALSE)
+    public static function render($redirect = NULL, $from_widget = FALSE, $echo = FALSE)
     {
         // No config? no button
         $config = YotiHelper::getConfig();
@@ -65,6 +68,12 @@ class YotiButton
         {
             require __DIR__ . '/views/button.php';
         };
+
+        if ($echo === FALSE) {
+            ob_start();
+            $view();
+            return ob_get_clean();
+        }
         $view();
     }
 }
