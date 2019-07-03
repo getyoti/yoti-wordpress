@@ -16,7 +16,7 @@ You can install the Yoti WordPress plugin in two ways:
 ### By using this repository (For MacOS and Linux users)
 
 1. Clone this repository
-2. Run `./pack-plugin.sh`. This will download the Yoti PHP SDK and place it in the plugin directory
+2. Run `./bin/pack-plugin.sh`. This will download the Yoti PHP SDK and place it in the plugin directory
 3. On completion of step 2, you will have a file called `yoti-wordpress-edge.zip`.
 4. Upload this file to your Wordpress Admin Dashboard at `Plugins > Add New`, then click `Upload Plugin`.
 5. Once installed, click on `Activate Plugin`.
