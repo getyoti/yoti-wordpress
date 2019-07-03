@@ -16,8 +16,8 @@ fi
 echo "Pulling PHP SDK TAG $SDK_TAG.zip ..."
 
 curl https://github.com/getyoti/yoti-php-sdk/archive/$SDK_TAG.zip -O -L
-unzip $SDK_TAG.zip -d "$BASE_DIR/sdk"
-mv sdk/yoti-php-sdk-$SDK_TAG/src/* "$BASE_DIR/sdk"
+unzip $SDK_TAG.zip -d sdk
+mv sdk/yoti-php-sdk-$SDK_TAG/src/* sdk
 rm -rf sdk/yoti-php-sdk-$SDK_TAG
 
 if [ ! -d "$BASE_DIR" ]; then
@@ -26,7 +26,7 @@ if [ ! -d "$BASE_DIR" ]; then
 fi
 
 rm -fr "$PLUGIN_DIR/sdk"
-mv "$BASE_DIR/sdk" "$PLUGIN_DIR/sdk"
+mv sdk "$PLUGIN_DIR/sdk"
 zip -r "$NAME" "$PLUGIN_DIR"
 
 echo "Fetched PHP SDK TAG $SDK_TAG."
