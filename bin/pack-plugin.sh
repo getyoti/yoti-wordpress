@@ -10,9 +10,11 @@ $BIN_DIR/checkout-sdk.sh $1
 
 echo "Packing plugin ..."
 
-cp "$BASE_DIR/LICENSE" "$BASE_DIR/yoti"
-zip -r "$NAME" "$BASE_DIR/yoti"
-rm "$BASE_DIR/yoti/LICENSE"
+cd $BASE_DIR
+cp "./LICENSE" "./yoti"
+zip -r "$NAME" "./yoti/"
+rm "./yoti/LICENSE"
+cd -
 
 echo "Plugin packed. File $NAME created."
 echo ""
