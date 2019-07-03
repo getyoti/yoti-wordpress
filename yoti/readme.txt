@@ -82,6 +82,8 @@ Here you can find the changes for each version:
 
 1.3.2
 
+Release Date - 3 July 2019
+
 * Display unlink button on profile when only Remember Me ID is shared
 
 1.3.1
