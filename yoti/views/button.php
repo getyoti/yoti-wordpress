@@ -1,13 +1,12 @@
 <?php
 /**
  * @var bool $is_linked
- * @var string $service_url
- * @var string $qr_url
  * @var string $message
  * @var string $button_text
  * @var array $config
  * @var bool $from_widget
  * @var string $unlink_url
+ * @var string $button_id
  */
 ?>
 <div class="yoti-connect">
@@ -17,15 +16,16 @@
         </div>
     <?php } ?>
     <?php  if (!$is_linked) { ?>
-        <span data-yoti-application-id="<?php esc_attr_e($config['yoti_app_id']); ?>"
-            data-yoti-scenario-id="<?php esc_attr_e($config['yoti_scenario_id']); ?>"
-            data-size="small"
-            data-yoti-type="inline"
-            ><?php esc_html_e($button_text); ?></span>
+        <div id="<?php esc_attr_e($button_id); ?>" class="yoti-button"></div>
         <script>
-            <?php if (!empty($qr_url)) { ?>_ybg.config.qr = <?php echo wp_json_encode($qr_url); ?>;<?php } ?>
-            <?php if (!empty($service_url)) { ?>_ybg.config.service = <?php echo wp_json_encode($service_url); ?>;<?php } ?>
-            _ybg.init();
+            var yotiConfig = yotiConfig || { elements: [] };
+            yotiConfig.elements.push({
+                "domId": "<?php esc_attr_e($button_id); ?>",
+                "scenarioId": "<?php esc_attr_e($config['yoti_scenario_id']); ?>",
+                "button": {
+                    "label": "<?php esc_attr_e($button_text); ?>"
+                }
+            });
         </script>
     <?php } elseif($from_widget) { ?>
         <strong>Yoti</strong> Linked

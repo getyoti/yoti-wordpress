@@ -24,7 +24,7 @@ class YotiHelper
     /**
      * Yoti SDK javascript library.
      */
-    const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://sdk.yoti.com/clients/browser.2.3.0.js';
+    const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://www.yoti.com/share/client/';
 
     /**
      * @var array

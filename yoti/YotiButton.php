@@ -23,21 +23,14 @@ class YotiButton
      */
     public static function render($redirect = NULL, $from_widget = FALSE, $echo = FALSE)
     {
+        // Increment button ID
+        static $button_id_suffix = 0;
+        $button_id = 'yoti-button-' . ++$button_id_suffix;
+
         // No config? no button
         $config = YotiHelper::getConfig();
         if (!$config) {
             return NULL;
-        }
-
-        // Use YOTI_CONNECT_BASE_URL environment variable if configured.
-        $qr_url = NULL;
-        $service_url = NULL;
-        if (getenv('YOTI_CONNECT_BASE_URL'))
-        {
-            // Base url for connect
-            $baseUrl = preg_replace('/^(.+)\/connect$/', '$1', getenv('YOTI_CONNECT_BASE_URL'));
-            $qr_url = sprintf('%s/qr/', $baseUrl);
-            $service_url = sprintf('%s/connect/', $baseUrl);
         }
 
         $button_text = YotiButton::YOTI_LINK_BUTTON_TEXT;
@@ -57,13 +50,12 @@ class YotiButton
 
         $view = function () use (
             $is_linked,
-            $service_url,
-            $qr_url,
             $message,
             $button_text,
             $from_widget,
             $config,
-            $unlink_url
+            $unlink_url,
+            $button_id
         )
         {
             require __DIR__ . '/views/button.php';
