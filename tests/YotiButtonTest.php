@@ -15,10 +15,12 @@ class YotiButtonTest extends YotiTestBase
     {
         wp_set_current_user($this->unlinkedUser->ID);
 
-        $this->assertXpath(
-            $this->getButtonXpath() . "[contains(text(), 'Link to Yoti')]",
-            YotiButton::render()
-        );
+        $html = YotiButton::render();
+
+        $config = $this->getButtonConfigFromMarkup($html);
+        $this->assertEquals($config->button->label, 'Link to Yoti');
+        $this->assertEquals($config->scenarioId, $this->config['yoti_scenario_id']);
+        $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
     /**
@@ -26,36 +28,11 @@ class YotiButtonTest extends YotiTestBase
      */
     public function testButtonAnonymous()
     {
-        $this->assertXpath(
-            $this->getButtonXpath() . "[contains(text(), 'Use Yoti')]",
-            YotiButton::render()
-        );
-    }
-
-    /**
-     * @covers ::render
-     */
-    public function testButtonScript()
-    {
         $html = YotiButton::render();
 
-        $this->assertXpath("//script[contains(.,'_ybg.init();')]", $html);
-        $this->assertXpath("//script[not(contains(.,'_ybg.config.qr'))]", $html);
-        $this->assertXpath("//script[not(contains(.,'_ybg.config.service'))]", $html);
-    }
-
-    /**
-     * @covers ::render
-     */
-    public function testButtonScriptStaging()
-    {
-        putenv('YOTI_CONNECT_BASE_URL=https://www.example.com/connect');
-
-        $html = YotiButton::render();
-
-        $this->assertXpath('//script[contains(.,"_ybg.init();")]', $html);
-        $this->assertXpath("//script[contains(.,'_ybg.config.qr = \"https:\/\/www.example.com\/qr\/\";')]", $html);
-        $this->assertXpath("//script[contains(.,'_ybg.config.service = \"https:\/\/www.example.com\/connect\/\";')]", $html);
+        $config = $this->getButtonConfigFromMarkup($html);
+        $this->assertEquals($config->button->label, 'Use Yoti');
+        $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
     /**
