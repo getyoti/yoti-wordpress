@@ -270,6 +270,21 @@ class YotiTest extends YotiTestBase
     }
 
     /**
+     * @covers ::yoti_enqueue_scripts
+     */
+    public function testInitScript() {
+        wp_enqueue_scripts();
+        $scripts = wp_scripts();
+
+        ob_start();
+        $scripts->do_footer_items();
+        $html = ob_get_clean();
+
+        $this->assertXpath("//script[@src='https://www.yoti.com/share/client/']", $html);
+        $this->assertXpath("//script[contains(text(), 'window.Yoti.Share.init(yotiConfig);')]", $html);
+    }
+
+    /**
      * Create mock activity details.
      *
      * @return \Yoti\ActivityDetails

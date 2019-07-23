@@ -138,18 +138,14 @@ class YotiTestBase extends WP_UnitTestCase
     }
 
     /**
-     * Get the button XPath base query.
+     * Extract the button config from provided markup.
      *
-     * @return string
+     * @param string $html
+     *
+     * @return stdClass
      */
-    protected function getButtonXpath()
-    {
-        $button_attributes = [
-            sprintf("[@data-yoti-application-id='%s']", $this->config['yoti_app_id']),
-            sprintf("[@data-yoti-scenario-id='%s']", $this->config['yoti_scenario_id']),
-            "[@data-yoti-type='inline']",
-            "[@data-size='small']",
-        ];
-        return "//div[@class='yoti-connect']/span" . implode('', $button_attributes);
+    protected function getButtonConfigFromMarkup($html) {
+        preg_match('~yotiConfig\.elements\.push\((.*?)\);~s', $html, $matches);
+        return json_decode($matches[1]);
     }
 }

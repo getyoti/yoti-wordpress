@@ -256,7 +256,8 @@ class Yoti
      */
     public static function yoti_enqueue_scripts()
     {
-        wp_enqueue_script('yoti-asset-js', YotiHelper::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL);
+        wp_enqueue_script('yoti-asset-js', YotiHelper::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL, TRUE);
+        wp_add_inline_script('yoti-asset-js', 'window.Yoti.Share.init(yotiConfig);');
     }
 
     /**

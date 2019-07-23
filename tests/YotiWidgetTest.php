@@ -16,10 +16,10 @@ class YotiWidgetTest extends YotiTestBase
         ob_start();
         the_widget('YotiWidget');
 
-        $this->assertXpath(
-            $this->getButtonXpath(),
-            ob_get_clean()
-        );
+        $html = ob_get_clean();
+        $config = $this->getButtonConfigFromMarkup($html);
+        $this->assertEquals($config->button->label, 'Use Yoti');
+        $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
     /**
