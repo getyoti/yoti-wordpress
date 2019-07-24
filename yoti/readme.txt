@@ -5,7 +5,7 @@ Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA,
 Requires at least: 3.0.1
 Tested up to: 5.2
 Requires PHP: 5.6
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -79,6 +79,10 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Changelog ==
 
 Here you can find the changes for each version:
+
+1.4.0
+
+* Widget now displays QR code in modal
 
 1.3.2
 
