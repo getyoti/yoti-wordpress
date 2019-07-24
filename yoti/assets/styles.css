@@ -48,6 +48,10 @@
     padding: 3px 12px;
 }
 
+.yoti-connect .yoti-button {
+    height: 50px;
+}
+
 .wrap .pem-file {
     margin-bottom: 10px;
 }
