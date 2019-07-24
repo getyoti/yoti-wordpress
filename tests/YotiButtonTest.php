@@ -19,6 +19,7 @@ class YotiButtonTest extends YotiTestBase
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, 'Link to Yoti');
+        $this->assertEquals($config->clientSdkId, $this->config['yoti_sdk_id']);
         $this->assertEquals($config->scenarioId, $this->config['yoti_scenario_id']);
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }

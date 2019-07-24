@@ -21,6 +21,7 @@
             var yotiConfig = yotiConfig || { elements: [] };
             yotiConfig.elements.push({
                 "domId": "<?php esc_attr_e($button_id); ?>",
+                "clientSdkId": "<?php esc_attr_e($config['yoti_sdk_id']); ?>",
                 "scenarioId": "<?php esc_attr_e($config['yoti_scenario_id']); ?>",
                 "button": {
                     "label": "<?php esc_attr_e($button_text); ?>"
