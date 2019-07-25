@@ -23,7 +23,7 @@ class YotiAdminTest extends YotiTestBase
         $text_fields = [
             'yoti_app_id' => 'Yoti App ID',
             'yoti_scenario_id' => 'Yoti Scenario ID',
-            'yoti_sdk_id' => 'Yoti SDK ID',
+            'yoti_sdk_id' => 'Yoti Client SDK ID',
             'yoti_company_name' => 'Company Name',
         ];
         foreach ($text_fields as $id => $label) {

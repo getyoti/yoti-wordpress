@@ -47,7 +47,7 @@ Download the free Yoti app [IOS](https://itunes.apple.com/us/app/yoti/id98398080
 
 = Step 2: Setting up your Yoti Application =
 
-Visit the Yoti Dashboard [here](https://www.yoti.com/dashboard/login-organisations) to create a new application for your organisation/business.
+Visit the Yoti Hub [here](https://hub.yoti.com) to create a new application for your organisation/business.
 
 Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you desire and will not affect the plugin’s functionality.
 

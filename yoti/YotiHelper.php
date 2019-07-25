@@ -27,6 +27,11 @@ class YotiHelper
     const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://www.yoti.com/share/client/';
 
     /**
+     * Yoti Hub URL.
+     */
+    const YOTI_HUB_URL = 'https://hub.yoti.com';
+
+    /**
      * @var array
      */
     public static $profileFields = [
@@ -540,7 +545,7 @@ class YotiHelper
             );
         }
 
-        // Extract age verification values if the option is set in the dashboard
+        // Extract age verification values if the option is set in the Yoti Hub
         // and in the Yoti's config in WP admin
         $ageVerificationsArr = $this->processAgeVerifications($profile);
         foreach($ageVerificationsArr as $ageAttr => $result) {
