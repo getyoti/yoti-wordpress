@@ -100,7 +100,7 @@ class YotiAdmin
                 }
                 if (!$data['yoti_sdk_id'])
                 {
-                    $errors['yoti_sdk_id'] = 'SDK ID is required.';
+                    $errors['yoti_sdk_id'] = 'Client SDK ID is required.';
                 }
                 if (empty($pemFile['name']))
                 {
