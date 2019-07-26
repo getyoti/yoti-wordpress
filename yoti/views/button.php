@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die();
 /**
  * @var bool $is_linked
  * @var string $message

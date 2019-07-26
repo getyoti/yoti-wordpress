@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die();
 /**
  * @var string $companyName
  * @var bool $noLink

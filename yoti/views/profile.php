@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die();
 /**
  * @var array $dbProfile
  * @var bool $displayButton
