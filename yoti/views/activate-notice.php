@@ -1,3 +1,4 @@
+<?php defined('ABSPATH') or die(); ?>
 <div class="notice notice-success is-dismissible">
   <p>
       <strong>Almost done</strong> - Complete Yoti
