@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die();
 /**
  * @var array $args
  * @var string $title
