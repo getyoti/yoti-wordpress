@@ -45,7 +45,7 @@ defined('ABSPATH') or die();
               <th scope="row"><label for="yoti_scenario_id">Yoti Scenario ID</label></th>
               <td>
                   <input name="yoti_scenario_id" type="text" id="yoti_scenario_id" value="<?php esc_attr_e($data['yoti_scenario_id']); ?>" class="regular-text code" />
-                <p><code>Yoti Scenario ID</code> is used to render the inline QR code.</p>
+                <p><code>Yoti Scenario ID</code> is used to render the modal window containing the QR code, for the scenario specified in Yoti Hub.</p>
               </td>
           </tr>
           <tr>
