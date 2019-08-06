@@ -82,6 +82,8 @@ Here you can find the changes for each version:
 
 1.4.0
 
+Release Date - 6 August 2019
+
 * Widget now displays QR code in modal
 
 1.3.2
