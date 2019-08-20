@@ -15,6 +15,17 @@ class YotiAdminTest extends YotiTestBase
     {
         wp_set_current_user($this->adminUser->ID);
 
+        // Set untrimmed POST data to be processed by form submit handler.
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        foreach ($this->config as $key => $value) {
+            $_POST[$key] = $value;
+            if (is_string($value)) {
+                $_POST[$key] .= "\t \n\r\x0B";
+            }
+        }
+        unset($_POST['yoti_pem']);
+
         ob_start();
         YotiAdmin::init();
         $html = ob_get_clean();
