@@ -85,6 +85,7 @@ Here you can find the changes for each version:
 Release Date - 21 August 2019
 
 * Check that button has been configured before initialising
+* Text fields are now trimmed to remove any leading/trailing whitespace
 
 1.4.0
 
