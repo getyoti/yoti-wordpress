@@ -21,6 +21,7 @@ class YotiTestBase extends WP_UnitTestCase
         'yoti_age_verification' => 0,
         'yoti_company_name' => 'company_name',
         'yoti_pem' => [
+            'name' => 'some-pem-name',
             'contents' => 'some-pem-contents',
         ],
     ];

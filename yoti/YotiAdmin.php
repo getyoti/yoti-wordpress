@@ -83,10 +83,10 @@ class YotiAdmin
             {
                 $this->setPostData();
 
-                $data['yoti_app_id'] = $this->postVar('yoti_app_id');
-                $data['yoti_scenario_id'] = $this->postVar('yoti_scenario_id');
-                $data['yoti_sdk_id'] = $this->postVar('yoti_sdk_id');
-                $data['yoti_company_name'] = $this->postVar('yoti_company_name');
+                $data['yoti_app_id'] = trim($this->postVar('yoti_app_id'));
+                $data['yoti_scenario_id'] = trim($this->postVar('yoti_scenario_id'));
+                $data['yoti_sdk_id'] = trim($this->postVar('yoti_sdk_id'));
+                $data['yoti_company_name'] = trim($this->postVar('yoti_company_name'));
                 $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
                 $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
                 $data['yoti_user_email'] = $this->postVar('yoti_user_email');
