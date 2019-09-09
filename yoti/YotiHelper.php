@@ -52,6 +52,14 @@ class YotiHelper
      */
     const SDK_IDENTIFIER = 'WordPress';
 
+    /**
+     * Yoti WordPress SDK version.
+     */
+    const SDK_VERSION = '1.4.2';
+
+    /**
+     * @var array
+     */
     private $config;
 
     public function __construct()
@@ -91,6 +99,9 @@ class YotiHelper
                 !empty(getenv('YOTI_CONNECT_API')) ? getenv('YOTI_CONNECT_API') : YotiClient::DEFAULT_CONNECT_API,
                 self::SDK_IDENTIFIER
             );
+            $yotiClient->setSdkIdentifier(self::SDK_IDENTIFIER);
+            $yotiClient->setSdkVersion(self::SDK_VERSION);
+
             $activityDetails = $yotiClient->getActivityDetails($token);
             $profile = $activityDetails->getProfile();
         }
