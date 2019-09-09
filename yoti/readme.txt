@@ -82,7 +82,7 @@ Here you can find the changes for each version:
 
 1.4.2
 
-Release Date - 9 September 2019
+Release Date - 10 September 2019
 
 * Default Curl request handler now verifies host and peer certificates. Only the unencrypted
   parts of the receipt were at risk, as user profiles are always encrypted.
