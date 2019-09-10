@@ -5,7 +5,7 @@ Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA,
 Requires at least: 3.0.1
 Tested up to: 5.2
 Requires PHP: 5.6
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -79,6 +79,13 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Changelog ==
 
 Here you can find the changes for each version:
+
+1.4.2
+
+Release Date - 10 September 2019
+
+* Default Curl request handler now verifies host and peer certificates. Only the unencrypted
+  parts of the receipt were at risk, as user profiles are always encrypted.
 
 1.4.1
 
