@@ -1,5 +1,7 @@
 # Yoti WordPress Plugin
 
+[![Build Status](https://travis-ci.com/getyoti/yoti-wordpress.svg?branch=master)](https://travis-ci.com/getyoti/yoti-wordpress)
+
 This repository contains the tools you need to quickly integrate your WordPress backend with Yoti so that your users can share their identity details with your application in a secure and trusted way. The plugin uses the Yoti PHP SDK. If you're interested in finding out more about the SDK, click [here](https://github.com/getyoti/yoti-php-sdk).
 
 ## Installing the plugin
@@ -106,6 +108,7 @@ $ ./bin/checkout-sdk.sh
 To run the local working copy of the plugin:
 
 ```shell
+$ cd ./docker
 $ docker-compose up wordpress-dev
 ```
 
@@ -115,9 +118,10 @@ To use Xdebug in an IDE, map the `/var/www/html/wp-content/plugins/yoti` volume 
 
 #### Running Tests
 
-To check coding standards:
+To run the tests and check coding standards:
 
 ```shell
+$ cd ./docker
 $ ./run-tests.sh
 ```
 
