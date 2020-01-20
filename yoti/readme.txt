@@ -5,7 +5,7 @@ Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA,
 Requires at least: 3.0.1
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 1.4.2
+Stable tag: 1.5.0
 License: GNU v3
 License URI: https://www.gnu.org/licenses/gpl.txt
 
@@ -79,6 +79,12 @@ For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129
 == Changelog ==
 
 Here you can find the changes for each version:
+
+1.5.0
+
+Release Date - January 2020
+
+* Scenario ID can now be set per widget
 
 1.4.2
 
