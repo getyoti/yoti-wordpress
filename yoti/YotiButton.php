@@ -21,17 +21,20 @@ class YotiButton
      *
      * @return string|null
      */
-    public static function render($redirect = NULL, $from_widget = FALSE, $echo = FALSE)
+    public static function render($redirect = NULL, $from_widget = FALSE, $echo = FALSE, $instance_config = [])
     {
         // Increment button ID
         static $button_id_suffix = 0;
         $button_id = 'yoti-button-' . ++$button_id_suffix;
 
-        // No config? no button
+        // Do not show the button if the plugin has not been configured.
         $config = YotiHelper::getConfig();
         if (!$config) {
             return NULL;
         }
+
+        // Merge instance config with global config.
+        $config = array_merge($config, array_filter($instance_config));
 
         $button_text = YotiButton::YOTI_LINK_BUTTON_TEXT;
         $is_linked = FALSE;

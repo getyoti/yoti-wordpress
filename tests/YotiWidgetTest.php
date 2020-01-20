@@ -40,4 +40,29 @@ class YotiWidgetTest extends YotiTestBase
         );
     }
 
+    /**
+     * @covers ::widget
+     */
+    public function testWidgetWithCustomScenarioId()
+    {
+        $expectedTitle = 'Some Custom Title';
+        $expectedScenarioId = 'some-scenario-id';
+
+        ob_start();
+        the_widget('YotiWidget', [
+            'title' => $expectedTitle,
+            'yoti_scenario_id' => $expectedScenarioId,
+        ]);
+
+        $html = ob_get_clean();
+        $config = $this->getButtonConfigFromMarkup($html);
+
+        $this->assertXpath(
+            sprintf('//h2[contains(text(),"%s")]', $expectedTitle),
+            $html
+        );
+        $this->assertEquals($config->scenarioId, $expectedScenarioId);
+
+    }
+
 }

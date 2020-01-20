@@ -34,9 +34,10 @@ class YotiWidget extends WP_Widget
         $title = apply_filters('widget_title', $title, $instance, $this->id_base);
 
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
+
         $config = YotiHelper::getConfig();
 
-        $view = function () use ($args, $config, $title)
+        $view = function () use ($args, $config, $title, $instance)
         {
             require __DIR__ . '/views/widget.php';
         };
@@ -53,6 +54,7 @@ class YotiWidget extends WP_Widget
     public function form($instance)
     {
         $title = isset( $instance['title'] ) ? $instance['title'] : '';
+        $scenario_id = isset( $instance['yoti_scenario_id'] ) ? $instance['yoti_scenario_id'] : '';
         ?>
         <p>
         <label for="<?php esc_attr_e($this->get_field_id('title')); ?>">Title:</label>
@@ -61,6 +63,12 @@ class YotiWidget extends WP_Widget
           id="<?php esc_attr_e($this->get_field_id('title')); ?>"
           name="<?php esc_attr_e($this->get_field_name('title')); ?>"
           type="text" value="<?php esc_attr_e($title); ?>">
+        <label for="<?php esc_attr_e($this->get_field_id('yoti_scenario_id')); ?>">Scenario ID <em>(optional)</em>:</label>
+        <input
+          class="widefat"
+          id="<?php esc_attr_e($this->get_field_id('yoti_scenario_id')); ?>"
+          name="<?php esc_attr_e($this->get_field_name('yoti_scenario_id')); ?>"
+          type="text" value="<?php esc_attr_e($scenario_id); ?>">
 		</p>
         <?php
     }
@@ -79,6 +87,7 @@ class YotiWidget extends WP_Widget
     {
         $instance = [];
         $instance['title'] = sanitize_text_field($new_instance['title']);
+        $instance['yoti_scenario_id'] = sanitize_text_field($new_instance['yoti_scenario_id']);
 
         return $instance;
     }
