@@ -84,7 +84,7 @@ Here you can find the changes for each version:
 
 Release Date - January 2020
 
-* Scenario ID can now be set per widget
+* Scenario ID and button text can now be configured per widget
 
 1.4.2
 
