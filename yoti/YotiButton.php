@@ -36,13 +36,20 @@ class YotiButton
         // Merge instance config with global config.
         $config = array_merge($config, array_filter($instance_config));
 
+        // Default button text and linked status.
         $button_text = YotiButton::YOTI_LINK_BUTTON_TEXT;
         $is_linked = FALSE;
 
+        // Button text and linked status for logged in users.
         if (is_user_logged_in()) {
             $button_text = 'Link to Yoti';
             $currentUser = wp_get_current_user();
             $is_linked = !empty(get_user_meta($currentUser->ID, 'yoti_user.identifier'));
+        }
+
+        // Override button text if set for widget instance.
+        if (!empty($config['yoti_button_text'])) {
+            $button_text = $config['yoti_button_text'];
         }
 
         $message = YotiHelper::getFlash();
