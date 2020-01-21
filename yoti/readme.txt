@@ -82,7 +82,7 @@ Here you can find the changes for each version:
 
 1.5.0
 
-Release Date - January 2020
+Release Date - 22 January 2020
 
 * Scenario ID and button text can now be configured per widget
 
