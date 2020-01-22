@@ -4,6 +4,7 @@ defined('ABSPATH') or die();
  * @var array $args
  * @var string $title
  * @var array $config
+ * @var array $instance
  */
 ?>
 <?php echo $args['before_widget'] ?: ''; ?>
@@ -17,7 +18,7 @@ if(!empty($title)){
 ?>
 <ul><li>
     <?php if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) { ?>
-        <?php YotiButton::render(NULL, TRUE, TRUE); ?>
+        <?php YotiButton::render(NULL, TRUE, TRUE, $instance); ?>
     <?php } else { ?>
         <strong>Yoti not configured.</strong>
     <?php } ?>

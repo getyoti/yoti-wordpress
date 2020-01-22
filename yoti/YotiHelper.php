@@ -55,7 +55,7 @@ class YotiHelper
     /**
      * Yoti WordPress SDK version.
      */
-    const SDK_VERSION = '1.4.2';
+    const SDK_VERSION = '1.5.0';
 
     /**
      * @var array
