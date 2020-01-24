@@ -1,6 +1,6 @@
 === Yoti ===
 
-Contributors: Moussa Sidibe, yotiwordpress
+Contributors: yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
 Tested up to: 5.3
@@ -13,68 +13,69 @@ Yoti is a digital identity platform that simply allows a user to securely log in
 
 == Description ==
 
-Yoti is a digital identity app that lets people log in to websites without a password and prove their identity online.
-Just click on the login with Yoti button, scan secure QR code with the Yoti app and that’s it.
-Get the Yoti plugin and let people log in to your WordPress websites without entering a password. Click here to learn [more.](https://www.yoti.com)
+Yoti is your digital identity. A global identity platform and free consumer app that puts your ID on your phone. It’s the simplest, safest, fastest way to prove your identity online and in person.
 
-Here is a quick video on how to install the plugin in less than 5 minutes:
+Founded in 2014, Yoti began a mission to become the world’s trusted identity platform. We’re committed to doing things differently to other tech companies – like promising to never mine or sell your data; Yoti is designed so that we couldn’t even if we wanted to.
 
-https://www.youtube.com/watch?v=kzltLNws1cQ
+== What Yoti can offer your site ==
 
-== Why does your website need Yoti ==
-
-* Stops keyloggers, by not having to type usernames and passwords.
-* Stops phishing attacks, safer website access without usernames and passwords.
+* KYC checks by verifying the identities of your website users
+* Age verification. Verify the age of users on your website and control access to age-restricted content.
+* Prevents keyloggers, by not having to type usernames and passwords.Your users login securely by scanning a QR code.
 * Privacy by design. We use advanced hybrid 256-bit encryption to secure your personal information.
-* No Passwords. Your users login securely by scanning a QR code.
-* KYC checks. Verify the identities of your website users.
-* Age verification. Verify the age of users of your website and control access to age-restricted content.
+
+*Note: The wordpress plugin is limited to basic functionality. Please use [PHP SDK](https://github.com/getyoti/yoti-php-sdk) for added features. For more information on our services and our products please visit our site: <https://www.yoti.com/>.*
 
 Download the free Yoti app [Android](https://play.google.com/store/apps/details?id=com.yoti.mobile.android.live)
 Download the free Yoti app [IOS](https://itunes.apple.com/us/app/yoti/id983980808?ls=1&mt=8)
 
+== What is the journey for Wordpress users ==
+1. Add a Yoti button on to your site.
+2. Users will click the yoti button and a QR code will appear, the user will scan the QR code.
+3. Redirect the users to your callback URL.
+
+For examples on how to improve your customer experience please go here: <https://developers.yoti.com/yoti/scenario-examples>
+
+Here is a quick video showing the flow:
+
+https://youtu.be/nPjMA9Z-nks
+
+= Contact us =
+If you have any other questions please do not hesitate to contact <mailto:sdksupport@yoti.com>.
+
+Once we have answered your question, we may contact you again to discuss Yoti products and services. If you’d prefer us not to do this, please let us know when you e-mail.
+
 == Installation ==
 
-= Step1: Installing the plugin =
+= Step 1: Installing the plugin =
 
-* From the “Plugins” menu search for “Yoti”,
-* click “Install Now” and then “Activate”.
-* To store images in a custom directory, edit your `wp-config.php` file to add a new constant called YOTI_UPLOAD_DIR with an absolute path:
+* From the *Plugins* menu search for *Yoti*, Click *Install Now* and then *Activate*.
+* To store images in a custom directory, edit your `wp-config.php` file to add a new constant called *YOTI_UPLOAD_DIR* with an absolute path:
 
   define('YOTI_UPLOAD_DIR', '/path/to/images/');
 
   By default, images are stored in `WP_CONTENT_DIR . '/uploads/yoti'`
 
+Note: you can also import out plugin, please see our [github pages](https://github.com/getyoti/yoti-wordpress) for more information
+
 = Step 2: Setting up your Yoti Application =
 
-Visit the Yoti Hub [here](https://hub.yoti.com) to create a new application for your organisation/business.
+Onboard your organisation with Yoti by visiting the Yoti Hub [here](https://hub.yoti.com/) and create a Yoti application to retrieve your
+API keys.
 
-Specify the basic details of your application such as the name, description and optional logo. These details can be whatever you desire and will not affect the plugin’s functionality.
+Instructions on onboarding with Yoti are [here](https://developers.yoti.com/yoti/getting-started-hub).
 
-The main page - Edit the application and set your website URL in the 'Application domain' section, e.g https:yourwebsite.com
+Generating API keys instructions are [here](https://developers.yoti.com/yoti/generate-api-keys).
 
-The Scenarios tab -  Scenarios are different instances where you request users for information using Yoti. e.g verify your users' age online or in person or quickly sign in users to your website without passwords. This plugin only support single scenario.
+= STEP 3: Enable Widget =
 
-* Specify a name for your scenario.
-* Specify what information you want to request with this scenario.
-* And finally, provide a callback URL so we know where to send your users after they have used Yoti. This URL must be a subdomain of your applications' domain.
+Go back to your wordpress Yoti plugin settings and add in the API keys retrieved from your Yoti Hub account. Once complete, place your
+widget on your desired page.
 
-The Keys tab – Here is where your keys are generated which will be inputted into the plugin settings. You will need to download your pem file and store it somewhere safe as it will be used as part of the plugin set up.
+= Contact us =
+If you have any other questions please do not hesitate to contact <mailto:sdksupport@yoti.com>.
 
-== Frequently Asked Questions ==
-
-For a more detailed explanation please go to our github [page.](https://github.com/getyoti/yoti-wordpress)
-
-For further support please feel free to email us at: sdksupport@yoti.com
-
-For FAQ please click [here.](https://yoti.zendesk.com/hc/en-us/categories/201129409-Business-FAQs)
-
-== Screenshots ==
-
-1. Settings to set up and configure the plugin
-2. Yoti widget added by the plugin
-3. Example of logging in with Yoti by scanning the QR code
-4. Yoti profile page with all the user attributes
+Once we have answered your question, we may contact you again to discuss Yoti products and services. If you’d prefer us not to do this, please let us know when you e-mail.
 
 == Changelog ==
 
