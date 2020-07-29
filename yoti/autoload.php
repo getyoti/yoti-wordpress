@@ -19,6 +19,7 @@ spl_autoload_register(function ($class) {
             E_USER_DEPRECATED
         );
         class_alias($deprecated[$class], $class);
+        return;
     }
 
     $prefix = 'Yoti\\WP\\';
