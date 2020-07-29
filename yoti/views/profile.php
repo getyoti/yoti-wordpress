@@ -8,8 +8,10 @@ defined('ABSPATH') or die();
 
 // Display these fields
 use Yoti\Entity\Profile;
+use Yoti\WP\Button;
+use Yoti\WP\Helper;
 
-$profileFields = YotiHelper::$profileFields;
+$profileFields = Helper::$profileFields;
 ?>
 <h2><?php esc_html_e('Yoti User Profile'); ?></h2>
 <table class="form-table">
@@ -19,20 +21,20 @@ foreach ($dbProfile as $attrName => $value)
     $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
 
     // Display selfie as an image
-    if ($attrName === YotiHelper::SELFIE_FILENAME) {
+    if ($attrName === Helper::SELFIE_FILENAME) {
         $selfieUrl = '';
         $label = $profileFields[Profile::ATTR_SELFIE];
-        $selfieFileName = $dbProfile[YotiHelper::SELFIE_FILENAME];
-        $selfieFullPath = YotiHelper::uploadDir() . '/' . $selfieFileName;
+        $selfieFileName = $dbProfile[Helper::SELFIE_FILENAME];
+        $selfieFullPath = Helper::uploadDir() . '/' . $selfieFileName;
         if (!empty($selfieFileName) && is_file($selfieFullPath)) {
-            $selfieUrl = YotiHelper::selfieUrl($userId);
+            $selfieUrl = Helper::selfieUrl($userId);
         }
     }
     ?>
     <tr>
         <th><label><?php esc_html_e($label); ?></label></th>
         <td>
-            <?php if ($attrName === YotiHelper::SELFIE_FILENAME && !empty($selfieUrl)) { ?>
+            <?php if ($attrName === Helper::SELFIE_FILENAME && !empty($selfieUrl)) { ?>
                 <img src="<?php esc_attr_e($selfieUrl); ?>" width="100" />
             <?php } elseif (!empty($value)) { ?>
                 <?php esc_html_e($value); ?>
@@ -47,7 +49,7 @@ foreach ($dbProfile as $attrName => $value)
 <?php if ($displayButton) { ?>
     <tr>
         <th></th>
-        <td><?php YotiButton::render($_SERVER['REQUEST_URI'], FALSE, TRUE); ?></td>
+        <td><?php Button::render($_SERVER['REQUEST_URI'], FALSE, TRUE); ?></td>
     </tr>
 <?php } ?>
 </table>

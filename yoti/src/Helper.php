@@ -1,18 +1,18 @@
 <?php
 
+namespace Yoti\WP;
+
 use Yoti\YotiClient;
 use Yoti\ActivityDetails;
 use Yoti\Entity\Profile;
 use Yoti\Entity\AgeVerification;
 
-require_once __DIR__ . '/sdk/boot.php';
-
 /**
- * Class YotiHelper
+ * Class Helper
  *
  * @author Yoti Ltd <sdksupport@yoti.com>
  */
-class YotiHelper
+class Helper
 {
     /**
      * Yoti config option name
@@ -105,7 +105,7 @@ class YotiHelper
             $activityDetails = $yotiClient->getActivityDetails($token);
             $profile = $activityDetails->getProfile();
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
             self::setFlash('Yoti failed to connect to your account.', 'error');
 
@@ -147,7 +147,7 @@ class YotiHelper
                         {
                             $wpYotiUid = $this->createUser($activityDetails);
                         }
-                        catch (Exception $e)
+                        catch (\Exception $e)
                         {
                             $errMsg = $e->getMessage();
                         }
@@ -238,7 +238,7 @@ class YotiHelper
             return;
         }
 
-        $file = YotiHelper::uploadDir() . "/{$dbProfile[$field]}";
+        $file = self::uploadDir() . "/{$dbProfile[$field]}";
         if (!file_exists($file))
         {
             return;
@@ -369,7 +369,7 @@ class YotiHelper
         }
 
         // Get the number of user_login that starts with prefix
-        $userQuery = new WP_User_Query(
+        $userQuery = new \WP_User_Query(
             [
                 'search' => $prefix . '*',
                 // Search the `user_login` field only.
@@ -420,7 +420,7 @@ class YotiHelper
     private function generateEmail($prefix = 'yoti.user', $domain = 'example.com')
     {
         // Get the number of user_email that starts with yotiuser-
-        $userQuery = new WP_User_Query(
+        $userQuery = new \WP_User_Query(
             [
                 // Search for Yoti users starting with the prefix yotiuser-.
                 'search' => $prefix . '*',
@@ -466,7 +466,7 @@ class YotiHelper
      *
      * @return int
      *
-     * @throws Exception
+     * @throws \Exception
      */
     private function createUser(ActivityDetails $activityDetails)
     {
@@ -506,7 +506,7 @@ class YotiHelper
     private function getUserIdByYotiId($yotiId)
     {
         // Query for users based on the meta data
-        $users = (new WP_User_Query(
+        $users = (new \WP_User_Query(
             [
                 'meta_key' => 'yoti_user.identifier',
                 'meta_value' => $yotiId,
@@ -668,7 +668,7 @@ class YotiHelper
      *
      * @return string
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function uploadUrl()
     {
@@ -694,7 +694,7 @@ class YotiHelper
      */
     public static function getConfig()
     {
-        return maybe_unserialize(get_option(YotiHelper::YOTI_CONFIG_OPTION_NAME));
+        return maybe_unserialize(get_option(self::YOTI_CONFIG_OPTION_NAME));
     }
 
     /**
@@ -702,7 +702,7 @@ class YotiHelper
      */
     public static function deleteYotiConfigData()
     {
-        delete_option(YotiHelper::YOTI_CONFIG_OPTION_NAME);
+        delete_option(self::YOTI_CONFIG_OPTION_NAME);
     }
 
     /**

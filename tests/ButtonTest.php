@@ -1,12 +1,18 @@
 <?php
 
+namespace Yoti\WP\Test;
+
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use Yoti\WP\Button;
+
 /**
- * @coversDefaultClass YotiButton
+ * @coversDefaultClass Yoti\WP\Button
  *
  * @group yoti
  */
-class YotiButtonTest extends YotiTestBase
+class ButtonTest extends TestBase
 {
+    use ExpectDeprecationTrait;
 
     /**
      * @covers ::render
@@ -15,7 +21,7 @@ class YotiButtonTest extends YotiTestBase
     {
         wp_set_current_user($this->unlinkedUser->ID);
 
-        $html = YotiButton::render();
+        $html = Button::render();
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, 'Link to Yoti');
@@ -29,7 +35,7 @@ class YotiButtonTest extends YotiTestBase
      */
     public function testButtonAnonymous()
     {
-        $html = YotiButton::render();
+        $html = Button::render();
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, 'Use Yoti');
@@ -50,7 +56,7 @@ class YotiButtonTest extends YotiTestBase
 
         $this->assertXpath(
             '//a' . implode('', $link_attributes) . "[contains(text(), 'Unlink Yoti Account')]",
-            YotiButton::render()
+            Button::render()
         );
     }
 
@@ -61,7 +67,7 @@ class YotiButtonTest extends YotiTestBase
     {
         $expectedScenarioId = 'some-custom-id';
 
-        $html = YotiButton::render(NULL, FALSE, FALSE, [
+        $html = Button::render(NULL, FALSE, FALSE, [
             'yoti_scenario_id' => $expectedScenarioId,
         ]);
 
@@ -79,7 +85,7 @@ class YotiButtonTest extends YotiTestBase
     {
         $expectedText = 'some custom text';
 
-        $html = YotiButton::render(NULL, FALSE, FALSE, [
+        $html = Button::render(NULL, FALSE, FALSE, [
             'yoti_button_text' => $expectedText,
         ]);
 
@@ -90,4 +96,12 @@ class YotiButtonTest extends YotiTestBase
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
+    /**
+     * @group legacy
+     */
+    public function testClassAlias()
+    {
+        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \YotiButton::class, Button::class));
+        $this->assertInstanceOf(Button::class, new \YotiButton());
+    }
 }

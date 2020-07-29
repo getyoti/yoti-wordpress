@@ -1,10 +1,13 @@
 <?php
+
+namespace Yoti\WP;
+
 /**
- * Class YotiAdmin
+ * Class Admin
  *
  * @author Yoti SDK <sdksupport@yoti.com>
  */
-class YotiAdmin
+class Admin
 {
     /**
      * @var self
@@ -57,7 +60,7 @@ class YotiAdmin
         }
 
         // Get current config
-        $config = YotiHelper::getConfig();
+        $config = Helper::getConfig();
 
         // Check curl has preliminary extensions to run
         $errors = [];
@@ -141,17 +144,16 @@ class YotiAdmin
                 unset($config['yoti_delete_pem']);
 
                 // Save config
-                update_option(YotiHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
+                update_option(Helper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
                 $updateMessage = 'Yoti settings saved.';
             }
         }
 
-        // Display form with scope
-        $form = function () use ($data, $errors, $updateMessage)
-        {
-            require_once __DIR__ . '/views/admin-options.php';
-        };
-        $form();
+        Views::render('admin-options', [
+            'data' => $data,
+            'errors' => $errors,
+            'updateMessage' => $updateMessage,
+        ]);
     }
 
     /**

@@ -14,6 +14,7 @@ RUN composer require wp-coding-standards/wpcs
 
 # Install and configure PHPUnit.
 RUN composer require --dev phpunit/phpunit ^7
+RUN composer require --dev symfony/phpunit-bridge ^5
 COPY ./phpunit.xml.dist .
 
 # Copy PHP Code Sniffer configuration.
