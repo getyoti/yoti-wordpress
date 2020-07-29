@@ -1,14 +1,21 @@
 <?php
+
+namespace Yoti\WP\Test;
+
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Yoti\ActivityDetails;
 use Yoti\Entity\Profile;
+use Yoti\WP\Helper;
+use Yoti\WP\Hooks;
 
 /**
- * @coversDefaultClass Yoti
+ * @coversDefaultClass Yoti\WP\Hooks
  *
  * @group yoti
  */
-class YotiTest extends YotiTestBase
+class HooksTest extends TestBase
 {
+    use ExpectDeprecationTrait;
 
     /**
      * Get unlink base XPath query.
@@ -31,7 +38,7 @@ class YotiTest extends YotiTestBase
      */
     private function assertProfileAttributes($html)
     {
-        foreach (YotiHelper::$profileFields as $attrLabel) {
+        foreach (Helper::$profileFields as $attrLabel) {
             $this->assertXpath(
                 "//tr/th/label[contains(text(),'{$attrLabel}')]/parent::th/parent::tr/td[contains(text(),'{$attrLabel} value')]",
                 $html
@@ -47,7 +54,7 @@ class YotiTest extends YotiTestBase
         wp_set_current_user($this->unlinkedUser->ID);
 
         ob_start();
-        Yoti::show_user_profile($this->unlinkedUser);
+        Hooks::show_user_profile($this->unlinkedUser);
 
         $this->assertEmpty(ob_get_clean());
     }
@@ -61,7 +68,7 @@ class YotiTest extends YotiTestBase
         update_user_meta($this->linkedUser->ID, 'yoti_user.profile', []);
 
         ob_start();
-        Yoti::show_user_profile($this->linkedUser);
+        Hooks::show_user_profile($this->linkedUser);
 
         $this->assertXpath($this->getUnlinkXpath(), ob_get_clean());
     }
@@ -75,7 +82,7 @@ class YotiTest extends YotiTestBase
         $_GET['user_id'] = $this->linkedUser->ID;
 
         ob_start();
-        Yoti::show_user_profile($this->linkedUser);
+        Hooks::show_user_profile($this->linkedUser);
 
         $html = ob_get_clean();
 
@@ -91,7 +98,7 @@ class YotiTest extends YotiTestBase
         wp_set_current_user($this->linkedUser->ID);
 
         ob_start();
-        Yoti::show_user_profile($this->linkedUser);
+        Hooks::show_user_profile($this->linkedUser);
 
         $html = ob_get_clean();
 
@@ -109,7 +116,7 @@ class YotiTest extends YotiTestBase
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
-        Yoti::yoti_login_header();
+        Hooks::yoti_login_header();
         $html = ob_get_clean();
 
         // Check message.
@@ -133,6 +140,8 @@ class YotiTest extends YotiTestBase
     }
 
     /**
+     * @runInSeparateProcess
+     *
      * @covers ::yoti_login
      */
     public function testLoginNotVerified()
@@ -140,18 +149,18 @@ class YotiTest extends YotiTestBase
         wp_create_nonce('yoti_verify');
         $_POST['yoti_nolink'] = '0';
         $_POST['yoti_verify'] = 'invalid-verification';
-        YotiHelper::storeYotiUser($this->createMockActivityDetails());
+        Helper::storeYotiUser($this->createMockActivityDetails());
 
-        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
 
-        $flash = YotiHelper::getFlash();
+        $flash = Helper::getFlash();
         $this->assertEquals(
             'Yoti profile could not be linked, please try again.',
             $flash['message']
         );
         $this->assertEquals('message', $flash['type']);
-        $this->assertEmpty(YotiHelper::getYotiUserFromStore());
-        $this->assertFalse(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+        $this->assertEmpty(Helper::getYotiUserFromStore());
+        $this->assertFalse(Helper::getUserProfile($this->unlinkedUser->ID));
     }
 
     /**
@@ -159,8 +168,8 @@ class YotiTest extends YotiTestBase
      */
     public function testLoginNoVerification()
     {
-        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
-        $this->assertEmpty(YotiHelper::getFlash());
+        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
+        $this->assertEmpty(Helper::getFlash());
     }
 
     /**
@@ -170,13 +179,13 @@ class YotiTest extends YotiTestBase
     {
         $_POST['yoti_nolink'] = '0';
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
-        YotiHelper::storeYotiUser($this->createMockActivityDetails());
+        Helper::storeYotiUser($this->createMockActivityDetails());
 
-        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
 
-        $this->assertEmpty(YotiHelper::getFlash());
-        $this->assertEmpty(YotiHelper::getYotiUserFromStore());
-        $this->assertTrue(is_array(YotiHelper::getUserProfile($this->unlinkedUser->ID)));
+        $this->assertEmpty(Helper::getFlash());
+        $this->assertEmpty(Helper::getYotiUserFromStore());
+        $this->assertTrue(is_array(Helper::getUserProfile($this->unlinkedUser->ID)));
     }
 
     /**
@@ -186,13 +195,13 @@ class YotiTest extends YotiTestBase
     {
         $_POST['yoti_nolink'] = '1';
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
-        YotiHelper::storeYotiUser($this->createMockActivityDetails());
+        Helper::storeYotiUser($this->createMockActivityDetails());
 
-        Yoti::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
 
-        $this->assertEmpty(YotiHelper::getFlash());
-        $this->assertEmpty(YotiHelper::getYotiUserFromStore());
-        $this->assertFalse(YotiHelper::getUserProfile($this->unlinkedUser->ID));
+        $this->assertEmpty(Helper::getFlash());
+        $this->assertEmpty(Helper::getYotiUserFromStore());
+        $this->assertFalse(Helper::getUserProfile($this->unlinkedUser->ID));
     }
 
     /**
@@ -201,7 +210,7 @@ class YotiTest extends YotiTestBase
     public function testLoginHeaderNoSessionData()
     {
         ob_start();
-        Yoti::yoti_login_header();
+        Hooks::yoti_login_header();
         $this->assertEmpty(ob_get_clean());
     }
 
@@ -214,7 +223,7 @@ class YotiTest extends YotiTestBase
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
-        Yoti::yoti_login_header();
+        Hooks::yoti_login_header();
 
         // Header should not be added to login.
         $this->assertEmpty(ob_get_clean());
@@ -234,7 +243,7 @@ class YotiTest extends YotiTestBase
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
-        Yoti::yoti_login_header();
+        Hooks::yoti_login_header();
         $html = ob_get_clean();
 
         // Check the checkbox is checked.
@@ -250,7 +259,7 @@ class YotiTest extends YotiTestBase
         $pagenow = "plugins.php";
 
         ob_start();
-        Yoti::yoti_plugin_activate_notice();
+        Hooks::yoti_plugin_activate_notice();
         $html = ob_get_clean();
 
         $base_query = '//div[@class="notice notice-success is-dismissible"]';
@@ -263,16 +272,16 @@ class YotiTest extends YotiTestBase
 
         // Check the link is correct.
         $this->assertXpath(
-            $base_query .'/p/a[contains(@href,"/wp-admin/options-general.php?page=yoti")][contains(.,"settings here")]',
+            $base_query . '/p/a[contains(@href,"/wp-admin/options-general.php?page=yoti")][contains(.,"settings here")]',
             $html
         );
-
     }
 
     /**
      * @covers ::yoti_enqueue_scripts
      */
-    public function testInitScript() {
+    public function testInitScript()
+    {
         wp_enqueue_scripts();
         $scripts = wp_scripts();
 
@@ -285,21 +294,31 @@ class YotiTest extends YotiTestBase
     }
 
     /**
+     * @group legacy
+     */
+    public function testClassAlias()
+    {
+        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \Yoti::class, Hooks::class));
+        $this->assertInstanceOf(Hooks::class, new \Yoti());
+    }
+
+    /**
      * Create mock activity details.
      *
      * @return \Yoti\ActivityDetails
      */
-    private function createMockActivityDetails() {
+    private function createMockActivityDetails()
+    {
         $activityDetails = $this->createMock(ActivityDetails::class);
 
         $profile = $this->createMock(Profile::class);
         $profile
-          ->method('getAgeVerifications')
-          ->willReturn([]);
+            ->method('getAgeVerifications')
+            ->willReturn([]);
 
         $activityDetails
-          ->method('getProfile')
-          ->willReturn($profile);
+            ->method('getProfile')
+            ->willReturn($profile);
 
         return $activityDetails;
     }

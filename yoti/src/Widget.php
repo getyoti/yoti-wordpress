@@ -1,6 +1,8 @@
 <?php
 
-class YotiWidget extends WP_Widget
+namespace Yoti\WP;
+
+class Widget extends \WP_Widget
 {
     const YOTI_WIDGET_DEFAULT_TITLE = 'Authenticate with Yoti';
 
@@ -35,13 +37,14 @@ class YotiWidget extends WP_Widget
 
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
 
-        $config = YotiHelper::getConfig();
+        $config = Helper::getConfig();
 
-        $view = function () use ($args, $config, $title, $instance)
-        {
-            require __DIR__ . '/views/widget.php';
-        };
-        $view();
+        Views::render('widget', [
+            'args' => $args,
+            'config' => $config,
+            'title' => $title,
+            'instance' => $instance,
+        ]);
     }
 
     /**

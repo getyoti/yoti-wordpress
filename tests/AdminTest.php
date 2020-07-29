@@ -1,12 +1,18 @@
 <?php
 
+namespace Yoti\WP\Test;
+
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
+use Yoti\WP\Admin;
+
 /**
- * @coversDefaultClass YotiAdmin
+ * @coversDefaultClass Yoti\WP\Admin
  *
  * @group yoti
  */
-class YotiAdminTest extends YotiTestBase
+class AdminTest extends TestBase
 {
+    use ExpectDeprecationTrait;
 
     /**
      * @covers ::init
@@ -27,7 +33,7 @@ class YotiAdminTest extends YotiTestBase
         unset($_POST['yoti_pem']);
 
         ob_start();
-        YotiAdmin::init();
+        Admin::init();
         $html = ob_get_clean();
 
         // Check text input fields.
@@ -72,7 +78,14 @@ class YotiAdminTest extends YotiTestBase
             );
             $this->assertXpath($input_query, $html);
         }
-
     }
 
+    /**
+     * @group legacy
+     */
+    public function testClassAlias()
+    {
+        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \YotiAdmin::class, Admin::class));
+        \YotiAdmin::init();
+    }
 }

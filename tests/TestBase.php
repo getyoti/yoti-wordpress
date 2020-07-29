@@ -1,9 +1,13 @@
 <?php
 
+namespace Yoti\WP\Test;
+
+use Yoti\WP\Helper;
+
 /**
  * Base Class for Yoti Tests.
  */
-class YotiTestBase extends WP_UnitTestCase
+class TestBase extends \WP_UnitTestCase
 {
     /**
      * Test plugin config.
@@ -50,7 +54,7 @@ class YotiTestBase extends WP_UnitTestCase
     {
         parent::setup();
 
-        update_option(YotiHelper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($this->config));
+        update_option(Helper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($this->config));
 
         // Create Linked User.
         $linkedUserId = wp_create_user('linked_user', 'some_password', 'linked_user@example.com');
@@ -59,7 +63,7 @@ class YotiTestBase extends WP_UnitTestCase
             function ($item) {
               return $item . ' value';
             },
-            YotiHelper::$profileFields
+            Helper::$profileFields
         ));
         update_user_meta($this->linkedUser->ID, 'yoti_user.identifier', 'some_remember_me_id');
 
@@ -108,9 +112,9 @@ class YotiTestBase extends WP_UnitTestCase
      */
     protected function getXpathResult($query, $html)
     {
-        $dom = new DomDocument();
+        $dom = new \DomDocument();
         $dom->loadHTML('<html><body>' . $html . '</body></html>');
-        $xpath = new DOMXPath($dom);
+        $xpath = new \DOMXPath($dom);
         return $xpath->query($query);
     }
 

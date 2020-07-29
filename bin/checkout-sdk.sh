@@ -5,7 +5,7 @@
 
 NAME="yoti-for-wordpress-edge.zip"
 SDK_TAG=$1
-DEFAULT_SDK_TAG="2.3.0"
+DEFAULT_SDK_TAG="2.5.1"
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 PLUGIN_DIR="$BASE_DIR/yoti"
 
