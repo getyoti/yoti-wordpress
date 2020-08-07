@@ -3,3 +3,6 @@
 svn/
 docker/profiler_output
 docker/.env
+
+/vendor/
+/build/

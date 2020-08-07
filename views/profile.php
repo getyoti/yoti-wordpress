@@ -6,11 +6,11 @@ defined('ABSPATH') or die();
  * @var int $userId
  */
 
-// Display these fields
-use Yoti\Entity\Profile;
+use Yoti\Profile\UserProfile;
 use Yoti\WP\Button;
 use Yoti\WP\Helper;
 
+// Display these fields
 $profileFields = Helper::$profileFields;
 ?>
 <h2><?php esc_html_e('Yoti User Profile'); ?></h2>
@@ -23,7 +23,7 @@ foreach ($dbProfile as $attrName => $value)
     // Display selfie as an image
     if ($attrName === Helper::SELFIE_FILENAME) {
         $selfieUrl = '';
-        $label = $profileFields[Profile::ATTR_SELFIE];
+        $label = $profileFields[UserProfile::ATTR_SELFIE];
         $selfieFileName = $dbProfile[Helper::SELFIE_FILENAME];
         $selfieFullPath = Helper::uploadDir() . '/' . $selfieFileName;
         if (!empty($selfieFileName) && is_file($selfieFullPath)) {

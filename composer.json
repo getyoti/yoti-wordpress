@@ -1,0 +1,16 @@
+{
+    "name": "yoti/yoti-wordpress",
+    "description": "Yoti WordPress Plugin",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "minimum-stability": "stable",
+    "require": {
+        "yoti/yoti-php-sdk": "^3.3"
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^2.3",
+        "phpunit/phpunit": "^7",
+        "symfony/phpunit-bridge": "^5",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0"
+    }
+}
