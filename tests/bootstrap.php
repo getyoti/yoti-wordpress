@@ -20,7 +20,7 @@ require_once $tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
-    $plugin_dir = getenv('WP_PLUGIN_DIR') ?: __DIR__ . '/../yoti';
+    $plugin_dir = getenv('WP_PLUGIN_DIR') ?: __DIR__ . '/..';
     if (!is_dir($plugin_dir)) {
         throw new RuntimeException(sprintf('%s is not a directory. Set plugin path using WP_PLUGIN_DIR environment variable', $plugin_dir));
     }

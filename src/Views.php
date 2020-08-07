@@ -23,7 +23,7 @@ class Views
      */
     public static function render($view_name, $variables = [])
     {
-        extract($variables);
+        extract($variables, EXTR_SKIP);
         require self::path($view_name);
     }
 

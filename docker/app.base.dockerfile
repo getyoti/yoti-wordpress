@@ -1,4 +1,4 @@
-FROM php:7.3-apache AS wordpress_base
+FROM php:7.4-apache AS wordpress_base
 
 ADD default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./keys/server.crt /etc/apache2/ssl/server.crt
@@ -14,7 +14,6 @@ RUN set -ex; \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
-	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-install gd mysqli opcache; \
  	apt-get update; \
 	apt-get install -y git subversion zip unzip vim nano

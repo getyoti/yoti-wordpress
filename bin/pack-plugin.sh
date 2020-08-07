@@ -1,20 +1,27 @@
-#!/bin/bash
-NAME="yoti-wordpress-edge.zip"
+#!/bin/sh
 
-SDK_TAG=$1
+PLUGIN_SLUG="yoti-wordpress-edge"
 BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-BASE_DIR="$BIN_DIR/.."
+PROJECT_PATH="$BIN_DIR/.."
+BUILD_PATH="${PROJECT_PATH}/build"
+DEST_PATH="$BUILD_PATH/$PLUGIN_SLUG"
 
-# Ensure SDK is checked out.
-$BIN_DIR/checkout-sdk.sh $1
+echo "Generating build directory..."
+rm -rf "$BUILD_PATH"
+mkdir -p "$DEST_PATH"
 
-echo "Packing plugin ..."
+echo "Installing PHP prod dependencies..."
+composer install --no-dev || exit "$?"
 
-cd $BASE_DIR
-cp "./LICENSE" "./yoti"
-zip -r "$NAME" "./yoti/"
-rm "./yoti/LICENSE"
-cd -
+echo "Syncing files..."
+rsync -rc --exclude-from="$PROJECT_PATH/.distignore" "$PROJECT_PATH/" "$DEST_PATH/" --delete --delete-excluded
 
-echo "Plugin packed. File $NAME created."
+echo "Restoring PHP dev dependencies..."
+composer install || exit "$?"
+
+echo "Generating zip file..."
+cd "$BUILD_PATH" || exit
+zip -q -r "${PLUGIN_SLUG}.zip" "$PLUGIN_SLUG/"
+echo "$BUILD_PATH/${PLUGIN_SLUG}.zip file created"
+
 echo ""

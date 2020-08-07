@@ -1,0 +1,13 @@
+.*
+.*/
+*.md
+*.zip
+*.png
+/bin/
+/build/
+/tests/
+/docker/
+composer.*
+phpcs.*
+phpunit.*
+README.md

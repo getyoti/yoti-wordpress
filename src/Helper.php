@@ -2,10 +2,10 @@
 
 namespace Yoti\WP;
 
+use Yoti\Profile\ActivityDetails;
+use Yoti\Profile\UserProfile;
+use Yoti\Util\Config;
 use Yoti\YotiClient;
-use Yoti\ActivityDetails;
-use Yoti\Entity\Profile;
-use Yoti\Entity\AgeVerification;
 
 /**
  * Class Helper
@@ -35,16 +35,16 @@ class Helper
      * @var array
      */
     public static $profileFields = [
-        Profile::ATTR_SELFIE => 'Selfie',
-        Profile::ATTR_FULL_NAME => 'Full Name',
-        Profile::ATTR_GIVEN_NAMES => 'Given Names',
-        Profile::ATTR_FAMILY_NAME => 'Family Name',
-        Profile::ATTR_PHONE_NUMBER => 'Mobile Number',
-        Profile::ATTR_EMAIL_ADDRESS => 'Email Address',
-        Profile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
-        Profile::ATTR_POSTAL_ADDRESS => 'Postal Address',
-        Profile::ATTR_GENDER => 'Gender',
-        Profile::ATTR_NATIONALITY => 'Nationality',
+        UserProfile::ATTR_SELFIE => 'Selfie',
+        UserProfile::ATTR_FULL_NAME => 'Full Name',
+        UserProfile::ATTR_GIVEN_NAMES => 'Given Names',
+        UserProfile::ATTR_FAMILY_NAME => 'Family Name',
+        UserProfile::ATTR_PHONE_NUMBER => 'Mobile Number',
+        UserProfile::ATTR_EMAIL_ADDRESS => 'Email Address',
+        UserProfile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+        UserProfile::ATTR_POSTAL_ADDRESS => 'Postal Address',
+        UserProfile::ATTR_GENDER => 'Gender',
+        UserProfile::ATTR_NATIONALITY => 'Nationality',
     ];
 
     /**
@@ -55,7 +55,7 @@ class Helper
     /**
      * Yoti WordPress SDK version.
      */
-    const SDK_VERSION = '1.5.0';
+    const SDK_VERSION = '2.0.0';
 
     /**
      * @var array
@@ -96,11 +96,11 @@ class Helper
             $yotiClient = new YotiClient(
                 $this->config['yoti_sdk_id'],
                 $this->config['yoti_pem']['contents'],
-                !empty(getenv('YOTI_CONNECT_API')) ? getenv('YOTI_CONNECT_API') : YotiClient::DEFAULT_CONNECT_API,
-                self::SDK_IDENTIFIER
+                [
+                    Config::SDK_IDENTIFIER => self::SDK_IDENTIFIER,
+                    Config::SDK_VERSION => self::SDK_VERSION,
+                ]
             );
-            $yotiClient->setSdkIdentifier(self::SDK_IDENTIFIER);
-            $yotiClient->setSdkVersion(self::SDK_VERSION);
 
             $activityDetails = $yotiClient->getActivityDetails($token);
             $profile = $activityDetails->getProfile();
@@ -256,12 +256,12 @@ class Helper
      * @param Profile $profile
      * @return bool
      */
-    public function passedAgeVerification(Profile $profile)
+    public function passedAgeVerification(UserProfile $profile)
     {
         return !($this->config['yoti_age_verification'] && !$this->oneAgeIsVerified($profile));
     }
 
-    private function oneAgeIsVerified(Profile $profile)
+    private function oneAgeIsVerified(UserProfile $profile)
     {
         $ageVerificationsArr = self::processAgeVerifications($profile);
         return empty($ageVerificationsArr) || in_array('Yes', array_values($ageVerificationsArr));
@@ -272,7 +272,7 @@ class Helper
      *
      * @return array
      */
-    private function processAgeVerifications(Profile $profile)
+    private function processAgeVerifications(UserProfile $profile)
     {
         $ageVerifications = $profile->getAgeVerifications();
         $ageVerificationsAttr = [];
@@ -286,7 +286,7 @@ class Helper
     /**
      * Save Yoti user data in the session.
      *
-     * @param \Yoti\ActivityDetails $activityDetails
+     * @param ActivityDetails $activityDetails
      */
     public static function storeYotiUser(ActivityDetails $activityDetails)
     {
@@ -354,7 +354,7 @@ class Helper
      *
      * @return null|string
      */
-    private function generateUsername(Profile $profile, $prefix = 'yoti.user')
+    private function generateUsername(UserProfile $profile, $prefix = 'yoti.user')
     {
         $givenName = $this->getUserGivenName($profile);
         if ($familyNameAttr = $profile->getFamilyName()) {
@@ -400,7 +400,7 @@ class Helper
      * @param Profile $profile
      * @return null|string
      */
-    private function getUserGivenName(Profile $profile)
+    private function getUserGivenName(UserProfile $profile)
     {
         $givenName = NULL;
         if ($givenNamesAttr = $profile->getGivenNames()) {
@@ -537,7 +537,7 @@ class Helper
         foreach ($attrsArr as $attrName) {
             if ($attrObj = $profile->getProfileAttribute($attrName)) {
                 $value = $attrObj->getValue();
-                if (NULL !== $value && $attrName === Profile::ATTR_DATE_OF_BIRTH) {
+                if (NULL !== $value && $attrName === UserProfile::ATTR_DATE_OF_BIRTH) {
                     $value = $value->format('d-m-Y');
                 }
                 $meta[$attrName] = $value;
@@ -549,7 +549,7 @@ class Helper
         if ($selfie) {
             $selfieFilename = self::createUniqueFilename($selfie->getValue()->getBase64Content(), 'png');
             file_put_contents(self::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
-            unset($meta[Profile::ATTR_SELFIE]);
+            unset($meta[UserProfile::ATTR_SELFIE]);
             $meta = array_merge(
                 [self::SELFIE_FILENAME => $selfieFilename],
                 $meta

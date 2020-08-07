@@ -3,8 +3,8 @@
 namespace Yoti\WP\Test;
 
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
-use Yoti\ActivityDetails;
-use Yoti\Entity\Profile;
+use Yoti\Profile\ActivityDetails;
+use Yoti\Profile\UserProfile;
 use Yoti\WP\Helper;
 use Yoti\WP\Hooks;
 
@@ -311,7 +311,7 @@ class HooksTest extends TestBase
     {
         $activityDetails = $this->createMock(ActivityDetails::class);
 
-        $profile = $this->createMock(Profile::class);
+        $profile = $this->createMock(UserProfile::class);
         $profile
             ->method('getAgeVerifications')
             ->willReturn([]);
