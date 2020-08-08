@@ -37,9 +37,9 @@ class Widget extends \WP_Widget
 
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
 
-        $config = Helper::getConfig();
+        $config = Config::load();
 
-        Views::render('widget', [
+        View::render('widget', [
             'args' => $args,
             'config' => $config,
             'title' => $title,

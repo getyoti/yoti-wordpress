@@ -1,8 +1,9 @@
 <?php
 
-use Yoti\WP\Helper;
+use Yoti\WP\Constants;
 
 defined('ABSPATH') or die();
+
 /**
  * @var array $data
  * @var string $updateMessage
@@ -11,7 +12,7 @@ defined('ABSPATH') or die();
 ?>
 <div class="wrap">
     <h1>Yoti Settings</h1>
-    <p>You need to first create a Yoti App at <a href="<?php esc_attr_e(Helper::YOTI_HUB_URL); ?>" target="_blank">Yoti Hub</a>.</p>
+    <p>You need to first create a Yoti App at <a href="<?php esc_attr_e(Constants::YOTI_HUB_URL); ?>" target="_blank">Yoti Hub</a>.</p>
     <p>Note: On the Yoti Hub the application domain should be set to <code><?php esc_html_e(site_url('', 'https')); ?></code>, <br>And the scenario callback URL should be set to: <code><?php esc_html_e(site_url('wp-login.php?yoti-select=1&action=link', 'https')); ?></code></p>
     <p>Warning: User IDs provided by Yoti are unique to each Yoti Application. Using a different Yoti Application means you will receive a different Yoti User ID for all of your users.</p>
     <?php if ($updateMessage) { ?>
@@ -95,7 +96,7 @@ defined('ABSPATH') or die();
               <th scope="row"></th>
               <td>
                   <label><input type="checkbox" name="yoti_age_verification" value="1" <?php checked(!empty($data['yoti_age_verification'])); ?> /> Prevent users who have not passed age verification to access your site</label>
-                  <p>(Requires Age verify condition to be set in the <a href="<?php esc_attr_e(Helper::YOTI_HUB_URL); ?>" target="_blank">Yoti Hub</a>)</p>
+                  <p>(Requires Age verify condition to be set in the <a href="<?php esc_attr_e(Constants::YOTI_HUB_URL); ?>" target="_blank">Yoti Hub</a>)</p>
               </td>
           </tr>
           </tbody>

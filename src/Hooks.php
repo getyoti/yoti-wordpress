@@ -13,9 +13,9 @@ class Hooks
     public static function yoti_activation_hook()
     {
         // Create upload dir
-        if (!is_dir(Helper::uploadDir()))
+        if (!is_dir(User::uploadDir()))
         {
-            mkdir(Helper::uploadDir(), 0777, TRUE);
+            mkdir(User::uploadDir(), 0777, TRUE);
         }
     }
 
@@ -24,7 +24,7 @@ class Hooks
      */
     public static function yoti_uninstall_hook()
     {
-        Helper::deleteYotiConfigData();
+        Config::delete();
     }
 
     /**
@@ -42,14 +42,14 @@ class Hooks
 
         if (!empty($_GET['yoti-select']))
         {
-            $Helper = new Helper();
+            $user = new User();
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
             $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
             switch ($action)
             {
                 case 'link':
-                    if (!$Helper->link())
+                    if (!$user->link())
                     {
                         $redirect = home_url();
                     }
@@ -60,10 +60,10 @@ class Hooks
                 case 'unlink':
                     if (!$verified)
                     {
-                        Helper::setFlash('Yoti profile could not be unlinked, please try again.');
+                        Message::setFlash('Yoti profile could not be unlinked, please try again.');
                         $redirect = home_url();
                     }
-                    elseif (!$Helper->unlink())
+                    elseif (!$user->unlink())
                     {
                         $redirect = home_url();
                     }
@@ -74,7 +74,7 @@ class Hooks
 
                 case 'bin-file':
                     if ($verified) {
-                        $Helper->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
+                        $user->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
                         exit;
                     }
                     break;
@@ -97,19 +97,19 @@ class Hooks
     public static function yoti_login_header()
     {
         // Don't allow unless there is an existing session
-        if (!Helper::getYotiUserFromStore())
+        if (!User::getYotiUserFromStore())
         {
             return;
         }
         // On page refresh clear the YotiUserStore session and don't display the message
         elseif($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to']))
         {
-            Helper::clearYotiUserStore();
+            User::clearYotiUserStore();
 
             return;
         }
 
-        $config = Helper::getConfig();
+        $config = Config::load();
         $companyName = 'WordPress';
         if(isset($config['yoti_company_name']) && !empty($config['yoti_company_name'])) {
             $companyName = $config['yoti_company_name'];
@@ -124,7 +124,7 @@ class Hooks
             $noLink = FALSE;
         }
 
-        Views::render('login-header', [
+        View::render('login-header', [
             'companyName' => $companyName,
             'noLink' => $noLink,
         ]);
@@ -136,7 +136,7 @@ class Hooks
      * @param null $user_login
      * @param null $user
      */
-    public static function yoti_login($user_login=NULL, $user=NULL)
+    public static function yoti_login($user_login = NULL, $user = NULL)
     {
         if (!$user) {
             return;
@@ -149,23 +149,23 @@ class Hooks
 
         // Verify the action.
         if (!wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')) {
-            Helper::setFlash('Yoti profile could not be linked, please try again.');
+            Message::setFlash('Yoti profile could not be linked, please try again.');
         }
         else {
-            $activityDetails = Helper::getYotiUserFromStore();
+            $activityDetails = User::getYotiUserFromStore();
             $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
 
             // Check that activityDetails exists and yoti_nolink button is not checked
             if ($activityDetails && $yotiNoLinkIsNotChecked)
             {
                 // Link account to Yoti
-                $Helper = new Helper();
-                $Helper->createYotiUser($user->ID, $activityDetails);
+                $yotiUser = new User();
+                $yotiUser->createYotiUser($user->ID, $activityDetails);
             }
         }
 
         // Remove Yoti session
-        Helper::clearYotiUserStore();
+        User::clearYotiUserStore();
     }
 
     /**
@@ -173,7 +173,7 @@ class Hooks
      */
     public static function yoti_logout()
     {
-        Helper::clearFlash();
+        Message::clearFlash();
     }
 
     /**
@@ -188,7 +188,7 @@ class Hooks
             return;
         }
 
-        $dbProfile = (array) Helper::getUserProfile($user->ID);
+        $dbProfile = (array) User::getUserProfile($user->ID);
 
         $profileUserId = $user->ID;
         $currentUser = wp_get_current_user();
@@ -207,9 +207,9 @@ class Hooks
 
         if (!empty($dbProfile)) {
             // Move selfie attr to the top
-            if (isset($dbProfile[Helper::SELFIE_FILENAME])) {
-                $selfieDataArr = [Helper::SELFIE_FILENAME => $dbProfile[Helper::SELFIE_FILENAME]];
-                unset($dbProfile[Helper::SELFIE_FILENAME]);
+            if (isset($dbProfile[User::SELFIE_FILENAME])) {
+                $selfieDataArr = [User::SELFIE_FILENAME => $dbProfile[User::SELFIE_FILENAME]];
+                unset($dbProfile[User::SELFIE_FILENAME]);
                 $dbProfile = array_merge(
                     $selfieDataArr,
                     $dbProfile
@@ -234,7 +234,7 @@ class Hooks
         }
 
         // Add profile scope
-        Views::render('profile', [
+        View::render('profile', [
             'dbProfile' => $dbProfile,
             'displayButton' => $displayButton,
             'userId' => $userId,
@@ -254,7 +254,7 @@ class Hooks
      */
     public static function yoti_enqueue_scripts()
     {
-        wp_enqueue_script('yoti-asset-js', Helper::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL, TRUE);
+        wp_enqueue_script('yoti-asset-js', Constants::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL, TRUE);
         wp_add_inline_script('yoti-asset-js', "
             if (typeof yotiConfig != 'undefined') {
                 window.Yoti.Share.init(yotiConfig);
@@ -288,7 +288,7 @@ class Hooks
 
         // Display the notice only on the plugins page.
         if ($pagenow === "plugins.php") {
-            Views::render('activate-notice');
+            View::render('activate-notice');
         }
     }
 }

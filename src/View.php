@@ -2,7 +2,7 @@
 
 namespace Yoti\WP;
 
-class Views
+class View
 {
     /**
      * Get path to view.
