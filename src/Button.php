@@ -31,7 +31,7 @@ class Button
         $button_id = 'yoti-button-' . ++$button_id_suffix;
 
         // Do not show the button if the plugin has not been configured.
-        $config = Helper::getConfig();
+        $config = Config::load();
         if (!$config) {
             return NULL;
         }
@@ -62,7 +62,7 @@ class Button
         $view_name = 'button';
         $view_variables = [
             'is_linked' => $is_linked,
-            'message' => Helper::getFlash(),
+            'message' => Message::getFlash(),
             'button_text' => $button_text,
             'from_widget' => $from_widget,
             'config' => $config,
@@ -71,9 +71,9 @@ class Button
         ];
 
         if ($echo === FALSE) {
-            return Views::getContent($view_name, $view_variables);
+            return View::getContent($view_name, $view_variables);
         }
 
-        Views::render($view_name, $view_variables);
+        View::render($view_name, $view_variables);
     }
 }

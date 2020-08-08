@@ -4,58 +4,34 @@ namespace Yoti\WP;
 
 use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\UserProfile;
-use Yoti\Util\Config;
+use Yoti\Util\Config as YotiConfig;
 use Yoti\YotiClient;
 
 /**
- * Class Helper
- *
- * @author Yoti Ltd <sdksupport@yoti.com>
+ * Class User
  */
-class Helper
+class User
 {
-    /**
-     * Yoti config option name
-     */
-    const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
-
+    /** Selfie key */
     const SELFIE_FILENAME = 'selfie_filename';
 
     /**
-     * Yoti SDK javascript library.
+     * @return array
      */
-    const YOTI_SDK_JAVASCRIPT_LIBRARY = 'https://www.yoti.com/share/client/';
-
-    /**
-     * Yoti Hub URL.
-     */
-    const YOTI_HUB_URL = 'https://hub.yoti.com';
-
-    /**
-     * @var array
-     */
-    public static $profileFields = [
-        UserProfile::ATTR_SELFIE => 'Selfie',
-        UserProfile::ATTR_FULL_NAME => 'Full Name',
-        UserProfile::ATTR_GIVEN_NAMES => 'Given Names',
-        UserProfile::ATTR_FAMILY_NAME => 'Family Name',
-        UserProfile::ATTR_PHONE_NUMBER => 'Mobile Number',
-        UserProfile::ATTR_EMAIL_ADDRESS => 'Email Address',
-        UserProfile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
-        UserProfile::ATTR_POSTAL_ADDRESS => 'Postal Address',
-        UserProfile::ATTR_GENDER => 'Gender',
-        UserProfile::ATTR_NATIONALITY => 'Nationality',
-    ];
-
-    /**
-     * Yoti WordPress SDK identifier.
-     */
-    const SDK_IDENTIFIER = 'WordPress';
-
-    /**
-     * Yoti WordPress SDK version.
-     */
-    const SDK_VERSION = '2.0.0';
+    public static function profileFields() {
+        return [
+            UserProfile::ATTR_SELFIE => 'Selfie',
+            UserProfile::ATTR_FULL_NAME => 'Full Name',
+            UserProfile::ATTR_GIVEN_NAMES => 'Given Names',
+            UserProfile::ATTR_FAMILY_NAME => 'Family Name',
+            UserProfile::ATTR_PHONE_NUMBER => 'Mobile Number',
+            UserProfile::ATTR_EMAIL_ADDRESS => 'Email Address',
+            UserProfile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+            UserProfile::ATTR_POSTAL_ADDRESS => 'Postal Address',
+            UserProfile::ATTR_GENDER => 'Gender',
+            UserProfile::ATTR_NATIONALITY => 'Nationality',
+        ];
+    }
 
     /**
      * @var array
@@ -64,7 +40,7 @@ class Helper
 
     public function __construct()
     {
-        $this->config = self::getConfig();
+        $this->config = Config::load();
     }
 
     /**
@@ -85,7 +61,7 @@ class Helper
         // If no token then ignore
         if (!$token)
         {
-            self::setFlash('Could not get Yoti token.', 'error');
+            Message::setFlash('Could not get Yoti token.', 'error');
 
             return FALSE;
         }
@@ -97,8 +73,8 @@ class Helper
                 $this->config['yoti_sdk_id'],
                 $this->config['yoti_pem']['contents'],
                 [
-                    Config::SDK_IDENTIFIER => self::SDK_IDENTIFIER,
-                    Config::SDK_VERSION => self::SDK_VERSION,
+                    YotiConfig::SDK_IDENTIFIER => Constants::SDK_IDENTIFIER,
+                    YotiConfig::SDK_VERSION => Constants::SDK_VERSION,
                 ]
             );
 
@@ -107,13 +83,13 @@ class Helper
         }
         catch (\Exception $e)
         {
-            self::setFlash('Yoti failed to connect to your account.', 'error');
+            Message::setFlash('Yoti failed to connect to your account.', 'error');
 
             return FALSE;
         }
 
         if (!$this->passedAgeVerification($profile)) {
-            self::setFlash('Could not log you in as you haven\'t passed the age verification', 'error');
+            Message::setFlash('Could not log you in as you haven\'t passed the age verification', 'error');
             return FALSE;
         }
 
@@ -165,7 +141,7 @@ class Helper
                 if (!$wpYotiUid)
                 {
                     // if couldn't create user then bail
-                    $this->setFlash("Could not create user account. $errMsg", 'error');
+                    Message::setFlash("Could not create user account. $errMsg", 'error');
 
                     return FALSE;
                 }
@@ -179,7 +155,7 @@ class Helper
             // If current logged in user doesn't match Yoti user registered then bail
             if ($wpYotiUid && $currentUser->ID !== $wpYotiUid)
             {
-                self::setFlash('This Yoti account is already linked to another account.', 'error');
+                Message::setFlash('This Yoti account is already linked to another account.', 'error');
             }
             // If WP user not found in Yoti table then create new Yoti user
             elseif (!$wpYotiUid)
@@ -202,12 +178,12 @@ class Helper
         if (is_user_logged_in())
         {
             $this->deleteYotiUser($currentUser->ID);
-            self::setFlash('Your Yoti profile was successfully unlinked from your account.');
+            Message::setFlash('Your Yoti profile was successfully unlinked from your account.');
 
             return TRUE;
         }
 
-        self::setFlash('Could not unlink from Yoti.');
+        Message::setFlash('Could not unlink from Yoti.');
 
         return FALSE;
     }
@@ -282,7 +258,6 @@ class Helper
         return $ageVerificationsAttr;
     }
 
-
     /**
      * Save Yoti user data in the session.
      *
@@ -309,41 +284,6 @@ class Helper
     public static function clearYotiUserStore()
     {
         unset($_SESSION['yoti-user']);
-    }
-
-    /**
-     * Set user notification message.
-     *
-     * @param $message
-     * @param string $type
-     */
-    public static function setFlash($message, $type = 'message')
-    {
-        $_SESSION['yoti-connect-flash'] = ['type' => $type, 'message' => $message];
-    }
-
-    /**
-     * Get user notification message.
-     *
-     * @return mixed
-     */
-    public static function getFlash()
-    {
-        $message = NULL;
-        if (!empty($_SESSION['yoti-connect-flash']))
-        {
-            $message = $_SESSION['yoti-connect-flash'];
-            self::clearFlash();
-        }
-        return $message;
-    }
-
-    /**
-     * Clear Yoti flash message.
-     */
-    public static function clearFlash()
-    {
-        unset($_SESSION['yoti-connect-flash']);
     }
 
     /**
@@ -532,7 +472,7 @@ class Helper
         }
 
         $meta = [];
-        $attrsArr = array_keys(self::$profileFields);
+        $attrsArr = array_keys(self::profileFields());
 
         foreach ($attrsArr as $attrName) {
             if ($attrObj = $profile->getProfileAttribute($attrName)) {
@@ -685,39 +625,6 @@ class Helper
             '%s cannot be used when YOTI_UPLOAD_DIR is defined outside the web root',
             __METHOD__
         ));
-    }
-
-    /**
-     * Get Yoti Config.
-     *
-     * @return array
-     */
-    public static function getConfig()
-    {
-        return maybe_unserialize(get_option(self::YOTI_CONFIG_OPTION_NAME));
-    }
-
-    /**
-     * Remove Yoti config option data from WordPress option table.
-     */
-    public static function deleteYotiConfigData()
-    {
-        delete_option(self::YOTI_CONFIG_OPTION_NAME);
-    }
-
-    /**
-     * Get Yoti app login URL.
-     *
-     * @return null|string
-     */
-    public static function getLoginUrl()
-    {
-        $config = self::getConfig();
-        if (empty($config['yoti_app_id'])) {
-            return NULL;
-        }
-
-        return YotiClient::getLoginUrl($config['yoti_app_id']);
     }
 
     /**

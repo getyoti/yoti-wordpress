@@ -3,7 +3,7 @@
 namespace Yoti\WP\Test;
 
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
-use Yoti\WP\Helper;
+use Yoti\WP\Config;
 use Yoti\WP\Widget;
 
 /**
@@ -37,7 +37,7 @@ class WidgetTest extends TestBase
     {
         $config = $this->config;
         unset($config['yoti_pem']);
-        update_option(Helper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
+        update_option(Config::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
 
         ob_start();
         the_widget(Widget::class);

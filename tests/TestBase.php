@@ -2,7 +2,8 @@
 
 namespace Yoti\WP\Test;
 
-use Yoti\WP\Helper;
+use Yoti\WP\Config;
+use Yoti\WP\User;
 
 /**
  * Base Class for Yoti Tests.
@@ -54,7 +55,7 @@ class TestBase extends \WP_UnitTestCase
     {
         parent::setup();
 
-        update_option(Helper::YOTI_CONFIG_OPTION_NAME, maybe_serialize($this->config));
+        update_option(Config::YOTI_CONFIG_OPTION_NAME, maybe_serialize($this->config));
 
         // Create Linked User.
         $linkedUserId = wp_create_user('linked_user', 'some_password', 'linked_user@example.com');
@@ -63,7 +64,7 @@ class TestBase extends \WP_UnitTestCase
             function ($item) {
               return $item . ' value';
             },
-            Helper::$profileFields
+            User::profileFields()
         ));
         update_user_meta($this->linkedUser->ID, 'yoti_user.identifier', 'some_remember_me_id');
 

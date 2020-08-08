@@ -7,7 +7,7 @@ spl_autoload_register(function ($class) {
     $deprecated = [
         'Yoti' => Yoti\WP\Hooks::class,
         'YotiWidget' => Yoti\WP\Widget::class,
-        'YotiHelper' => Yoti\WP\Helper::class,
+        'YotiHelper' => Yoti\WP\User::class,
         'YotiButton' => Yoti\WP\Button::class,
         'YotiAdmin' => Yoti\WP\Admin::class,
     ];
