@@ -79,13 +79,4 @@ class AdminTest extends TestBase
             $this->assertXpath($input_query, $html);
         }
     }
-
-    /**
-     * @group legacy
-     */
-    public function testClassAlias()
-    {
-        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \YotiAdmin::class, Admin::class));
-        \YotiAdmin::init();
-    }
 }

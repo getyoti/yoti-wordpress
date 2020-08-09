@@ -21,7 +21,7 @@ if(!empty($title)){
 ?>
 <ul><li>
     <?php if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) { ?>
-        <?php Button::render(NULL, TRUE, TRUE, $instance); ?>
+        <?php Button::render(NULL, TRUE, $instance); ?>
     <?php } else { ?>
         <strong>Yoti not configured.</strong>
     <?php } ?>

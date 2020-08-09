@@ -49,7 +49,7 @@ foreach ($dbProfile as $attrName => $value)
 <?php if ($displayButton) { ?>
     <tr>
         <th></th>
-        <td><?php Button::render($_SERVER['REQUEST_URI'], FALSE, TRUE); ?></td>
+        <td><?php Button::render($_SERVER['REQUEST_URI'], FALSE); ?></td>
     </tr>
 <?php } ?>
 </table>
