@@ -2,7 +2,6 @@
 
 namespace Yoti\WP\Test;
 
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Yoti\WP\Button;
 
 /**
@@ -12,8 +11,6 @@ use Yoti\WP\Button;
  */
 class ButtonTest extends TestBase
 {
-    use ExpectDeprecationTrait;
-
     /**
      * @covers ::render
      */

@@ -2,7 +2,6 @@
 
 namespace Yoti\WP\Test;
 
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Yoti\WP\Config;
 use Yoti\WP\Widget;
 
@@ -13,8 +12,6 @@ use Yoti\WP\Widget;
  */
 class WidgetTest extends TestBase
 {
-    use ExpectDeprecationTrait;
-
     /**
      * @covers ::widget
      */
