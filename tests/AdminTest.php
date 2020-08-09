@@ -2,7 +2,6 @@
 
 namespace Yoti\WP\Test;
 
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Yoti\WP\Admin;
 
 /**
@@ -12,8 +11,6 @@ use Yoti\WP\Admin;
  */
 class AdminTest extends TestBase
 {
-    use ExpectDeprecationTrait;
-
     /**
      * @covers ::init
      */

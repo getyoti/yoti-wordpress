@@ -2,7 +2,6 @@
 
 namespace Yoti\WP\Test;
 
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\UserProfile;
 use Yoti\WP\Hooks;
@@ -16,8 +15,6 @@ use Yoti\WP\User;
  */
 class HooksTest extends TestBase
 {
-    use ExpectDeprecationTrait;
-
     /**
      * Get unlink base XPath query.
      *
