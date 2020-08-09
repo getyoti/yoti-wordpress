@@ -16,7 +16,6 @@ if (!function_exists('add_action')) {
     exit;
 }
 
-require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 require_once __DIR__ . '/autoload.php';
 
 use Yoti\WP\Hooks;
