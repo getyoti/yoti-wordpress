@@ -604,30 +604,6 @@ class User
     }
 
     /**
-     * Get Yoti upload dir URL.
-     *
-     * @return string
-     *
-     * @throws \Exception
-     */
-    public static function uploadUrl()
-    {
-        if (!defined('YOTI_UPLOAD_DIR')) {
-            return content_url('/uploads/yoti');
-        }
-
-        $realpath = realpath(YOTI_UPLOAD_DIR);
-        if (strpos($realpath, WP_CONTENT_DIR) === 0) {
-            return content_url(substr_replace($realpath, '', 0, strlen(WP_CONTENT_DIR)));
-        }
-
-        throw new \Exception(sprintf(
-            '%s cannot be used when YOTI_UPLOAD_DIR is defined outside the web root',
-            __METHOD__
-        ));
-    }
-
-    /**
      * Attempt to connect by email
      *
      * @param Profile $profile
