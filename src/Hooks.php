@@ -88,7 +88,7 @@ class Hooks
     public static function yoti_admin_menu()
     {
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', FALSE);
-        add_options_page('Yoti', 'Yoti', 'manage_options', 'yoti', 'YotiAdmin::init');
+        add_options_page('Yoti', 'Yoti', 'manage_options', 'yoti', [Admin::class, 'init']);
     }
 
     /**
