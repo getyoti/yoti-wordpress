@@ -12,5 +12,15 @@
         "phpunit/phpunit": "^7",
         "symfony/phpunit-bridge": "^5",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yoti\\WP\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Yoti\\WP\\Test\\": "tests"
+        }
     }
 }
