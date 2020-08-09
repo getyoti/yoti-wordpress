@@ -1,0 +1,8 @@
+/.* export-ignore
+/bin export-ignore
+/tests export-ignore
+/docker export-ignore
+/composer.* export-ignore
+/phpcs.* export-ignore
+/phpunit.* export-ignore
+/*.png export-ignore
