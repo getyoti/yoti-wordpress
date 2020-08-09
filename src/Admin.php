@@ -175,7 +175,7 @@ class Admin
      * @param null $default
      * @return null
      */
-    protected function postVar($var, $default = NULL)
+    private function postVar($var, $default = NULL)
     {
         return array_key_exists($var, $this->postData) ? $this->postData[$var] : $default;
     }
@@ -185,7 +185,7 @@ class Admin
      * @param NULL $default
      * @return NULL
      */
-    protected function filesVar($var, $default = NULL)
+    private function filesVar($var, $default = NULL)
     {
         return (array_key_exists($var, $_FILES) && !empty($_FILES[$var]['name'])) ? $_FILES[$var] : $default;
     }

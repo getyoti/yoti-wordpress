@@ -39,19 +39,4 @@ class Config
     {
         update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
     }
-
-    /**
-     * Get Yoti app login URL.
-     *
-     * @return null|string
-     */
-    public static function getLoginUrl()
-    {
-        $config = self::load();
-        if (empty($config['yoti_app_id'])) {
-            return NULL;
-        }
-
-        return YotiClient::getLoginUrl($config['yoti_app_id']);
-    }
 }
