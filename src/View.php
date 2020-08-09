@@ -26,19 +26,4 @@ class View
         extract($variables, EXTR_SKIP);
         require self::path($view_name);
     }
-
-    /**
-     * Gets rendered view content as string.
-     *
-     * @param string $view
-     * @param array $variables
-     *
-     * @return string
-     */
-    public static function getContent($view_name, $variables = [])
-    {
-        ob_start();
-        self::render($view_name, $variables);
-        return ob_get_clean();
-    }
 }

@@ -3,27 +3,6 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 spl_autoload_register(function ($class) {
-    // Alias older classes to new autoloaded namespaced class.
-    $deprecated = [
-        'Yoti' => Yoti\WP\Hooks::class,
-        'YotiWidget' => Yoti\WP\Widget::class,
-        'YotiHelper' => Yoti\WP\User::class,
-        'YotiButton' => Yoti\WP\Button::class,
-        'YotiAdmin' => Yoti\WP\Admin::class,
-    ];
-    if (isset($deprecated[$class])) {
-        @trigger_error(
-            sprintf(
-                '%s is deprecated, use %s instead',
-                esc_html($class),
-                esc_html($deprecated[$class])
-            ),
-            E_USER_DEPRECATED
-        );
-        class_alias($deprecated[$class], $class);
-        return;
-    }
-
     $prefix = 'Yoti\\WP\\';
 
     $base_dir = __DIR__ . '/src/';

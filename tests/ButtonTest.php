@@ -21,7 +21,9 @@ class ButtonTest extends TestBase
     {
         wp_set_current_user($this->unlinkedUser->ID);
 
-        $html = Button::render();
+        ob_start();
+        Button::render();
+        $html = ob_get_clean();
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, 'Link to Yoti');
@@ -35,7 +37,9 @@ class ButtonTest extends TestBase
      */
     public function testButtonAnonymous()
     {
-        $html = Button::render();
+        ob_start();
+        Button::render();
+        $html = ob_get_clean();
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, 'Use Yoti');
@@ -54,9 +58,13 @@ class ButtonTest extends TestBase
             "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&redirect&yoti_verify=')]",
         ];
 
+        ob_start();
+        Button::render();
+        $html = ob_get_clean();
+
         $this->assertXpath(
             '//a' . implode('', $link_attributes) . "[contains(text(), 'Unlink Yoti Account')]",
-            Button::render()
+            $html
         );
     }
 
@@ -67,9 +75,11 @@ class ButtonTest extends TestBase
     {
         $expectedScenarioId = 'some-custom-id';
 
-        $html = Button::render(NULL, FALSE, FALSE, [
+        ob_start();
+        Button::render(NULL, FALSE, [
             'yoti_scenario_id' => $expectedScenarioId,
         ]);
+        $html = ob_get_clean();
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, 'Use Yoti');
@@ -85,23 +95,16 @@ class ButtonTest extends TestBase
     {
         $expectedText = 'some custom text';
 
-        $html = Button::render(NULL, FALSE, FALSE, [
+        ob_start();
+        Button::render(NULL, FALSE, [
             'yoti_button_text' => $expectedText,
         ]);
+        $html = ob_get_clean();
 
         $config = $this->getButtonConfigFromMarkup($html);
         $this->assertEquals($config->button->label, $expectedText);
         $this->assertEquals($config->clientSdkId, $this->config['yoti_sdk_id']);
         $this->assertEquals($config->scenarioId, $this->config['yoti_scenario_id']);
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testClassAlias()
-    {
-        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \YotiButton::class, Button::class));
-        $this->assertInstanceOf(Button::class, new \YotiButton());
     }
 }

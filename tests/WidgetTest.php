@@ -74,13 +74,4 @@ class WidgetTest extends TestBase
         $this->assertEquals($config->scenarioId, $expectedScenarioId);
         $this->assertEquals($config->button->label, $expectedButtonText);
     }
-
-    /**
-     * @group legacy
-     */
-    public function testClassAlias()
-    {
-        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \YotiWidget::class, Widget::class));
-        $this->assertInstanceOf(Widget::class, new \YotiWidget());
-    }
 }

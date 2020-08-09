@@ -19,12 +19,11 @@ class Button
      *
      * @param null $redirect
      * @param bool $from_widget
-     * @param boolean $echo
      * @param array $instance_config
      *
      * @return string|null
      */
-    public static function render($redirect = NULL, $from_widget = FALSE, $echo = FALSE, $instance_config = [])
+    public static function render($redirect = NULL, $from_widget = FALSE, $instance_config = [])
     {
         // Increment button ID
         static $button_id_suffix = 0;
@@ -59,8 +58,7 @@ class Button
         $unlink_url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
         $unlink_url = wp_nonce_url($unlink_url, 'yoti_verify', 'yoti_verify');
 
-        $view_name = 'button';
-        $view_variables = [
+        View::render('button', [
             'is_linked' => $is_linked,
             'message' => Message::getFlash(),
             'button_text' => $button_text,
@@ -68,12 +66,6 @@ class Button
             'config' => $config,
             'unlink_url' => $unlink_url,
             'button_id' => $button_id
-        ];
-
-        if ($echo === FALSE) {
-            return View::getContent($view_name, $view_variables);
-        }
-
-        View::render($view_name, $view_variables);
+        ]);
     }
 }

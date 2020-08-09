@@ -295,15 +295,6 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @group legacy
-     */
-    public function testClassAlias()
-    {
-        $this->expectDeprecation(sprintf('%s is deprecated, use %s instead', \Yoti::class, Hooks::class));
-        $this->assertInstanceOf(Hooks::class, new \Yoti());
-    }
-
-    /**
      * Create mock activity details.
      *
      * @return \Yoti\ActivityDetails
