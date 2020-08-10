@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards">
-	<file>.</file>
-	<exclude-pattern>/vendor/</exclude-pattern>
+	<file>src</file>
+	<file>tests</file>
+	<file>views</file>
 
 	<rule ref="WordPress.Security.PluginMenuSlug"/>
 	<rule ref="WordPress.Security.EscapeOutput" />

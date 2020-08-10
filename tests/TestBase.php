@@ -3,7 +3,8 @@
 namespace Yoti\WP\Test;
 
 use Yoti\WP\Config;
-use Yoti\WP\Service\Profile;
+use Yoti\WP\Service;
+use Yoti\WP\User;
 
 /**
  * Base Class for Yoti Tests.
@@ -55,7 +56,7 @@ class TestBase extends \WP_UnitTestCase
     {
         parent::setup();
 
-        update_option(Config::YOTI_CONFIG_OPTION_NAME, maybe_serialize($this->config));
+        Service::config()->save($this->config);
 
         // Create Linked User.
         $linkedUserId = wp_create_user('linked_user', 'some_password', 'linked_user@example.com');
@@ -64,7 +65,7 @@ class TestBase extends \WP_UnitTestCase
             function ($item) {
               return $item . ' value';
             },
-            Profile::profileFields()
+            User::profileFields()
         ));
         update_user_meta($this->linkedUser->ID, 'yoti_user.identifier', 'some_remember_me_id');
 
@@ -125,7 +126,7 @@ class TestBase extends \WP_UnitTestCase
     protected function assertXpath($query, $html)
     {
         $result = $this->getXpathResult($query, $html);
-        $this->assertTrue($result->length > 0, "{$query} XPath query returned no results");
+        $this->assertTrue($result->length > 0, "{$query} XPath query returned no results:");
     }
 
     /**

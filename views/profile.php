@@ -2,43 +2,41 @@
 defined('ABSPATH') or die();
 /**
  * @var array $dbProfile
+ * @var string $selfieUrl
  * @var bool $displayButton
  * @var int $userId
  */
 
 use Yoti\Profile\UserProfile;
-use Yoti\WP\Button\Button;
-use Yoti\WP\Config;
-use Yoti\WP\Service;
-use Yoti\WP\Service\Profile;
+use Yoti\WP\Button;
+use Yoti\WP\User;
 
 // Display these fields
-$profileFields = Profile::profileFields();
+$profileFields = User::profileFields();
 ?>
 <h2><?php esc_html_e('Yoti User Profile'); ?></h2>
 <table class="form-table">
 <?php
+if (!empty($selfieUrl))
+{
+    ?>
+    <tr>
+        <th><label><?php esc_html_e($profileFields[UserProfile::ATTR_SELFIE]); ?></label></th>
+        <td>
+            <img src="<?php esc_attr_e($selfieUrl); ?>" width="100" />
+        </td>
+    </tr>
+<?php
+}
+
 foreach ($dbProfile as $attrName => $value)
 {
     $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
-
-    // Display selfie as an image
-    if ($attrName === Profile::SELFIE_FILENAME) {
-        $selfieUrl = '';
-        $label = $profileFields[UserProfile::ATTR_SELFIE];
-        $selfieFileName = $dbProfile[Profile::SELFIE_FILENAME];
-        $selfieFullPath = Config::uploadDir() . '/' . $selfieFileName;
-        if (!empty($selfieFileName) && is_file($selfieFullPath)) {
-            $selfieUrl = Service::profile()->selfieUrl($userId);
-        }
-    }
     ?>
     <tr>
         <th><label><?php esc_html_e($label); ?></label></th>
         <td>
-            <?php if ($attrName === Profile::SELFIE_FILENAME && !empty($selfieUrl)) { ?>
-                <img src="<?php esc_attr_e($selfieUrl); ?>" width="100" />
-            <?php } elseif (!empty($value)) { ?>
+            <?php if (!empty($value)) { ?>
                 <?php esc_html_e($value); ?>
             <?php } else { ?>
                 <i>(empty)</i>

@@ -10,6 +10,13 @@ use Yoti\YotiClient;
  */
 interface ClientFactoryInterface
 {
+    /**
+     * @return YotiClient
+     */
     public function getClient(): YotiClient;
+
+    /**
+     * @return DocScanClient
+     */
     public function getDocScanClient(): DocScanClient;
 }

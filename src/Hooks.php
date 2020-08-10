@@ -2,8 +2,9 @@
 
 namespace Yoti\WP;
 
-use Yoti\WP\Button\Widget;
-use Yoti\WP\Service\Profile;
+use Yoti\Profile\UserProfile;
+use Yoti\WP\Widget;
+use Yoti\WP\User;
 
 /**
  * Class Yoti used in the plugin main file yoti.php
@@ -16,9 +17,9 @@ class Hooks
     public static function yoti_activation_hook()
     {
         // Create upload dir
-        if (!is_dir(Config::uploadDir()))
+        if (!is_dir(Service::config()->uploadDir()))
         {
-            mkdir(Config::uploadDir(), 0777, TRUE);
+            mkdir(Service::config()->uploadDir(), 0777, TRUE);
         }
     }
 
@@ -27,7 +28,7 @@ class Hooks
      */
     public static function yoti_uninstall_hook()
     {
-        Config::delete();
+        Service::config()->delete();
     }
 
     /**
@@ -45,7 +46,7 @@ class Hooks
 
         if (!empty($_GET['yoti-select']))
         {
-            $profileService = Service::profile();
+            $userService = Service::user();
 
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
@@ -53,7 +54,7 @@ class Hooks
             switch ($action)
             {
                 case 'link':
-                    if (!$profileService->link())
+                    if (!$userService->link())
                     {
                         $redirect = home_url();
                     }
@@ -67,7 +68,7 @@ class Hooks
                         Message::setFlash('Yoti profile could not be unlinked, please try again.');
                         $redirect = home_url();
                     }
-                    elseif (!$profileService->unlink())
+                    elseif (!$userService->unlink())
                     {
                         $redirect = home_url();
                     }
@@ -78,7 +79,7 @@ class Hooks
 
                 case 'bin-file':
                     if ($verified) {
-                        $profileService->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
+                        $userService->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
                         exit;
                     }
                     break;
@@ -100,22 +101,22 @@ class Hooks
      */
     public static function yoti_login_header()
     {
-        $profileService = Service::profile();
+        $userService = Service::user();
 
         // Don't allow unless there is an existing session
-        if (!$profileService->getYotiUserFromStore())
+        if (!$userService->getYotiUserFromStore())
         {
             return;
         }
         // On page refresh clear the YotiUserStore session and don't display the message
         elseif($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to']))
         {
-            $profileService->clearYotiUserStore();
+            $userService->clearYotiUserStore();
 
             return;
         }
 
-        $config = Config::load();
+        $config = Service::config()->load();
         $companyName = 'WordPress';
         if(isset($config['yoti_company_name']) && !empty($config['yoti_company_name'])) {
             $companyName = $config['yoti_company_name'];
@@ -153,26 +154,26 @@ class Hooks
             return;
         }
 
-        $profileService = Service::profile();
+        $userService = Service::user();
 
         // Verify the action.
         if (!wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')) {
             Message::setFlash('Yoti profile could not be linked, please try again.');
         }
         else {
-            $activityDetails = $profileService->getYotiUserFromStore();
+            $activityDetails = $userService->getYotiUserFromStore();
             $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
 
             // Check that activityDetails exists and yoti_nolink button is not checked
             if ($activityDetails && $yotiNoLinkIsNotChecked)
             {
                 // Link account to Yoti
-                $profileService->createYotiUser($user->ID, $activityDetails);
+                $userService->createYotiUser($user->ID, $activityDetails);
             }
         }
 
         // Remove Yoti session
-        $profileService->clearYotiUserStore();
+        $userService->clearYotiUserStore();
     }
 
     /**
@@ -195,7 +196,10 @@ class Hooks
             return;
         }
 
-        $dbProfile = (array) Service::profile()->getUserProfile($user->ID);
+        $userService = Service::user();
+
+        $dbProfile = (array) $userService->getUserProfile($user->ID);
+        $selfieUrl = $userService->selfieUrl($user->ID, $dbProfile);
 
         $profileUserId = $user->ID;
         $currentUser = wp_get_current_user();
@@ -213,15 +217,8 @@ class Hooks
         }
 
         if (!empty($dbProfile)) {
-            // Move selfie attr to the top
-            if (isset($dbProfile[Profile::SELFIE_FILENAME])) {
-                $selfieDataArr = [Profile::SELFIE_FILENAME => $dbProfile[Profile::SELFIE_FILENAME]];
-                unset($dbProfile[Profile::SELFIE_FILENAME]);
-                $dbProfile = array_merge(
-                    $selfieDataArr,
-                    $dbProfile
-                );
-            }
+            // Selfie is displayed separately in template.
+            unset($dbProfile[User::SELFIE_FILENAME]);
         }
 
         // Flag to display button.
@@ -243,6 +240,7 @@ class Hooks
         // Add profile scope
         View::render('profile', [
             'dbProfile' => $dbProfile,
+            'selfieUrl' => $selfieUrl,
             'displayButton' => $displayButton,
             'userId' => $userId,
         ]);

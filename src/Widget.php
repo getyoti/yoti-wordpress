@@ -1,9 +1,6 @@
 <?php
 
-namespace Yoti\WP\Button;
-
-use Yoti\WP\Config;
-use Yoti\WP\View;
+namespace Yoti\WP;
 
 class Widget extends \WP_Widget
 {
@@ -40,7 +37,7 @@ class Widget extends \WP_Widget
 
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
 
-        $config = Config::load();
+        $config = Service::config()->load();
 
         View::render('widget', [
             'args' => $args,
