@@ -3,7 +3,7 @@
 namespace Yoti\WP\Test;
 
 use Yoti\WP\Config;
-use Yoti\WP\User;
+use Yoti\WP\Service\Profile;
 
 /**
  * Base Class for Yoti Tests.
@@ -64,7 +64,7 @@ class TestBase extends \WP_UnitTestCase
             function ($item) {
               return $item . ' value';
             },
-            User::profileFields()
+            Profile::profileFields()
         ));
         update_user_meta($this->linkedUser->ID, 'yoti_user.identifier', 'some_remember_me_id');
 

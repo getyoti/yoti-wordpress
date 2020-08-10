@@ -2,6 +2,9 @@
 
 namespace Yoti\WP;
 
+use Yoti\WP\Button\Widget;
+use Yoti\WP\Service\Profile;
+
 /**
  * Class Yoti used in the plugin main file yoti.php
  */
@@ -13,9 +16,9 @@ class Hooks
     public static function yoti_activation_hook()
     {
         // Create upload dir
-        if (!is_dir(User::uploadDir()))
+        if (!is_dir(Config::uploadDir()))
         {
-            mkdir(User::uploadDir(), 0777, TRUE);
+            mkdir(Config::uploadDir(), 0777, TRUE);
         }
     }
 
@@ -42,14 +45,15 @@ class Hooks
 
         if (!empty($_GET['yoti-select']))
         {
-            $user = new User();
+            $profileService = Service::profile();
+
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
             $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
             switch ($action)
             {
                 case 'link':
-                    if (!$user->link())
+                    if (!$profileService->link())
                     {
                         $redirect = home_url();
                     }
@@ -63,7 +67,7 @@ class Hooks
                         Message::setFlash('Yoti profile could not be unlinked, please try again.');
                         $redirect = home_url();
                     }
-                    elseif (!$user->unlink())
+                    elseif (!$profileService->unlink())
                     {
                         $redirect = home_url();
                     }
@@ -74,7 +78,7 @@ class Hooks
 
                 case 'bin-file':
                     if ($verified) {
-                        $user->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
+                        $profileService->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
                         exit;
                     }
                     break;
@@ -96,15 +100,17 @@ class Hooks
      */
     public static function yoti_login_header()
     {
+        $profileService = Service::profile();
+
         // Don't allow unless there is an existing session
-        if (!User::getYotiUserFromStore())
+        if (!$profileService->getYotiUserFromStore())
         {
             return;
         }
         // On page refresh clear the YotiUserStore session and don't display the message
         elseif($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to']))
         {
-            User::clearYotiUserStore();
+            $profileService->clearYotiUserStore();
 
             return;
         }
@@ -147,25 +153,26 @@ class Hooks
             return;
         }
 
+        $profileService = Service::profile();
+
         // Verify the action.
         if (!wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')) {
             Message::setFlash('Yoti profile could not be linked, please try again.');
         }
         else {
-            $activityDetails = User::getYotiUserFromStore();
+            $activityDetails = $profileService->getYotiUserFromStore();
             $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
 
             // Check that activityDetails exists and yoti_nolink button is not checked
             if ($activityDetails && $yotiNoLinkIsNotChecked)
             {
                 // Link account to Yoti
-                $yotiUser = new User();
-                $yotiUser->createYotiUser($user->ID, $activityDetails);
+                $profileService->createYotiUser($user->ID, $activityDetails);
             }
         }
 
         // Remove Yoti session
-        User::clearYotiUserStore();
+        $profileService->clearYotiUserStore();
     }
 
     /**
@@ -188,7 +195,7 @@ class Hooks
             return;
         }
 
-        $dbProfile = (array) User::getUserProfile($user->ID);
+        $dbProfile = (array) Service::profile()->getUserProfile($user->ID);
 
         $profileUserId = $user->ID;
         $currentUser = wp_get_current_user();
@@ -207,9 +214,9 @@ class Hooks
 
         if (!empty($dbProfile)) {
             // Move selfie attr to the top
-            if (isset($dbProfile[User::SELFIE_FILENAME])) {
-                $selfieDataArr = [User::SELFIE_FILENAME => $dbProfile[User::SELFIE_FILENAME]];
-                unset($dbProfile[User::SELFIE_FILENAME]);
+            if (isset($dbProfile[Profile::SELFIE_FILENAME])) {
+                $selfieDataArr = [Profile::SELFIE_FILENAME => $dbProfile[Profile::SELFIE_FILENAME]];
+                unset($dbProfile[Profile::SELFIE_FILENAME]);
                 $dbProfile = array_merge(
                     $selfieDataArr,
                     $dbProfile

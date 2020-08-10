@@ -6,7 +6,8 @@ use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\UserProfile;
 use Yoti\WP\Hooks;
 use Yoti\WP\Message;
-use Yoti\WP\User;
+use Yoti\WP\Service;
+use Yoti\WP\Service\Profile;
 
 /**
  * @coversDefaultClass Yoti\WP\Hooks
@@ -36,7 +37,7 @@ class HooksTest extends TestBase
      */
     private function assertProfileAttributes($html)
     {
-        foreach (User::profileFields() as $attrLabel) {
+        foreach (Profile::profileFields() as $attrLabel) {
             $this->assertXpath(
                 "//tr/th/label[contains(text(),'{$attrLabel}')]/parent::th/parent::tr/td[contains(text(),'{$attrLabel} value')]",
                 $html
@@ -144,10 +145,12 @@ class HooksTest extends TestBase
      */
     public function testLoginNotVerified()
     {
+        $profileService = Service::profile();
+
         wp_create_nonce('yoti_verify');
         $_POST['yoti_nolink'] = '0';
         $_POST['yoti_verify'] = 'invalid-verification';
-        User::storeYotiUser($this->createMockActivityDetails());
+        $profileService->storeYotiUser($this->createMockActivityDetails());
 
         Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
 
@@ -157,8 +160,8 @@ class HooksTest extends TestBase
             $flash['message']
         );
         $this->assertEquals('message', $flash['type']);
-        $this->assertEmpty(User::getYotiUserFromStore());
-        $this->assertFalse(User::getUserProfile($this->unlinkedUser->ID));
+        $this->assertEmpty($profileService->getYotiUserFromStore());
+        $this->assertFalse($profileService->getUserProfile($this->unlinkedUser->ID));
     }
 
     /**
@@ -175,15 +178,17 @@ class HooksTest extends TestBase
      */
     public function testLoginVerified()
     {
+        $profileService = Service::profile();
+
         $_POST['yoti_nolink'] = '0';
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
-        User::storeYotiUser($this->createMockActivityDetails());
+        $profileService->storeYotiUser($this->createMockActivityDetails());
 
         Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
 
         $this->assertEmpty(Message::getFlash());
-        $this->assertEmpty(User::getYotiUserFromStore());
-        $this->assertTrue(is_array(User::getUserProfile($this->unlinkedUser->ID)));
+        $this->assertEmpty($profileService->getYotiUserFromStore());
+        $this->assertTrue(is_array($profileService->getUserProfile($this->unlinkedUser->ID)));
     }
 
     /**
@@ -191,15 +196,17 @@ class HooksTest extends TestBase
      */
     public function testLoginVerifiedNoLink()
     {
+        $profileService = Service::profile();
+
         $_POST['yoti_nolink'] = '1';
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
-        User::storeYotiUser($this->createMockActivityDetails());
+        $profileService->storeYotiUser($this->createMockActivityDetails());
 
         Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
 
         $this->assertEmpty(Message::getFlash());
-        $this->assertEmpty(User::getYotiUserFromStore());
-        $this->assertFalse(User::getUserProfile($this->unlinkedUser->ID));
+        $this->assertEmpty($profileService->getYotiUserFromStore());
+        $this->assertFalse($profileService->getUserProfile($this->unlinkedUser->ID));
     }
 
     /**

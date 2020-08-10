@@ -2,8 +2,6 @@
 
 namespace Yoti\WP;
 
-use Yoti\YotiClient;
-
 /**
  * Class Config
  */
@@ -38,5 +36,18 @@ class Config
     public static function save($config)
     {
         update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
+    }
+
+    /**
+     * Get Yoti upload dir.
+     *
+     * @return string
+     */
+    public static function uploadDir()
+    {
+        if (!defined('YOTI_UPLOAD_DIR')) {
+            return WP_CONTENT_DIR . '/uploads/yoti';
+        }
+        return rtrim(YOTI_UPLOAD_DIR, '/');
     }
 }

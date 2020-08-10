@@ -1,6 +1,9 @@
 <?php
 
-namespace Yoti\WP;
+namespace Yoti\WP\Button;
+
+use Yoti\WP\Config;
+use Yoti\WP\View;
 
 class Widget extends \WP_Widget
 {

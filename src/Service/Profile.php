@@ -1,16 +1,17 @@
 <?php
 
-namespace Yoti\WP;
+namespace Yoti\WP\Service;
 
 use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\UserProfile;
-use Yoti\Util\Config as YotiConfig;
-use Yoti\YotiClient;
+use Yoti\WP\Client\ClientFactoryInterface;
+use Yoti\WP\Config;
+use Yoti\WP\Message;
 
 /**
- * Class User
+ * Class Profile
  */
-class User
+class Profile
 {
     /** Selfie key */
     const SELFIE_FILENAME = 'selfie_filename';
@@ -38,8 +39,17 @@ class User
      */
     private $config;
 
-    public function __construct()
+    /**
+     * @var ClientFactoryInterface
+     */
+    private $clientFactory;
+
+    /**
+     * @param ClientFactoryInterface $clientFactory
+     */
+    public function __construct(ClientFactoryInterface $clientFactory)
     {
+        $this->clientFactory = $clientFactory;
         $this->config = Config::load();
     }
 
@@ -69,15 +79,7 @@ class User
         // Init Yoti client and attempt to request user details
         try
         {
-            $yotiClient = new YotiClient(
-                $this->config['yoti_sdk_id'],
-                $this->config['yoti_pem']['contents'],
-                [
-                    YotiConfig::SDK_IDENTIFIER => Constants::SDK_IDENTIFIER,
-                    YotiConfig::SDK_VERSION => Constants::SDK_VERSION,
-                ]
-            );
-
+            $yotiClient = $this->clientFactory->getClient();
             $activityDetails = $yotiClient->getActivityDetails($token);
             $profile = $activityDetails->getProfile();
         }
@@ -214,7 +216,7 @@ class User
             return;
         }
 
-        $file = self::uploadDir() . "/{$dbProfile[$field]}";
+        $file = Config::uploadDir() . "/{$dbProfile[$field]}";
         if (!file_exists($file))
         {
             return;
@@ -263,7 +265,7 @@ class User
      *
      * @param ActivityDetails $activityDetails
      */
-    public static function storeYotiUser(ActivityDetails $activityDetails)
+    public function storeYotiUser(ActivityDetails $activityDetails)
     {
         $_SESSION['yoti-user'] = serialize($activityDetails);
     }
@@ -273,7 +275,7 @@ class User
      *
      * @return ActivityDetails|null
      */
-    public static function getYotiUserFromStore()
+    public function getYotiUserFromStore()
     {
         return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : NULL;
     }
@@ -281,7 +283,7 @@ class User
     /**
      * Remove Yoti user data from the session.
      */
-    public static function clearYotiUserStore()
+    public function clearYotiUserStore()
     {
         unset($_SESSION['yoti-user']);
     }
@@ -467,8 +469,8 @@ class User
     {
         $profile = $activityDetails->getProfile();
         // Create upload dir
-        if (!is_dir(self::uploadDir())) {
-            mkdir(self::uploadDir(), 0777, TRUE);
+        if (!is_dir(Config::uploadDir())) {
+            mkdir(Config::uploadDir(), 0777, TRUE);
         }
 
         $meta = [];
@@ -488,7 +490,7 @@ class User
         $selfie = $profile->getSelfie();
         if ($selfie) {
             $selfieFilename = self::createUniqueFilename($selfie->getValue()->getBase64Content(), 'png');
-            file_put_contents(self::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
+            file_put_contents(Config::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
             unset($meta[UserProfile::ATTR_SELFIE]);
             $meta = array_merge(
                 [self::SELFIE_FILENAME => $selfieFilename],
@@ -536,7 +538,7 @@ class User
     {
         // Remove user image.
         $dbProfile = self::getUserProfile($userId);
-        $filePath = isset($dbProfile[self::SELFIE_FILENAME]) ? self::uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME] : FALSE;
+        $filePath = isset($dbProfile[self::SELFIE_FILENAME]) ? Config::uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME] : FALSE;
         if ($filePath && is_file($filePath)) {
             if (!unlink($filePath)) {
                 self::setFlash('Could not delete user image.', 'error');
@@ -567,7 +569,7 @@ class User
      *
      * @return mixed
      */
-    public static function getUserProfile($userId)
+    public function getUserProfile($userId)
     {
         $dbProfile = get_user_meta($userId, 'yoti_user.profile');
         $dbProfile = reset($dbProfile);
@@ -576,25 +578,12 @@ class User
     }
 
     /**
-     * Get Yoti upload dir.
-     *
-     * @return string
-     */
-    public static function uploadDir()
-    {
-        if (!defined('YOTI_UPLOAD_DIR')) {
-            return WP_CONTENT_DIR . '/uploads/yoti';
-        }
-        return rtrim(YOTI_UPLOAD_DIR, '/');
-    }
-
-    /**
      * Get Selfie URL.
      *
      * @param string $userId
      * @return string
      */
-    public static function selfieUrl($userId)
+    public function selfieUrl($userId)
     {
         $currentUser = wp_get_current_user();
         $isAdmin = in_array('administrator', $currentUser->roles, TRUE);

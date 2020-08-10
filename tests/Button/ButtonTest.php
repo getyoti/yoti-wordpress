@@ -1,11 +1,12 @@
 <?php
 
-namespace Yoti\WP\Test;
+namespace Yoti\WP\Test\Button;
 
-use Yoti\WP\Button;
+use Yoti\WP\Button\Button;
+use Yoti\WP\Test\TestBase;
 
 /**
- * @coversDefaultClass Yoti\WP\Button
+ * @coversDefaultClass Yoti\WP\Button\Button
  *
  * @group yoti
  */
