@@ -53,7 +53,7 @@ class ButtonTest extends TestBase
 
         $link_attributes = [
             "[@class='yoti-connect-button']",
-            "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&redirect&yoti_verify=')]",
+            "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&yoti_verify=')]",
         ];
 
         ob_start();
@@ -74,7 +74,7 @@ class ButtonTest extends TestBase
         $expectedScenarioId = 'some-custom-id';
 
         ob_start();
-        Button::render(NULL, FALSE, [
+        Button::render(null, false, [
             'yoti_scenario_id' => $expectedScenarioId,
         ]);
         $html = ob_get_clean();
@@ -94,7 +94,7 @@ class ButtonTest extends TestBase
         $expectedText = 'some custom text';
 
         ob_start();
-        Button::render(NULL, FALSE, [
+        Button::render(null, false, [
             'yoti_button_text' => $expectedText,
         ]);
         $html = ob_get_clean();

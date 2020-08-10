@@ -25,9 +25,8 @@ class Message
      */
     public static function getFlash()
     {
-        $message = NULL;
-        if (!empty($_SESSION['yoti-connect-flash']))
-        {
+        $message = null;
+        if (!empty($_SESSION['yoti-connect-flash'])) {
             $message = $_SESSION['yoti-connect-flash'];
             self::clearFlash();
         }

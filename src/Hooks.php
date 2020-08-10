@@ -2,7 +2,6 @@
 
 namespace Yoti\WP;
 
-use Yoti\Profile\UserProfile;
 use Yoti\WP\Widget;
 use Yoti\WP\User;
 
@@ -14,19 +13,18 @@ class Hooks
     /**
      * Activation hook.
      */
-    public static function yoti_activation_hook()
+    public static function activation()
     {
         // Create upload dir
-        if (!is_dir(Service::config()->uploadDir()))
-        {
-            mkdir(Service::config()->uploadDir(), 0777, TRUE);
+        if (!is_dir(Service::config()->uploadDir())) {
+            mkdir(Service::config()->uploadDir(), 0777, true);
         }
     }
 
     /**
      * Uninstall hook.
      */
-    public static function yoti_uninstall_hook()
+    public static function uninstall()
     {
         Service::config()->delete();
     }
@@ -34,28 +32,24 @@ class Hooks
     /**
      * Yoti WP init hook.
      */
-    public static function yoti_init()
+    public static function init()
     {
-        if (!session_id())
-        {
+        if (!session_id()) {
             session_start();
         }
 
         // Verifiy the action.
         $verified = !empty($_GET['yoti_verify']) && wp_verify_nonce($_GET['yoti_verify'], 'yoti_verify');
 
-        if (!empty($_GET['yoti-select']))
-        {
+        if (!empty($_GET['yoti-select'])) {
             $userService = Service::user();
 
             // Action
             $action = !empty($_GET['action']) ? $_GET['action'] : '';
             $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
-            switch ($action)
-            {
+            switch ($action) {
                 case 'link':
-                    if (!$userService->link())
-                    {
+                    if (!$userService->link()) {
                         $redirect = home_url();
                     }
                     wp_safe_redirect($redirect);
@@ -63,13 +57,10 @@ class Hooks
                     break;
 
                 case 'unlink':
-                    if (!$verified)
-                    {
+                    if (!$verified) {
                         Message::setFlash('Yoti profile could not be unlinked, please try again.');
                         $redirect = home_url();
-                    }
-                    elseif (!$userService->unlink())
-                    {
+                    } elseif (!$userService->unlink()) {
                         $redirect = home_url();
                     }
 
@@ -79,7 +70,7 @@ class Hooks
 
                 case 'bin-file':
                     if ($verified) {
-                        $userService->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : NULL);
+                        $userService->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : null);
                         exit;
                     }
                     break;
@@ -90,35 +81,31 @@ class Hooks
     /**
      * Add items to admin menu.
      */
-    public static function yoti_admin_menu()
+    public static function adminMenu()
     {
-        wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', FALSE);
+        wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
         add_options_page('Yoti', 'Yoti', 'manage_options', 'yoti', [Admin::class, 'init']);
     }
 
     /**
      * Add to login footer.
      */
-    public static function yoti_login_header()
+    public static function loginHeader()
     {
         $userService = Service::user();
 
-        // Don't allow unless there is an existing session
-        if (!$userService->getYotiUserFromStore())
-        {
+        if (!$userService->getYotiUserFromStore()) {
+            // Don't allow unless there is an existing session
             return;
-        }
-        // On page refresh clear the YotiUserStore session and don't display the message
-        elseif($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to']))
-        {
+        } elseif ($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to'])) {
+            // On page refresh clear the YotiUserStore session and don't display the message
             $userService->clearYotiUserStore();
-
             return;
         }
 
         $config = Service::config()->load();
         $companyName = 'WordPress';
-        if(isset($config['yoti_company_name']) && !empty($config['yoti_company_name'])) {
+        if (isset($config['yoti_company_name']) && !empty($config['yoti_company_name'])) {
             $companyName = $config['yoti_company_name'];
         }
 
@@ -126,9 +113,8 @@ class Hooks
         $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');
         if ($verified) {
             $noLink = !empty($_POST['yoti_nolink']);
-        }
-        else {
-            $noLink = FALSE;
+        } else {
+            $noLink = false;
         }
 
         View::render('login-header', [
@@ -143,7 +129,7 @@ class Hooks
      * @param null $user_login
      * @param null $user
      */
-    public static function yoti_login($user_login = NULL, $user = NULL)
+    public static function login($user_login = null, $user = null)
     {
         if (!$user) {
             return;
@@ -159,14 +145,12 @@ class Hooks
         // Verify the action.
         if (!wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')) {
             Message::setFlash('Yoti profile could not be linked, please try again.');
-        }
-        else {
+        } else {
             $activityDetails = $userService->getYotiUserFromStore();
             $yotiNoLinkIsNotChecked = (!isset($_POST['yoti_nolink']) || empty($_POST['yoti_nolink']));
 
             // Check that activityDetails exists and yoti_nolink button is not checked
-            if ($activityDetails && $yotiNoLinkIsNotChecked)
-            {
+            if ($activityDetails && $yotiNoLinkIsNotChecked) {
                 // Link account to Yoti
                 $userService->createYotiUser($user->ID, $activityDetails);
             }
@@ -179,7 +163,7 @@ class Hooks
     /**
      * WP logout hook.
      */
-    public static function yoti_logout()
+    public static function logout()
     {
         Message::clearFlash();
     }
@@ -189,7 +173,7 @@ class Hooks
      *
      * @param WP_User $user.
      */
-    public static function show_user_profile($user)
+    public static function showUserProfile($user)
     {
         // Do not display profile if account is not linked.
         if (empty(get_user_meta($user->ID, 'yoti_user.identifier'))) {
@@ -203,12 +187,12 @@ class Hooks
 
         $profileUserId = $user->ID;
         $currentUser = wp_get_current_user();
-        $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
-        $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : NULL;
+        $isAdmin = in_array('administrator', $currentUser->roles, true);
+        $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : null;
 
         // Set userId if admin user is viewing his own profile
         // and the userId is NULL
-        if(
+        if (
             $isAdmin
             && $profileUserId === $currentUser->ID
             && is_null($userId)
@@ -222,19 +206,17 @@ class Hooks
         }
 
         // Flag to display button.
-        $displayButton = FALSE;
+        $displayButton = false;
 
         if (!$isAdmin) {
             // Display for non-admin accounts.
-            $displayButton = TRUE;
-        }
-        elseif (!$userId) {
+            $displayButton = true;
+        } elseif (!$userId) {
             // Display for anonymous users.
-            $displayButton = TRUE;
-        }
-        elseif ($currentUser->ID === $userId) {
+            $displayButton = true;
+        } elseif ($currentUser->ID === $userId) {
             // Display for current user.
-            $displayButton = TRUE;
+            $displayButton = true;
         }
 
         // Add profile scope
@@ -249,7 +231,7 @@ class Hooks
     /**
      * Register Yoti widget.
      */
-    public static function yoti_register_widget()
+    public static function registerWidget()
     {
         register_widget(Widget::class);
     }
@@ -257,9 +239,9 @@ class Hooks
     /**
      * Add Yoti js.
      */
-    public static function yoti_enqueue_scripts()
+    public static function enqueueScripts()
     {
-        wp_enqueue_script('yoti-asset-js', Constants::YOTI_SDK_JAVASCRIPT_LIBRARY, [], NULL, TRUE);
+        wp_enqueue_script('yoti-asset-js', Constants::YOTI_SDK_JAVASCRIPT_LIBRARY, [], null, true);
         wp_add_inline_script('yoti-asset-js', "
             if (typeof yotiConfig != 'undefined') {
                 window.Yoti.Share.init(yotiConfig);
@@ -274,9 +256,9 @@ class Hooks
      *
      * @return mixed
      */
-    public static function yoti_plugin_action_links($links, $file)
+    public static function pluginActionLinks($links, $file)
     {
-        $settingsLink = '<a href="'. admin_url( 'options-general.php?page=yoti' ) . '">' .
+        $settingsLink = '<a href="' . admin_url('options-general.php?page=yoti') . '">' .
                 __('Settings', 'yoti') . '</a>';
         // Add Yoti settings to the plugin links.
         array_unshift($links, $settingsLink);
@@ -287,7 +269,7 @@ class Hooks
     /**
      * Display a notice for successful activation.
      */
-    public static function yoti_plugin_activate_notice()
+    public static function pluginActivateNotice()
     {
         global $pagenow;
 

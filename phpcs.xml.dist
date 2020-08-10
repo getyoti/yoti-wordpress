@@ -4,6 +4,7 @@
 	<file>tests</file>
 	<file>views</file>
 
+	<rule ref="PSR12" />
 	<rule ref="WordPress.Security.PluginMenuSlug"/>
 	<rule ref="WordPress.Security.EscapeOutput" />
 	<rule ref="WordPress.Security.SafeRedirect"/>

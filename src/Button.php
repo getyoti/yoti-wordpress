@@ -12,7 +12,7 @@ class Button
     /**
      * Default text for Yoti link button
      */
-    const YOTI_LINK_BUTTON_TEXT = 'Use Yoti';
+    private const YOTI_LINK_BUTTON_TEXT = 'Use Yoti';
 
     /**
      * Display Yoti button.
@@ -23,7 +23,7 @@ class Button
      *
      * @return string|null
      */
-    public static function render($redirect = NULL, $from_widget = FALSE, $instance_config = [])
+    public static function render($redirect = null, $from_widget = false, $instance_config = [])
     {
         // Increment button ID
         static $button_id_suffix = 0;
@@ -32,7 +32,7 @@ class Button
         // Do not show the button if the plugin has not been configured.
         $config = Service::config()->load();
         if (!$config) {
-            return NULL;
+            return null;
         }
 
         // Merge instance config with global config.
@@ -40,7 +40,7 @@ class Button
 
         // Default button text and linked status.
         $button_text = Button::YOTI_LINK_BUTTON_TEXT;
-        $is_linked = FALSE;
+        $is_linked = false;
 
         // Button text and linked status for logged in users.
         if (is_user_logged_in()) {
@@ -55,7 +55,14 @@ class Button
         }
 
         // Build unlink URL.
-        $unlink_url = site_url('wp-login.php') . '?yoti-select=1&action=unlink&redirect=' . ($redirect ? '&redirect=' . rawurlencode($redirect) : '');
+        $query_params = [
+            'yoti-select' => '1',
+            'action' => 'unlink',
+        ];
+        if ($redirect) {
+            $query_params['redirect'] = $redirect;
+        }
+        $unlink_url = site_url('wp-login.php') . '?' . http_build_query($query_params, null, '&', PHP_QUERY_RFC3986);
         $unlink_url = wp_nonce_url($unlink_url, 'yoti_verify', 'yoti_verify');
 
         View::render('button', [

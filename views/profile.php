@@ -17,8 +17,7 @@ $profileFields = User::profileFields();
 <h2><?php esc_html_e('Yoti User Profile'); ?></h2>
 <table class="form-table">
 <?php
-if (!empty($selfieUrl))
-{
+if (!empty($selfieUrl)) {
     ?>
     <tr>
         <th><label><?php esc_html_e($profileFields[UserProfile::ATTR_SELFIE]); ?></label></th>
@@ -26,11 +25,10 @@ if (!empty($selfieUrl))
             <img src="<?php esc_attr_e($selfieUrl); ?>" width="100" />
         </td>
     </tr>
-<?php
+    <?php
 }
 
-foreach ($dbProfile as $attrName => $value)
-{
+foreach ($dbProfile as $attrName => $value) {
     $label = isset($profileFields[$attrName]) ? $profileFields[$attrName] : $attrName;
     ?>
     <tr>
@@ -43,13 +41,13 @@ foreach ($dbProfile as $attrName => $value)
             <?php } ?>
         </td>
     </tr>
-<?php
+    <?php
 }
 ?>
 <?php if ($displayButton) { ?>
     <tr>
         <th></th>
-        <td><?php Button::render($_SERVER['REQUEST_URI'], FALSE); ?></td>
+        <td><?php Button::render($_SERVER['REQUEST_URI'], false); ?></td>
     </tr>
 <?php } ?>
 </table>

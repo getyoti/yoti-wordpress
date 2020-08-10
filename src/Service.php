@@ -32,7 +32,7 @@ class Service
      */
     public static function user(): User
     {
-        if (static::$user === NULL) {
+        if (static::$user === null) {
             static::$user = new User(self::clientFactory(), self::config());
         }
         return static::$user;
@@ -43,7 +43,7 @@ class Service
      */
     public static function config(): Config
     {
-        if (static::$config === NULL) {
+        if (static::$config === null) {
             static::$config = new Config();
         }
         return static::$config;
@@ -54,7 +54,7 @@ class Service
      */
     public static function clientFactory(): ClientFactoryInterface
     {
-        if (static::$clientFactory === NULL) {
+        if (static::$clientFactory === null) {
             static::$clientFactory = new ClientFactory(self::config());
         }
         return static::$clientFactory;
