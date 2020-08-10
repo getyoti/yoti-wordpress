@@ -13,7 +13,7 @@ defined('ABSPATH') or die();
 <?php echo $args['before_widget'] ?: ''; ?>
 <?php
 // Apply widget title html
-if(!empty($title)){
+if (!empty($title)) {
     echo $args['before_title'] ?: '';
     esc_html_e($title);
     echo $args['after_title'] ?: '';
@@ -21,7 +21,7 @@ if(!empty($title)){
 ?>
 <ul><li>
     <?php if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) { ?>
-        <?php Button::render(NULL, TRUE, $instance); ?>
+        <?php Button::render(null, true, $instance); ?>
     <?php } else { ?>
         <strong>Yoti not configured.</strong>
     <?php } ?>

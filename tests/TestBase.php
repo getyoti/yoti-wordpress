@@ -63,7 +63,7 @@ class TestBase extends \WP_UnitTestCase
         $this->linkedUser = get_user_by('id', $linkedUserId);
         update_user_meta($this->linkedUser->ID, 'yoti_user.profile', array_map(
             function ($item) {
-              return $item . ' value';
+                return $item . ' value';
             },
             User::profileFields()
         ));
@@ -148,7 +148,8 @@ class TestBase extends \WP_UnitTestCase
      *
      * @return stdClass
      */
-    protected function getButtonConfigFromMarkup($html) {
+    protected function getButtonConfigFromMarkup($html)
+    {
         preg_match('~yotiConfig\.elements\.push\((.*?)\);~s', $html, $matches);
         return json_decode($matches[1]);
     }

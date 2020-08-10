@@ -12,7 +12,7 @@ class Admin
     /**
      * @var self
      */
-    private static $_instance;
+    private static $instance;
 
     /**
      * POST data.
@@ -26,11 +26,10 @@ class Admin
      */
     public static function init()
     {
-        if (!self::$_instance)
-        {
-            self::$_instance = new self;
+        if (!self::$instance) {
+            self::$instance = new self();
 
-            self::$_instance->options();
+            self::$instance->options();
         }
     }
 
@@ -54,8 +53,7 @@ class Admin
     private function options()
     {
         // Make sure user can edit
-        if (!current_user_can('manage_options'))
-        {
+        if (!current_user_can('manage_options')) {
             return;
         }
 
@@ -64,13 +62,13 @@ class Admin
 
         // Check curl has preliminary extensions to run
         $errors = [];
-        if (!function_exists('curl_version'))
-        {
-            $errors[] = "PHP module 'curl' not installed. Yoti requires it to work. Please contact your server administrator.";
+        if (!function_exists('curl_version')) {
+            $errors[] = "PHP module 'curl' not installed. Yoti requires it to work." .
+                "Please contact your server administrator.";
         }
-        if (!function_exists('json_decode'))
-        {
-            $errors[] = "PHP module 'json' not installed. Yoti requires it to work. Please contact your server administrator.";
+        if (!function_exists('json_decode')) {
+            $errors[] = "PHP module 'json' not installed. Yoti requires it to work." .
+                "Please contact your server administrator.";
         }
         if (version_compare(phpversion(), '7.2', '<')) {
             $errors[] = 'Yoti could not be installed. Yoti PHP SDK requires PHP 7.2 or higher.';
@@ -80,61 +78,51 @@ class Admin
         $data = $config;
         $updateMessage = '';
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
-            try
-            {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
                 $this->setPostData();
 
                 $data['yoti_app_id'] = trim($this->postVar('yoti_app_id'));
                 $data['yoti_scenario_id'] = trim($this->postVar('yoti_scenario_id'));
                 $data['yoti_sdk_id'] = trim($this->postVar('yoti_sdk_id'));
                 $data['yoti_company_name'] = trim($this->postVar('yoti_company_name'));
-                $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? TRUE : FALSE;
+                $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? true : false;
                 $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
                 $data['yoti_user_email'] = $this->postVar('yoti_user_email');
                 $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
                 $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
 
                 // Validation
-                if (!$data['yoti_app_id'])
-                {
+                if (!$data['yoti_app_id']) {
                     $errors['yoti_app_id'] = 'App ID is required.';
                 }
-                if (!$data['yoti_sdk_id'])
-                {
+                if (!$data['yoti_sdk_id']) {
                     $errors['yoti_sdk_id'] = 'Client SDK ID is required.';
                 }
-                if (empty($pemFile['name']))
-                {
+                if (empty($pemFile['name'])) {
                     $errors['yoti_pem'] = 'PEM file is required.';
-                }
-                elseif (!empty($pemFile['tmp_name']) && !openssl_get_privatekey(file_get_contents($pemFile['tmp_name'])))
-                {
+                } elseif (
+                    !empty($pemFile['tmp_name']) &&
+                    !openssl_get_privatekey(file_get_contents($pemFile['tmp_name']))
+                ) {
                     $errors['yoti_pem'] = 'PEM file is invalid.';
                 }
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $errors['yoti_admin_options'] = 'There was a problem saving form data. Please try again.';
             }
 
             // No errors? proceed
-            if (!$errors)
-            {
+            if (!$errors) {
                 // If pem file uploaded then process
-                $name = $contents = NULL;
-                if (!empty($pemFile['tmp_name']))
-                {
+                $name = $contents = null;
+                if (!empty($pemFile['tmp_name'])) {
                     $name = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $pemFile['name']);
-                    if (!$name)
-                    {
+                    if (!$name) {
                         $name = md5($pemFile['name']) . '.pem';
                     }
                     $contents = file_get_contents($pemFile['tmp_name']);
-                }
-                // If delete not ticked
-                elseif (!$data['yoti_delete_pem'])
-                {
+                } elseif (!$data['yoti_delete_pem']) {
+                    // If delete not ticked
                     $name = $config['yoti_pem']['name'];
                     $contents = $config['yoti_pem']['contents'];
                 }
@@ -175,7 +163,7 @@ class Admin
      * @param null $default
      * @return string|null
      */
-    private function postVar($var, $default = NULL)
+    private function postVar($var, $default = null)
     {
         return array_key_exists($var, $this->postData) ? $this->postData[$var] : $default;
     }
@@ -185,7 +173,7 @@ class Admin
      * @param null $default
      * @return array|null
      */
-    private function filesVar($var, $default = NULL)
+    private function filesVar($var, $default = null)
     {
         return (array_key_exists($var, $_FILES) && !empty($_FILES[$var]['name'])) ? $_FILES[$var] : $default;
     }

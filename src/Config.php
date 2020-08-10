@@ -8,7 +8,7 @@ namespace Yoti\WP;
 class Config
 {
     /** Yoti config option name */
-    const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
+    private const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
 
     /**
      * @var array
@@ -20,9 +20,9 @@ class Config
      *
      * @return array
      */
-    public function load($reload = FALSE)
+    public function load($reload = false)
     {
-        if ($this->config === NULL || $reload === TRUE) {
+        if ($this->config === null || $reload === true) {
             $this->config = maybe_unserialize(get_option(self::YOTI_CONFIG_OPTION_NAME));
         }
         return $this->config;
@@ -34,7 +34,7 @@ class Config
     public function delete()
     {
         delete_option(self::YOTI_CONFIG_OPTION_NAME);
-        $this->config = NULL;
+        $this->config = null;
     }
 
     /**
@@ -43,7 +43,7 @@ class Config
     public function save($config)
     {
         update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
-        $this->config = NULL;
+        $this->config = null;
     }
 
     /**
@@ -52,7 +52,7 @@ class Config
     public function get($key)
     {
         $this->load();
-        return $this->config[$key] ?? NULL;
+        return $this->config[$key] ?? null;
     }
 
     /**

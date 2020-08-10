@@ -4,7 +4,7 @@ namespace Yoti\WP;
 
 class Widget extends \WP_Widget
 {
-    const YOTI_WIDGET_DEFAULT_TITLE = 'Authenticate with Yoti';
+    private const YOTI_WIDGET_DEFAULT_TITLE = 'Authenticate with Yoti';
 
     /**
      * Register widget with WordPress.
@@ -29,10 +29,10 @@ class Widget extends \WP_Widget
      */
     public function widget($args, $instance)
     {
-        if ( ! isset( $args['widget_id'] ) ) {
+        if (! isset($args['widget_id'])) {
             $args['widget_id'] = $this->id;
         }
-        $title = (!empty( $instance['title'])) ? $instance['title'] : __(self::YOTI_WIDGET_DEFAULT_TITLE);
+        $title = (!empty($instance['title'])) ? $instance['title'] : __(self::YOTI_WIDGET_DEFAULT_TITLE);
         $title = apply_filters('widget_title', $title, $instance, $this->id_base);
 
         wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css');
@@ -56,9 +56,9 @@ class Widget extends \WP_Widget
      */
     public function form($instance)
     {
-        $title = isset( $instance['title'] ) ? $instance['title'] : '';
-        $scenario_id = isset( $instance['yoti_scenario_id'] ) ? $instance['yoti_scenario_id'] : '';
-        $button_text = isset( $instance['yoti_button_text'] ) ? $instance['yoti_button_text'] : '';
+        $title = isset($instance['title']) ? $instance['title'] : '';
+        $scenario_id = isset($instance['yoti_scenario_id']) ? $instance['yoti_scenario_id'] : '';
+        $button_text = isset($instance['yoti_button_text']) ? $instance['yoti_button_text'] : '';
         ?>
         <p>
         <label for="<?php esc_attr_e($this->get_field_id('title')); ?>">Title:</label>
@@ -67,19 +67,23 @@ class Widget extends \WP_Widget
           id="<?php esc_attr_e($this->get_field_id('title')); ?>"
           name="<?php esc_attr_e($this->get_field_name('title')); ?>"
           type="text" value="<?php esc_attr_e($title); ?>">
-        <label for="<?php esc_attr_e($this->get_field_id('yoti_button_text')); ?>">Button Text <em>(optional)</em>:</label>
+        <label for="<?php esc_attr_e($this->get_field_id('yoti_button_text')); ?>">
+        Button Text <em>(optional)</em>:
+        </label>
         <input
           class="widefat"
           id="<?php esc_attr_e($this->get_field_id('yoti_button_text')); ?>"
           name="<?php esc_attr_e($this->get_field_name('yoti_button_text')); ?>"
           type="text" value="<?php esc_attr_e($button_text); ?>">
-        <label for="<?php esc_attr_e($this->get_field_id('yoti_scenario_id')); ?>">Scenario ID <em>(optional)</em>:</label>
+        <label for="<?php esc_attr_e($this->get_field_id('yoti_scenario_id')); ?>">
+        Scenario ID <em>(optional)</em>:
+        </label>
         <input
           class="widefat"
           id="<?php esc_attr_e($this->get_field_id('yoti_scenario_id')); ?>"
           name="<?php esc_attr_e($this->get_field_name('yoti_scenario_id')); ?>"
           type="text" value="<?php esc_attr_e($scenario_id); ?>">
-		</p>
+        </p>
         <?php
     }
 

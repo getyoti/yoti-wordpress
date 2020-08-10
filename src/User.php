@@ -12,12 +12,13 @@ use Yoti\WP\Client\ClientFactoryInterface;
 class User
 {
     /** Selfie key */
-    const SELFIE_FILENAME = 'selfie_filename';
+    public const SELFIE_FILENAME = 'selfie_filename';
 
     /**
      * @return array
      */
-    public static function profileFields() {
+    public static function profileFields()
+    {
         return [
             UserProfile::ATTR_SELFIE => 'Selfie',
             UserProfile::ATTR_FULL_NAME => 'Full Name',
@@ -57,79 +58,64 @@ class User
      * @param null $currentUser
      * @return bool
      */
-    public function link($currentUser = NULL)
+    public function link($currentUser = null)
     {
-        if (!$currentUser)
-        {
+        if (!$currentUser) {
             $currentUser = wp_get_current_user();
         }
 
-        $token = (!empty($_GET['token'])) ? $_GET['token'] : NULL;
+        $token = (!empty($_GET['token'])) ? $_GET['token'] : null;
 
         // If no token then ignore
-        if (!$token)
-        {
+        if (!$token) {
             Message::setFlash('Could not get Yoti token.', 'error');
 
-            return FALSE;
+            return false;
         }
 
         // Init Yoti client and attempt to request user details
-        try
-        {
+        try {
             $yotiClient = $this->clientFactory->getClient();
             $activityDetails = $yotiClient->getActivityDetails($token);
             $profile = $activityDetails->getProfile();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             Message::setFlash('Yoti failed to connect to your account.', 'error');
 
-            return FALSE;
+            return false;
         }
 
         if (!$this->passedAgeVerification($profile)) {
             Message::setFlash('Could not log you in as you haven\'t passed the age verification', 'error');
-            return FALSE;
+            return false;
         }
 
         // Check if Yoti user exists
         $wpYotiUid = $this->getUserIdByYotiId($activityDetails->getRememberMeId());
 
         // If Yoti user exists in db but isn't an actual account then remove it from yoti table
-        if ($wpYotiUid && $currentUser->ID !== $wpYotiUid && !get_user_by('id', $wpYotiUid))
-        {
+        if ($wpYotiUid && $currentUser->ID !== $wpYotiUid && !get_user_by('id', $wpYotiUid)) {
             // remove users account
             $this->deleteYotiUser($wpYotiUid);
         }
 
         // If user isn't logged in
-        if (!$currentUser->ID)
-        {
+        if (!$currentUser->ID) {
             // Register new user
-            if (!$wpYotiUid)
-            {
-                $errMsg = NULL;
+            if (!$wpYotiUid) {
+                $errMsg = null;
                 // Attempt to connect by email
                 $wpYotiUid = $this->shouldLoginByEmail($activityDetails, $this->config->get('yoti_user_email'));
 
                 // If config only existing enabled then check if user exists, if not then redirect
                 // to login page
-                if (!$wpYotiUid)
-                {
-                    if (empty($this->config->get('yoti_only_existing')))
-                    {
-                        try
-                        {
+                if (!$wpYotiUid) {
+                    if (empty($this->config->get('yoti_only_existing'))) {
+                        try {
                             $wpYotiUid = $this->createUser($activityDetails);
-                        }
-                        catch (\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                             $errMsg = $e->getMessage();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         self::storeYotiUser($activityDetails);
                         $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
                         wp_safe_redirect(wp_login_url($redirect));
@@ -138,33 +124,27 @@ class User
                 }
 
                 // No user id? no account
-                if (!$wpYotiUid)
-                {
+                if (!$wpYotiUid) {
                     // if couldn't create user then bail
                     Message::setFlash("Could not create user account. $errMsg", 'error');
 
-                    return FALSE;
+                    return false;
                 }
             }
 
             // Log user in
             $this->loginUser($wpYotiUid);
-        }
-        else
-        {
-            // If current logged in user doesn't match Yoti user registered then bail
-            if ($wpYotiUid && $currentUser->ID !== $wpYotiUid)
-            {
+        } else {
+            if ($wpYotiUid && $currentUser->ID !== $wpYotiUid) {
+                // If current logged in user doesn't match Yoti user registered then bail
                 Message::setFlash('This Yoti account is already linked to another account.', 'error');
-            }
-            // If WP user not found in Yoti table then create new Yoti user
-            elseif (!$wpYotiUid)
-            {
+            } elseif (!$wpYotiUid) {
+                // If WP user not found in Yoti table then create new Yoti user
                 $this->createYotiUser($currentUser->ID, $activityDetails);
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -175,17 +155,16 @@ class User
         $currentUser = wp_get_current_user();
 
         // Unlink user account from Yoti
-        if (is_user_logged_in())
-        {
+        if (is_user_logged_in()) {
             $this->deleteYotiUser($currentUser->ID);
             Message::setFlash('Your Yoti profile was successfully unlinked from your account.');
 
-            return TRUE;
+            return true;
         }
 
         Message::setFlash('Could not unlink from Yoti.');
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -194,29 +173,25 @@ class User
      * @param $field
      * @param null $userId
      */
-    public function binFile($field, $userId = NULL)
+    public function binFile($field, $userId = null)
     {
         $user = wp_get_current_user();
-        if (in_array('administrator', $user->roles, TRUE))
-        {
+        if (in_array('administrator', $user->roles, true)) {
             $user = get_user_by('id', $userId);
         }
 
-        if (!$user)
-        {
+        if (!$user) {
             return;
         }
 
         $field = ($field === 'selfie') ? self::SELFIE_FILENAME : $field;
         $dbProfile = self::getUserProfile($user->ID);
-        if (!$dbProfile || !array_key_exists($field, $dbProfile))
-        {
+        if (!$dbProfile || !array_key_exists($field, $dbProfile)) {
             return;
         }
 
         $file = $this->config->uploadDir() . "/{$dbProfile[$field]}";
-        if (!file_exists($file))
-        {
+        if (!file_exists($file)) {
             return;
         }
 
@@ -252,7 +227,7 @@ class User
     {
         $ageVerifications = $profile->getAgeVerifications();
         $ageVerificationsAttr = [];
-        foreach($ageVerifications as $attr => $ageVerification) { /** @var AgeVerification $ageVerification*/
+        foreach ($ageVerifications as $attr => $ageVerification) { /** @var AgeVerification $ageVerification*/
             $ageVerificationsAttr[$attr] = $ageVerification->getResult() ? 'Yes' : 'No';
         }
         return $ageVerificationsAttr;
@@ -275,7 +250,7 @@ class User
      */
     public function getYotiUserFromStore()
     {
-        return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : NULL;
+        return $_SESSION && array_key_exists('yoti-user', $_SESSION) ? unserialize($_SESSION['yoti-user']) : null;
     }
 
     /**
@@ -302,7 +277,7 @@ class User
         }
 
         // If GivenName and FamilyName are provided use as user nickname/login
-        if(NULL !== $givenName && NULL !== $familyName) {
+        if (null !== $givenName && null !== $familyName) {
             $userFullName = $givenName . ' ' . $familyName;
             $userProvidedPrefix = strtolower(str_replace(' ', '.', $userFullName));
             $prefix = validate_username($userProvidedPrefix) ? $userProvidedPrefix : $prefix;
@@ -315,7 +290,7 @@ class User
                 // Search the `user_login` field only.
                 'search_columns' => ['user_login'],
                 // Return user count
-                'count_total' => TRUE,
+                'count_total' => true,
             ]
         );
 
@@ -324,11 +299,9 @@ class User
         $username = $prefix;
         // If we already have a login with this prefix then generate another login
         if ($userCount > 0) {
-            do
-            {
+            do {
                 $username = $prefix . ++$userCount;
-            }
-            while (get_user_by('login', $username));
+            } while (get_user_by('login', $username));
         }
 
         return $username;
@@ -342,7 +315,7 @@ class User
      */
     private function getUserGivenName(UserProfile $profile)
     {
-        $givenName = NULL;
+        $givenName = null;
         if ($givenNamesAttr = $profile->getGivenNames()) {
             $givenName = explode(' ', $givenNamesAttr->getValue())[0];
         }
@@ -367,7 +340,7 @@ class User
                 // Search the `user_email` field only.
                 'search_columns' => ['user_email'],
                 // Return user count
-                'count_total' => TRUE,
+                'count_total' => true,
             ]
         );
 
@@ -376,13 +349,10 @@ class User
 
         // Generate Yoti unique user email
         $userCount = (int)$userQuery->get_total();
-        if ($userCount > 0)
-        {
-            do
-            {
+        if ($userCount > 0) {
+            do {
                 $email = $prefix . ++$userCount . "@$domain";
-            }
-            while (get_user_by('email', $email));
+            } while (get_user_by('email', $email));
         }
 
         return $email;
@@ -415,7 +385,7 @@ class User
         $password = $this->generatePassword();
 
         // Check that email is available and valid.
-        $userProvidedEmailCanBeUsed = FALSE;
+        $userProvidedEmailCanBeUsed = false;
         if ($emailAttr = $profile->getEmailAddress()) {
             $userProvidedEmail = $emailAttr->getValue();
             $userProvidedEmailCanBeUsed = is_email($userProvidedEmail) && !get_user_by('email', $userProvidedEmail);
@@ -427,7 +397,7 @@ class User
 
         $wpUserId = wp_create_user($username, $password, $email);
         // If there has been an error creating the user, stop the process
-        if(is_wp_error($wpUserId)) {
+        if (is_wp_error($wpUserId)) {
             throw new \Exception($wpUserId->get_error_message(), 401);
         }
 
@@ -454,7 +424,7 @@ class User
         ))->get_results();
         $user = reset($users);
 
-        return $user ? $user->ID : NULL;
+        return $user ? $user->ID : null;
     }
 
     /**
@@ -468,7 +438,7 @@ class User
         $profile = $activityDetails->getProfile();
         // Create upload dir
         if (!is_dir($this->config->uploadDir())) {
-            mkdir($this->config->uploadDir(), 0777, TRUE);
+            mkdir($this->config->uploadDir(), 0777, true);
         }
 
         $meta = [];
@@ -477,14 +447,14 @@ class User
         foreach ($attrsArr as $attrName) {
             if ($attrObj = $profile->getProfileAttribute($attrName)) {
                 $value = $attrObj->getValue();
-                if (NULL !== $value && $attrName === UserProfile::ATTR_DATE_OF_BIRTH) {
+                if (null !== $value && $attrName === UserProfile::ATTR_DATE_OF_BIRTH) {
                     $value = $value->format('d-m-Y');
                 }
                 $meta[$attrName] = $value;
             }
         }
 
-        $selfieFilename = NULL;
+        $selfieFilename = null;
         $selfie = $profile->getSelfie();
         if ($selfie) {
             $selfieFilename = self::createUniqueFilename($selfie->getValue()->getBase64Content(), 'png');
@@ -499,7 +469,7 @@ class User
         // Extract age verification values if the option is set in the Yoti Hub
         // and in the Yoti's config in WP admin
         $ageVerificationsArr = $this->processAgeVerifications($profile);
-        foreach($ageVerificationsArr as $ageAttr => $result) {
+        foreach ($ageVerificationsArr as $ageAttr => $result) {
             $ageAttr = str_replace(':', '_', ucwords($ageAttr, '_'));
             $meta[$ageAttr] = $result;
         }
@@ -524,7 +494,7 @@ class User
             $suffix = (int) $maxId;
         }
 
-        return md5(uniqid($prefix, TRUE)) . '-' . ((string) $suffix) . '.' . $extension;
+        return md5(uniqid($prefix, true)) . '-' . ((string) $suffix) . '.' . $extension;
     }
 
     /**
@@ -536,7 +506,10 @@ class User
     {
         // Remove user image.
         $dbProfile = self::getUserProfile($userId);
-        $filePath = isset($dbProfile[self::SELFIE_FILENAME]) ? $this->config->uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME] : FALSE;
+        $filePath = isset($dbProfile[self::SELFIE_FILENAME])
+            ? $this->config->uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME]
+            : false;
+
         if ($filePath && is_file($filePath)) {
             if (!unlink($filePath)) {
                 self::setFlash('Could not delete user image.', 'error');
@@ -581,21 +554,21 @@ class User
      * @param string $userId
      * @return string|null
      */
-    public function selfieUrl($userId, $dbProfile = NULL)
+    public function selfieUrl($userId, $dbProfile = null)
     {
         $dbProfile = $dbProfile ?? $this->getUserProfile($userId);
 
         if (!isset($dbProfile[self::SELFIE_FILENAME])) {
-            return NULL;
+            return null;
         }
 
         $selfieFullPath = $this->config->uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME];
         if (!is_file($selfieFullPath)) {
-            return NULL;
+            return null;
         }
 
         $currentUser = wp_get_current_user();
-        $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
+        $isAdmin = in_array('administrator', $currentUser->roles, true);
         $userIdUrlPart = ($isAdmin ? '&user_id=' . esc_html($userId) : '');
         $siteUrl = site_url('wp-login.php') . '?yoti-select=1&action=bin-file&field=selfie' . $userIdUrlPart;
         return wp_nonce_url($siteUrl, 'yoti_verify', 'yoti_verify');
@@ -611,8 +584,8 @@ class User
      */
     private function shouldLoginByEmail(ActivityDetails $activityDetails, $emailConfig)
     {
-        $wpYotiUid = NULL;
-        $email = NULL;
+        $wpYotiUid = null;
+        $email = null;
 
         if ($emailAttr = $activityDetails->getProfile()->getEmailAddress()) {
             $email = $emailAttr->getValue();

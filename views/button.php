@@ -29,7 +29,7 @@ defined('ABSPATH') or die();
                 ),
             )); ?>);
         </script>
-    <?php } elseif($from_widget) { ?>
+    <?php } elseif ($from_widget) { ?>
         <strong>Yoti</strong> Linked
     <?php } else { ?>
         <a class="yoti-connect-button"

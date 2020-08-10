@@ -25,7 +25,7 @@ class HooksTest extends TestBase
     {
         $link_attributes = [
             "[@class='yoti-connect-button']",
-            "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&redirect&yoti_verify=')]",
+            "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&yoti_verify=')]",
         ];
         return '//table//td/div/a' . implode('', $link_attributes) . "[contains(text(), 'Unlink Yoti Account')]";
     }
@@ -39,27 +39,31 @@ class HooksTest extends TestBase
     {
         foreach (User::profileFields() as $attrLabel) {
             $this->assertXpath(
-                "//tr/th/label[contains(text(),'{$attrLabel}')]/parent::th/parent::tr/td[contains(text(),'{$attrLabel} value')]",
+                sprintf(
+                    "//tr/th/label[contains(text(),'%s')]/parent::th/parent::tr/td[contains(text(),'%s value')]",
+                    $attrLabel,
+                    $attrLabel
+                ),
                 $html
             );
         }
     }
 
     /**
-     * @covers ::show_user_profile
+     * @covers ::showUserProfile
      */
     public function testUserProfileUnlinked()
     {
         wp_set_current_user($this->unlinkedUser->ID);
 
         ob_start();
-        Hooks::show_user_profile($this->unlinkedUser);
+        Hooks::showUserProfile($this->unlinkedUser);
 
         $this->assertEmpty(ob_get_clean());
     }
 
     /**
-     * @covers ::show_user_profile
+     * @covers ::showUserProfile
      */
     public function testUserProfileLinkedNoAttributes()
     {
@@ -67,13 +71,13 @@ class HooksTest extends TestBase
         update_user_meta($this->linkedUser->ID, 'yoti_user.profile', []);
 
         ob_start();
-        Hooks::show_user_profile($this->linkedUser);
+        Hooks::showUserProfile($this->linkedUser);
 
         $this->assertXpath($this->getUnlinkXpath(), ob_get_clean());
     }
 
     /**
-     * @covers ::show_user_profile
+     * @covers ::showUserProfile
      */
     public function testUserProfileLinkedWithAttributesAsAdmin()
     {
@@ -81,7 +85,7 @@ class HooksTest extends TestBase
         $_GET['user_id'] = $this->linkedUser->ID;
 
         ob_start();
-        Hooks::show_user_profile($this->linkedUser);
+        Hooks::showUserProfile($this->linkedUser);
 
         $html = ob_get_clean();
 
@@ -90,14 +94,14 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::show_user_profile
+     * @covers ::showUserProfile
      */
     public function testUserProfileLinkedWithAttributes()
     {
         wp_set_current_user($this->linkedUser->ID);
 
         ob_start();
-        Hooks::show_user_profile($this->linkedUser);
+        Hooks::showUserProfile($this->linkedUser);
 
         $html = ob_get_clean();
 
@@ -106,7 +110,7 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::yoti_login_header
+     * @covers ::loginHeader
      */
     public function testLoginHeaderSessionData()
     {
@@ -115,7 +119,7 @@ class HooksTest extends TestBase
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
-        Hooks::yoti_login_header();
+        Hooks::loginHeader();
         $html = ob_get_clean();
 
         // Check message.
@@ -141,7 +145,7 @@ class HooksTest extends TestBase
     /**
      * @runInSeparateProcess
      *
-     * @covers ::yoti_login
+     * @covers ::login
      */
     public function testLoginNotVerified()
     {
@@ -152,7 +156,7 @@ class HooksTest extends TestBase
         $_POST['yoti_verify'] = 'invalid-verification';
         $userService->storeYotiUser($this->createMockActivityDetails());
 
-        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::login('unlinked_user', $this->unlinkedUser);
 
         $flash = Message::getFlash();
         $this->assertEquals(
@@ -165,16 +169,16 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::yoti_login
+     * @covers ::login
      */
     public function testLoginNoVerification()
     {
-        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::login('unlinked_user', $this->unlinkedUser);
         $this->assertEmpty(Message::getFlash());
     }
 
     /**
-     * @covers ::yoti_login
+     * @covers ::login
      */
     public function testLoginVerified()
     {
@@ -184,7 +188,7 @@ class HooksTest extends TestBase
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
         $userService->storeYotiUser($this->createMockActivityDetails());
 
-        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::login('unlinked_user', $this->unlinkedUser);
 
         $this->assertEmpty(Message::getFlash());
         $this->assertEmpty($userService->getYotiUserFromStore());
@@ -192,7 +196,7 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::yoti_login
+     * @covers ::login
      */
     public function testLoginVerifiedNoLink()
     {
@@ -202,7 +206,7 @@ class HooksTest extends TestBase
         $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
         $userService->storeYotiUser($this->createMockActivityDetails());
 
-        Hooks::yoti_login('unlinked_user', $this->unlinkedUser);
+        Hooks::login('unlinked_user', $this->unlinkedUser);
 
         $this->assertEmpty(Message::getFlash());
         $this->assertEmpty($userService->getYotiUserFromStore());
@@ -210,17 +214,17 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::yoti_login_header
+     * @covers ::loginHeader
      */
     public function testLoginHeaderNoSessionData()
     {
         ob_start();
-        Hooks::yoti_login_header();
+        Hooks::loginHeader();
         $this->assertEmpty(ob_get_clean());
     }
 
     /**
-     * @covers ::yoti_login_header
+     * @covers ::loginHeader
      */
     public function testLoginHeaderClearSessionDataOnReload()
     {
@@ -228,7 +232,7 @@ class HooksTest extends TestBase
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
-        Hooks::yoti_login_header();
+        Hooks::loginHeader();
 
         // Header should not be added to login.
         $this->assertEmpty(ob_get_clean());
@@ -238,7 +242,7 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::yoti_login_header
+     * @covers ::loginHeader
      */
     public function testLoginHeaderNoLinkChecked()
     {
@@ -248,7 +252,7 @@ class HooksTest extends TestBase
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();
-        Hooks::yoti_login_header();
+        Hooks::loginHeader();
         $html = ob_get_clean();
 
         // Check the checkbox is checked.
@@ -256,7 +260,7 @@ class HooksTest extends TestBase
     }
 
     /**
-     * @covers ::yoti_plugin_activate_notice
+     * @covers ::pluginActivateNotice
      */
     public function testActivateNotice()
     {
@@ -264,7 +268,7 @@ class HooksTest extends TestBase
         $pagenow = "plugins.php";
 
         ob_start();
-        Hooks::yoti_plugin_activate_notice();
+        Hooks::pluginActivateNotice();
         $html = ob_get_clean();
 
         $base_query = '//div[@class="notice notice-success is-dismissible"]';
@@ -277,13 +281,16 @@ class HooksTest extends TestBase
 
         // Check the link is correct.
         $this->assertXpath(
-            $base_query . '/p/a[contains(@href,"/wp-admin/options-general.php?page=yoti")][contains(.,"settings here")]',
+            sprintf(
+                '%s/p/a[contains(@href,"/wp-admin/options-general.php?page=yoti")][contains(.,"settings here")]',
+                $base_query
+            ),
             $html
         );
     }
 
     /**
-     * @covers ::yoti_enqueue_scripts
+     * @covers ::enqueueScripts
      */
     public function testInitScript()
     {

@@ -11,7 +11,8 @@ class View
      *
      * @return string
      */
-    private static function path($view_name) {
+    private static function path($view_name)
+    {
         return __DIR__ . '/../views/' . basename($view_name) . '.php';
     }
 
