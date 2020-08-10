@@ -6,15 +6,10 @@ use Yoti\WP\Button;
 use Yoti\WP\Test\TestBase;
 
 /**
- * @coversDefaultClass Yoti\WP\Button
- *
  * @group yoti
  */
 class ButtonTest extends TestBase
 {
-    /**
-     * @covers ::render
-     */
     public function testButtonUnlinked()
     {
         wp_set_current_user($this->unlinkedUser->ID);
@@ -30,9 +25,6 @@ class ButtonTest extends TestBase
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
-    /**
-     * @covers ::render
-     */
     public function testButtonAnonymous()
     {
         ob_start();
@@ -44,9 +36,6 @@ class ButtonTest extends TestBase
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
-    /**
-     * @covers ::render
-     */
     public function testButtonLinked()
     {
         wp_set_current_user($this->linkedUser->ID);
@@ -66,9 +55,6 @@ class ButtonTest extends TestBase
         );
     }
 
-    /**
-     * @covers ::render
-     */
     public function testButtonWithCustomScenarioId()
     {
         $expectedScenarioId = 'some-custom-id';
@@ -86,9 +72,6 @@ class ButtonTest extends TestBase
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
-    /**
-     * @covers ::render
-     */
     public function testButtonWithCustomText()
     {
         $expectedText = 'some custom text';

@@ -6,3 +6,4 @@ docker/.env
 
 /vendor/
 /build/
+/coverage/

@@ -8,15 +8,10 @@ use Yoti\WP\Service;
 use Yoti\WP\Test\TestBase;
 
 /**
- * @coversDefaultClass Yoti\WP\Widget
- *
  * @group yoti
  */
 class WidgetTest extends TestBase
 {
-    /**
-     * @covers ::widget
-     */
     public function testWidget()
     {
         ob_start();
@@ -29,9 +24,6 @@ class WidgetTest extends TestBase
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
     }
 
-    /**
-     * @covers ::widget
-     */
     public function testWidgetNotConfigured()
     {
         $config = $this->config;
@@ -47,9 +39,6 @@ class WidgetTest extends TestBase
         );
     }
 
-    /**
-     * @covers ::widget
-     */
     public function testWidgetWithCustomSettings()
     {
         $expectedTitle = 'Some Custom Title';

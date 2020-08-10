@@ -5,15 +5,10 @@ namespace Yoti\WP\Test;
 use Yoti\WP\Admin;
 
 /**
- * @coversDefaultClass Yoti\WP\Admin
- *
  * @group yoti
  */
 class AdminTest extends TestBase
 {
-    /**
-     * @covers ::init
-     */
     public function testFormAdmin()
     {
         wp_set_current_user($this->adminUser->ID);
