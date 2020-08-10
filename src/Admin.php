@@ -60,7 +60,7 @@ class Admin
         }
 
         // Get current config
-        $config = Config::load();
+        $config = Service::config()->load();
 
         // Check curl has preliminary extensions to run
         $errors = [];
@@ -144,7 +144,7 @@ class Admin
                 unset($config['yoti_delete_pem']);
 
                 // Save config
-                Config::save($config);
+                Service::config()->save($config);
                 $updateMessage = 'Yoti settings saved.';
             }
         }

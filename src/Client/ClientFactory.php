@@ -4,8 +4,8 @@ namespace Yoti\WP\Client;
 
 use Yoti\DocScan\DocScanClient;
 use Yoti\Util\Config as YotiConfig;
-use Yoti\WP\Config;
 use Yoti\WP\Constants;
+use Yoti\WP\Config;
 use Yoti\YotiClient;
 
 /**
@@ -28,12 +28,10 @@ class ClientFactory implements ClientFactoryInterface
      */
     private $options;
 
-    public function __construct()
+    public function __construct(Config $config)
     {
-        $config = Config::load();
-
-        $this->clientSdkId = $config['yoti_sdk_id'];
-        $this->pem = $config['yoti_pem']['contents'];
+        $this->clientSdkId = $config->get('yoti_sdk_id');
+        $this->pem = $config->get('yoti_pem')['contents'];
 
         $this->options = [
             YotiConfig::SDK_IDENTIFIER => Constants::SDK_IDENTIFIER,

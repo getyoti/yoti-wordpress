@@ -2,12 +2,13 @@
 
 namespace Yoti\WP\Test\Button;
 
-use Yoti\WP\Button\Widget;
+use Yoti\WP\Widget;
 use Yoti\WP\Config;
+use Yoti\WP\Service;
 use Yoti\WP\Test\TestBase;
 
 /**
- * @coversDefaultClass Yoti\WP\Button\Widget
+ * @coversDefaultClass Yoti\WP\Widget
  *
  * @group yoti
  */
@@ -35,7 +36,7 @@ class WidgetTest extends TestBase
     {
         $config = $this->config;
         unset($config['yoti_pem']);
-        update_option(Config::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
+        Service::config()->save($config);
 
         ob_start();
         the_widget(Widget::class);

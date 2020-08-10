@@ -1,17 +1,15 @@
 <?php
 
-namespace Yoti\WP\Service;
+namespace Yoti\WP;
 
 use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\UserProfile;
 use Yoti\WP\Client\ClientFactoryInterface;
-use Yoti\WP\Config;
-use Yoti\WP\Message;
 
 /**
- * Class Profile
+ * Class User
  */
-class Profile
+class User
 {
     /** Selfie key */
     const SELFIE_FILENAME = 'selfie_filename';
@@ -35,7 +33,7 @@ class Profile
     }
 
     /**
-     * @var array
+     * @var Config
      */
     private $config;
 
@@ -47,10 +45,10 @@ class Profile
     /**
      * @param ClientFactoryInterface $clientFactory
      */
-    public function __construct(ClientFactoryInterface $clientFactory)
+    public function __construct(ClientFactoryInterface $clientFactory, Config $config)
     {
         $this->clientFactory = $clientFactory;
-        $this->config = Config::load();
+        $this->config = $config;
     }
 
     /**
@@ -113,13 +111,13 @@ class Profile
             {
                 $errMsg = NULL;
                 // Attempt to connect by email
-                $wpYotiUid = $this->shouldLoginByEmail($activityDetails, $this->config['yoti_user_email']);
+                $wpYotiUid = $this->shouldLoginByEmail($activityDetails, $this->config->get('yoti_user_email'));
 
                 // If config only existing enabled then check if user exists, if not then redirect
                 // to login page
                 if (!$wpYotiUid)
                 {
-                    if (empty($this->config['yoti_only_existing']))
+                    if (empty($this->config->get('yoti_only_existing')))
                     {
                         try
                         {
@@ -216,7 +214,7 @@ class Profile
             return;
         }
 
-        $file = Config::uploadDir() . "/{$dbProfile[$field]}";
+        $file = $this->config->uploadDir() . "/{$dbProfile[$field]}";
         if (!file_exists($file))
         {
             return;
@@ -236,7 +234,7 @@ class Profile
      */
     public function passedAgeVerification(UserProfile $profile)
     {
-        return !($this->config['yoti_age_verification'] && !$this->oneAgeIsVerified($profile));
+        return !($this->config->get('yoti_age_verification') && !$this->oneAgeIsVerified($profile));
     }
 
     private function oneAgeIsVerified(UserProfile $profile)
@@ -469,8 +467,8 @@ class Profile
     {
         $profile = $activityDetails->getProfile();
         // Create upload dir
-        if (!is_dir(Config::uploadDir())) {
-            mkdir(Config::uploadDir(), 0777, TRUE);
+        if (!is_dir($this->config->uploadDir())) {
+            mkdir($this->config->uploadDir(), 0777, TRUE);
         }
 
         $meta = [];
@@ -490,7 +488,7 @@ class Profile
         $selfie = $profile->getSelfie();
         if ($selfie) {
             $selfieFilename = self::createUniqueFilename($selfie->getValue()->getBase64Content(), 'png');
-            file_put_contents(Config::uploadDir() . '/' . $selfieFilename, $selfie->getValue());
+            file_put_contents($this->config->uploadDir() . '/' . $selfieFilename, $selfie->getValue());
             unset($meta[UserProfile::ATTR_SELFIE]);
             $meta = array_merge(
                 [self::SELFIE_FILENAME => $selfieFilename],
@@ -538,7 +536,7 @@ class Profile
     {
         // Remove user image.
         $dbProfile = self::getUserProfile($userId);
-        $filePath = isset($dbProfile[self::SELFIE_FILENAME]) ? Config::uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME] : FALSE;
+        $filePath = isset($dbProfile[self::SELFIE_FILENAME]) ? $this->config->uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME] : FALSE;
         if ($filePath && is_file($filePath)) {
             if (!unlink($filePath)) {
                 self::setFlash('Could not delete user image.', 'error');
@@ -581,10 +579,21 @@ class Profile
      * Get Selfie URL.
      *
      * @param string $userId
-     * @return string
+     * @return string|null
      */
-    public function selfieUrl($userId)
+    public function selfieUrl($userId, $dbProfile = NULL)
     {
+        $dbProfile = $dbProfile ?? $this->getUserProfile($userId);
+
+        if (!isset($dbProfile[self::SELFIE_FILENAME])) {
+            return NULL;
+        }
+
+        $selfieFullPath = $this->config->uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME];
+        if (!is_file($selfieFullPath)) {
+            return NULL;
+        }
+
         $currentUser = wp_get_current_user();
         $isAdmin = in_array('administrator', $currentUser->roles, TRUE);
         $userIdUrlPart = ($isAdmin ? '&user_id=' . esc_html($userId) : '');

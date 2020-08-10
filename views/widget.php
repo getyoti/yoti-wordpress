@@ -1,6 +1,6 @@
 <?php
 
-use Yoti\WP\Button\Button;
+use Yoti\WP\Button;
 
 defined('ABSPATH') or die();
 /**

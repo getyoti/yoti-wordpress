@@ -1,10 +1,6 @@
 <?php
 
-namespace Yoti\WP\Button;
-
-use Yoti\WP\Config;
-use Yoti\WP\Message;
-use Yoti\WP\View;
+namespace Yoti\WP;
 
 /**
  * Class Button
@@ -34,7 +30,7 @@ class Button
         $button_id = 'yoti-button-' . ++$button_id_suffix;
 
         // Do not show the button if the plugin has not been configured.
-        $config = Config::load();
+        $config = Service::config()->load();
         if (!$config) {
             return NULL;
         }

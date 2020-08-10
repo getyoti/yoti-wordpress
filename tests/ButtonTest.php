@@ -2,11 +2,11 @@
 
 namespace Yoti\WP\Test\Button;
 
-use Yoti\WP\Button\Button;
+use Yoti\WP\Button;
 use Yoti\WP\Test\TestBase;
 
 /**
- * @coversDefaultClass Yoti\WP\Button\Button
+ * @coversDefaultClass Yoti\WP\Button
  *
  * @group yoti
  */
