@@ -54,7 +54,7 @@ class User
     /**
      * Login user
      *
-     * @param NULL $currentUser
+     * @param null $currentUser
      * @return bool
      */
     public function link($currentUser = NULL)

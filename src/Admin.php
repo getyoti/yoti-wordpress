@@ -173,7 +173,7 @@ class Admin
     /**
      * @param string $var
      * @param null $default
-     * @return null
+     * @return string|null
      */
     private function postVar($var, $default = NULL)
     {
@@ -182,8 +182,8 @@ class Admin
 
     /**
      * @param $var
-     * @param NULL $default
-     * @return NULL
+     * @param null $default
+     * @return array|null
      */
     private function filesVar($var, $default = NULL)
     {
