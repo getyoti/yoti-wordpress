@@ -72,8 +72,8 @@ class Admin
         {
             $errors[] = "PHP module 'json' not installed. Yoti requires it to work. Please contact your server administrator.";
         }
-        if (version_compare(phpversion(), '5.4.0', '<')) {
-            $errors[] = 'Yoti could not be installed. Yoti PHP SDK requires PHP 5.4 or higher.';
+        if (version_compare(phpversion(), '7.2', '<')) {
+            $errors[] = 'Yoti could not be installed. Yoti PHP SDK requires PHP 7.2 or higher.';
         }
 
         // Get data
