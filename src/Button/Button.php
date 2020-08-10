@@ -1,6 +1,10 @@
 <?php
 
-namespace Yoti\WP;
+namespace Yoti\WP\Button;
+
+use Yoti\WP\Config;
+use Yoti\WP\Message;
+use Yoti\WP\View;
 
 /**
  * Class Button
