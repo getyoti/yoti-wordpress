@@ -103,10 +103,15 @@ $ composer install
 
 #### Running the local working plugin
 
-To run the local working copy of the plugin:
-
 ```shell
 $ cd ./docker
+```
+
+Copy `.env.example` to `.env` and set the environment variables.
+
+Run the local working copy of the plugin:
+
+```shell
 $ docker-compose up wordpress-dev
 ```
 

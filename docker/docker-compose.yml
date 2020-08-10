@@ -5,11 +5,13 @@ services:
     image: mysql:5.7
     ports:
       - "3306:3306"
+    env_file:
+      - ./.env
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: 3306
 
   wordpress-base:
@@ -31,25 +33,27 @@ services:
         BRANCH: "master"
     ports:
       - "7001:443"
+    env_file:
+      - ./.env
     environment:
       WORDPRESS_DB_HOST: wordpress-db:3306
       WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
 
   wordpress-dev:
     build:
       context: ../
       dockerfile: docker/app.dev.dockerfile
     depends_on:
-       - wordpress-db
-       - wordpress-base
+      - wordpress-db
+      - wordpress-base
+    env_file:
+      - ./.env
     environment:
-       WORDPRESS_DB_HOST: wordpress-db:3306
-       WORDPRESS_DB_USER: wordpress
-       WORDPRESS_DB_PASSWORD: wordpress
-       WP_PLUGIN_DIR: /var/www/html/wp-content/plugins/yoti
-       # YOTI_API_URL can be overridden using the .env file
-       YOTI_API_URL:
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WP_PLUGIN_DIR: /var/www/html/wp-content/plugins/yoti
     ports:
      - "7002:443"
     volumes:
