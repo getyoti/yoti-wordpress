@@ -5,6 +5,7 @@
 *.png
 /bin/
 /build/
+/coverage/
 /tests/
 /docker/
 composer.*

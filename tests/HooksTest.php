@@ -10,8 +10,6 @@ use Yoti\WP\Service;
 use Yoti\WP\User;
 
 /**
- * @coversDefaultClass Yoti\WP\Hooks
- *
  * @group yoti
  */
 class HooksTest extends TestBase
@@ -49,9 +47,6 @@ class HooksTest extends TestBase
         }
     }
 
-    /**
-     * @covers ::showUserProfile
-     */
     public function testUserProfileUnlinked()
     {
         wp_set_current_user($this->unlinkedUser->ID);
@@ -62,9 +57,6 @@ class HooksTest extends TestBase
         $this->assertEmpty(ob_get_clean());
     }
 
-    /**
-     * @covers ::showUserProfile
-     */
     public function testUserProfileLinkedNoAttributes()
     {
         wp_set_current_user($this->linkedUser->ID);
@@ -76,9 +68,6 @@ class HooksTest extends TestBase
         $this->assertXpath($this->getUnlinkXpath(), ob_get_clean());
     }
 
-    /**
-     * @covers ::showUserProfile
-     */
     public function testUserProfileLinkedWithAttributesAsAdmin()
     {
         wp_set_current_user($this->adminUser->ID);
@@ -93,9 +82,6 @@ class HooksTest extends TestBase
         $this->assertProfileAttributes($html);
     }
 
-    /**
-     * @covers ::showUserProfile
-     */
     public function testUserProfileLinkedWithAttributes()
     {
         wp_set_current_user($this->linkedUser->ID);
@@ -109,9 +95,6 @@ class HooksTest extends TestBase
         $this->assertProfileAttributes($html);
     }
 
-    /**
-     * @covers ::loginHeader
-     */
     public function testLoginHeaderSessionData()
     {
         $_REQUEST['REQUEST_METHOD'] = 'GET';
@@ -142,11 +125,6 @@ class HooksTest extends TestBase
         $this->assertNotEmpty($_SESSION['yoti-user']);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @covers ::login
-     */
     public function testLoginNotVerified()
     {
         $userService = Service::user();
@@ -168,18 +146,12 @@ class HooksTest extends TestBase
         $this->assertFalse($userService->getUserProfile($this->unlinkedUser->ID));
     }
 
-    /**
-     * @covers ::login
-     */
     public function testLoginNoVerification()
     {
         Hooks::login('unlinked_user', $this->unlinkedUser);
         $this->assertEmpty(Message::getFlash());
     }
 
-    /**
-     * @covers ::login
-     */
     public function testLoginVerified()
     {
         $userService = Service::user();
@@ -195,9 +167,6 @@ class HooksTest extends TestBase
         $this->assertTrue(is_array($userService->getUserProfile($this->unlinkedUser->ID)));
     }
 
-    /**
-     * @covers ::login
-     */
     public function testLoginVerifiedNoLink()
     {
         $userService = Service::user();
@@ -213,9 +182,6 @@ class HooksTest extends TestBase
         $this->assertFalse($userService->getUserProfile($this->unlinkedUser->ID));
     }
 
-    /**
-     * @covers ::loginHeader
-     */
     public function testLoginHeaderNoSessionData()
     {
         ob_start();
@@ -223,9 +189,6 @@ class HooksTest extends TestBase
         $this->assertEmpty(ob_get_clean());
     }
 
-    /**
-     * @covers ::loginHeader
-     */
     public function testLoginHeaderClearSessionDataOnReload()
     {
         $_REQUEST['REQUEST_METHOD'] = 'GET';
@@ -241,9 +204,6 @@ class HooksTest extends TestBase
         $this->assertTrue(empty($_SESSION['yoti-user']));
     }
 
-    /**
-     * @covers ::loginHeader
-     */
     public function testLoginHeaderNoLinkChecked()
     {
         $_REQUEST['REQUEST_METHOD'] = 'POST';
@@ -259,9 +219,6 @@ class HooksTest extends TestBase
         $this->assertXpath('//input[@name="yoti_nolink"][@checked="checked"]', $html);
     }
 
-    /**
-     * @covers ::pluginActivateNotice
-     */
     public function testActivateNotice()
     {
         global $pagenow;
@@ -289,9 +246,6 @@ class HooksTest extends TestBase
         );
     }
 
-    /**
-     * @covers ::enqueueScripts
-     */
     public function testInitScript()
     {
         wp_enqueue_scripts();

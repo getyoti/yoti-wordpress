@@ -14,4 +14,13 @@
 	<listeners>
 		<listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
 	</listeners>
+	<filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
+		<log type="coverage-html" target="./coverage/report/" showUncoveredFiles="true"/>
+    </logging>
 </phpunit>
