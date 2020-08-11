@@ -58,7 +58,7 @@ class Admin
         }
 
         // Get current config
-        $config = Service::config()->load();
+        $config = Service::config();
 
         // Check curl has preliminary extensions to run
         $errors = [];
@@ -75,7 +75,7 @@ class Admin
         }
 
         // Get data
-        $data = $config;
+        $data = $config->load();
         $updateMessage = '';
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -90,7 +90,7 @@ class Admin
                 $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
                 $data['yoti_user_email'] = $this->postVar('yoti_user_email');
                 $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
-                $pemFile = $this->filesVar('yoti_pem', $config['yoti_pem']);
+                $pemFile = $this->filesVar('yoti_pem', $config->get('yoti_pem'));
 
                 // Validation
                 if (!$data['yoti_app_id']) {
@@ -123,16 +123,16 @@ class Admin
                     $contents = file_get_contents($pemFile['tmp_name']);
                 } elseif (!$data['yoti_delete_pem']) {
                     // If delete not ticked
-                    $name = $config['yoti_pem']['name'];
-                    $contents = $config['yoti_pem']['contents'];
+                    $pemConfig = $config->get('yoti_pem');
+                    $name = $pemConfig['name'];
+                    $contents = $pemConfig['contents'];
                 }
 
                 $data['yoti_pem'] = compact('name', 'contents');
-                $config = $data;
-                unset($config['yoti_delete_pem']);
+                unset($data['yoti_delete_pem']);
 
                 // Save config
-                Service::config()->save($config);
+                $config->save($data);
                 $updateMessage = 'Yoti settings saved.';
             }
         }
