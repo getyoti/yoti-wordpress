@@ -132,7 +132,7 @@ defined('ABSPATH') or die();
                         <input name="yoti_pem" type="file" id="yoti_pem" />
                         <p>
                             <code>Yoti PEM File</code> is the application pem file. 
-                            It can be downloaded only once from the Keys tab in your Yoti Hub.
+                            It can be downloaded from the Keys tab in your Yoti Hub.
                         </p>
                     </td>
                 </tr>
