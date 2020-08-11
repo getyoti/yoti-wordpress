@@ -28,7 +28,6 @@ class TestBase extends \WP_UnitTestCase
         'yoti_company_name' => 'company_name',
         'yoti_pem' => [
             'name' => 'some-pem-name',
-            'contents' => 'some-pem-contents',
         ],
     ];
 
@@ -55,6 +54,9 @@ class TestBase extends \WP_UnitTestCase
     public function setup()
     {
         parent::setup();
+
+        openssl_pkey_export(openssl_pkey_new(), $privateKey);
+        $this->config['yoti_pem']['contents'] = $privateKey;
 
         Service::config()->save($this->config);
 
