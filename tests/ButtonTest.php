@@ -3,6 +3,7 @@
 namespace Yoti\WP\Test\Button;
 
 use Yoti\WP\Button;
+use Yoti\WP\Service;
 use Yoti\WP\Test\TestBase;
 
 /**
@@ -87,5 +88,35 @@ class ButtonTest extends TestBase
         $this->assertEquals($config->clientSdkId, $this->config['yoti_sdk_id']);
         $this->assertEquals($config->scenarioId, $this->config['yoti_scenario_id']);
         $this->assertXpath("//div[@class='yoti-connect']/div[@id='{$config->domId}']", $html);
+    }
+
+    public function testUnlinkButtonRedirect()
+    {
+        wp_set_current_user($this->linkedUser->ID);
+
+        $link_attributes = [
+            "[@class='yoti-connect-button']",
+            "[contains(@href,'/wp-login.php?yoti-select=1&action=unlink&redirect=%2Fsome%2Fpath&yoti_verify=')]",
+        ];
+
+        ob_start();
+        Button::render('/some/path');
+        $html = ob_get_clean();
+
+        $this->assertXpath(
+            '//a' . implode('', $link_attributes) . "[contains(text(), 'Unlink Yoti Account')]",
+            $html
+        );
+    }
+
+    public function testButtonNoConfig()
+    {
+        Service::config()->delete();
+
+        ob_start();
+        Button::render();
+        $html = ob_get_clean();
+
+        $this->assertEquals('', $html);
     }
 }

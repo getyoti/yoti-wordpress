@@ -3,12 +3,16 @@
 namespace Yoti\WP\Test;
 
 use Yoti\WP\Admin;
+use Yoti\WP\Service;
 
 /**
  * @group yoti
  */
 class AdminTest extends TestBase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function testFormAdmin()
     {
         wp_set_current_user($this->adminUser->ID);
@@ -69,6 +73,70 @@ class AdminTest extends TestBase
                 $checked
             );
             $this->assertXpath($input_query, $html);
+        }
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testFormAdminUnverified()
+    {
+        wp_set_current_user($this->adminUser->ID);
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        ob_start();
+        Admin::init();
+        $html = ob_get_clean();
+
+        $error_query = sprintf(
+            "//div[@id='setting-error-settings_updated'][contains(.,'%s')]",
+            'There was a problem saving form data. Please try again.'
+        );
+        $this->assertXpath($error_query, $html);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testFormNoAccess()
+    {
+        wp_set_current_user($this->unlinkedUser->ID);
+
+        ob_start();
+        Admin::init();
+        $html = ob_get_clean();
+
+        $this->assertEquals('', $html);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testFormAdminValidation()
+    {
+        Service::config()->delete();
+
+        wp_set_current_user($this->adminUser->ID);
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+
+        ob_start();
+        Admin::init();
+        $html = ob_get_clean();
+
+        $error_messages = [
+            'App ID is required.',
+            'Client SDK ID is required.',
+            'PEM file is required.',
+        ];
+        foreach ($error_messages as $error_message) {
+            $error_query = sprintf(
+                "//div[@id='setting-error-settings_updated'][contains(.,'%s')]",
+                $error_message
+            );
+            $this->assertXpath($error_query, $html);
         }
     }
 }

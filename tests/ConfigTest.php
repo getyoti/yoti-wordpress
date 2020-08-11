@@ -10,9 +10,15 @@ use Yoti\WP\Service;
  */
 class ConfigTest extends TestBase
 {
-    public function testGetConfig()
+    public function testLoad()
     {
         $this->assertEquals($this->config, Service::config()->load());
+    }
+
+    public function testDelete()
+    {
+        Service::config()->delete();
+        $this->assertFalse(Service::config()->load());
     }
 
     /**
