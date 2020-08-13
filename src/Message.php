@@ -10,10 +10,10 @@ class Message
     /**
      * Set user notification message.
      *
-     * @param $message
+     * @param string $message
      * @param string $type
      */
-    public static function setFlash($message, $type = 'message')
+    public static function setFlash($message, $type = 'message'): void
     {
         $_SESSION['yoti-connect-flash'] = ['type' => $type, 'message' => $message];
     }
@@ -21,7 +21,7 @@ class Message
     /**
      * Get user notification message.
      *
-     * @return mixed
+     * @return array<string,string>
      */
     public static function getFlash()
     {
@@ -36,7 +36,7 @@ class Message
     /**
      * Clear Yoti flash message.
      */
-    public static function clearFlash()
+    public static function clearFlash(): void
     {
         unset($_SESSION['yoti-connect-flash']);
     }

@@ -1,0 +1,12 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Constant WP_CONTENT_DIR not found\\.$#"
+			count: 1
+			path: src/Config.php
+
+		-
+			message: "#^Function apply_filters invoked with 4 parameters, 2 required\\.$#"
+			count: 1
+			path: src/Widget.php
+

@@ -17,13 +17,11 @@ class Button
     /**
      * Display Yoti button.
      *
-     * @param null $redirect
+     * @param string|null $redirect
      * @param bool $from_widget
-     * @param array $instance_config
-     *
-     * @return string|null
+     * @param array<string,string> $instance_config
      */
-    public static function render($redirect = null, $from_widget = false, $instance_config = [])
+    public static function render($redirect = null, $from_widget = false, $instance_config = []): void
     {
         // Increment button ID
         static $button_id_suffix = 0;
@@ -32,7 +30,7 @@ class Button
         // Do not show the button if the plugin has not been configured.
         $config = Service::config()->load();
         if (!$config) {
-            return null;
+            return;
         }
 
         // Merge instance config with global config.
@@ -62,7 +60,7 @@ class Button
         if ($redirect) {
             $query_params['redirect'] = $redirect;
         }
-        $unlink_url = site_url('wp-login.php') . '?' . http_build_query($query_params, null, '&', PHP_QUERY_RFC3986);
+        $unlink_url = site_url('wp-login.php') . '?' . http_build_query($query_params, '', '&', PHP_QUERY_RFC3986);
         $unlink_url = wp_nonce_url($unlink_url, 'yoti_verify', 'yoti_verify');
 
         View::render('button', [

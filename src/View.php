@@ -7,7 +7,7 @@ class View
     /**
      * Get path to view.
      *
-     * @param string $view
+     * @param string $view_name
      *
      * @return string
      */
@@ -19,10 +19,10 @@ class View
     /**
      * Renders view.
      *
-     * @param string $view
-     * @param array $variables
+     * @param string $view_name
+     * @param array<string,mixed> $variables
      */
-    public static function render($view_name, $variables = [])
+    public static function render($view_name, $variables = []): void
     {
         extract($variables, EXTR_SKIP);
         require self::path($view_name);

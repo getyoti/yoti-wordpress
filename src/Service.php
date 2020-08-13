@@ -18,7 +18,7 @@ class Service
     private static $user;
 
     /**
-     * @var User
+     * @var Config
      */
     private static $config;
 

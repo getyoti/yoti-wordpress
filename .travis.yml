@@ -20,7 +20,7 @@ matrix:
     - php: 7.2
       env: WP_VERSION=latest
     - php: 7.2
-      env: WP_TRAVISCI=phpcs
+      env: WP_TRAVISCI=lint
 
 before_install:
   - composer install
@@ -33,10 +33,10 @@ before_install:
 script:
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
-      ./vendor/bin/phpunit
-      WP_MULTISITE=1 ./vendor/bin/phpunit
+      composer test
+      WP_MULTISITE=1 composer test
     fi
   - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      ./vendor/bin/phpcs
+    if [[ "$WP_TRAVISCI" == "lint" ]] ; then
+      composer lint
     fi

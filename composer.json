@@ -11,7 +11,9 @@
         "wp-coding-standards/wpcs": "^2.3",
         "phpunit/phpunit": "^7",
         "symfony/phpunit-bridge": "^5",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0"
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "phpstan/phpstan": "^0.12.37",
+        "php-stubs/wordpress-stubs": "^5.4"
     },
     "autoload": {
         "psr-4": {
@@ -22,5 +24,12 @@
         "psr-4": {
             "Yoti\\WP\\Test\\": "tests"
         }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": [
+            "phpcs",
+            "phpstan analyse"
+        ]
     }
 }

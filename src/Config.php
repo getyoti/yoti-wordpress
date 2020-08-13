@@ -11,14 +11,16 @@ class Config
     private const YOTI_CONFIG_OPTION_NAME = 'yoti_config';
 
     /**
-     * @var array
+     * @var array<string,mixed>|null
      */
     private $config;
 
     /**
      * Load Yoti Config.
      *
-     * @return array
+     * @param bool $reload
+     *
+     * @return array<string,mixed>|null
      */
     public function load($reload = false)
     {
@@ -30,23 +32,39 @@ class Config
 
     /**
      * Remove Yoti config option data from WordPress option table.
+     *
+     * @return bool
      */
-    public function delete()
+    public function delete(): bool
     {
-        delete_option(self::YOTI_CONFIG_OPTION_NAME);
-        $this->config = null;
+        if (delete_option(self::YOTI_CONFIG_OPTION_NAME)) {
+            $this->config = null;
+            return true;
+        }
+        return false;
     }
 
     /**
      * Save Yoti Config.
+     *
+     * @param array<string,mixed> $config
+     *
+     * @return bool
      */
-    public function save($config)
+    public function save($config): bool
     {
-        update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
-        $this->config = null;
+        if (update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config))) {
+            $this->config = null;
+            return true;
+        }
+        return false;
     }
 
     /**
+     * Get config value by key.
+     *
+     * @param string $key
+     *
      * @return mixed
      */
     public function get($key)

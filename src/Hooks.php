@@ -13,7 +13,7 @@ class Hooks
     /**
      * Activation hook.
      */
-    public static function activation()
+    public static function activation(): void
     {
         // Create upload dir
         if (!is_dir(Service::config()->uploadDir())) {
@@ -24,7 +24,7 @@ class Hooks
     /**
      * Uninstall hook.
      */
-    public static function uninstall()
+    public static function uninstall(): void
     {
         Service::config()->delete();
     }
@@ -32,7 +32,7 @@ class Hooks
     /**
      * Yoti WP init hook.
      */
-    public static function init()
+    public static function init(): void
     {
         if (!session_id()) {
             session_start();
@@ -54,7 +54,6 @@ class Hooks
                     }
                     wp_safe_redirect($redirect);
                     exit;
-                    break;
 
                 case 'unlink':
                     if (!$verified) {
@@ -66,7 +65,6 @@ class Hooks
 
                     wp_safe_redirect($redirect);
                     exit;
-                    break;
 
                 case 'bin-file':
                     if ($verified) {
@@ -81,16 +79,16 @@ class Hooks
     /**
      * Add items to admin menu.
      */
-    public static function adminMenu()
+    public static function adminMenu(): void
     {
-        wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', false);
+        wp_enqueue_style('yoti-asset-css', plugin_dir_url(__FILE__) . 'assets/styles.css', []);
         add_options_page('Yoti', 'Yoti', 'manage_options', 'yoti', [Admin::class, 'init']);
     }
 
     /**
      * Add to login footer.
      */
-    public static function loginHeader()
+    public static function loginHeader(): void
     {
         $userService = Service::user();
 
@@ -126,10 +124,10 @@ class Hooks
     /**
      * WP login hook.
      *
-     * @param null $user_login
-     * @param null $user
+     * @param string|null $user_login
+     * @param \WP_User|null $user
      */
-    public static function login($user_login = null, $user = null)
+    public static function login($user_login = null, $user = null): void
     {
         if (!$user) {
             return;
@@ -163,7 +161,7 @@ class Hooks
     /**
      * WP logout hook.
      */
-    public static function logout()
+    public static function logout(): void
     {
         Message::clearFlash();
     }
@@ -171,9 +169,9 @@ class Hooks
     /**
      * Display Yoti user profile.
      *
-     * @param WP_User $user.
+     * @param \WP_User $user.
      */
-    public static function showUserProfile($user)
+    public static function showUserProfile($user): void
     {
         // Do not display profile if account is not linked.
         if (empty(get_user_meta($user->ID, 'yoti_user.identifier'))) {
@@ -182,7 +180,11 @@ class Hooks
 
         $userService = Service::user();
 
-        $dbProfile = (array) $userService->getUserProfile($user->ID);
+        $dbProfile = $userService->getUserProfile($user->ID);
+        if ($dbProfile === false) {
+            return;
+        }
+
         $selfieUrl = $userService->selfieUrl($user->ID, $dbProfile);
 
         $profileUserId = $user->ID;
@@ -231,7 +233,7 @@ class Hooks
     /**
      * Register Yoti widget.
      */
-    public static function registerWidget()
+    public static function registerWidget(): void
     {
         register_widget(Widget::class);
     }
@@ -239,7 +241,7 @@ class Hooks
     /**
      * Add Yoti js.
      */
-    public static function enqueueScripts()
+    public static function enqueueScripts(): void
     {
         wp_enqueue_script('yoti-asset-js', Constants::YOTI_SDK_JAVASCRIPT_LIBRARY, [], null, true);
         wp_add_inline_script('yoti-asset-js', "
@@ -251,10 +253,10 @@ class Hooks
     /**
      * Add Yoti settings link to the admin plugins page.
      *
-     * @param $links
-     * @param $file
+     * @param string[] $links
+     * @param string $file
      *
-     * @return mixed
+     * @return string[]
      */
     public static function pluginActionLinks($links, $file)
     {
@@ -269,7 +271,7 @@ class Hooks
     /**
      * Display a notice for successful activation.
      */
-    public static function pluginActivateNotice()
+    public static function pluginActivateNotice(): void
     {
         global $pagenow;
 

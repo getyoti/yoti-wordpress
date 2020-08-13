@@ -9,6 +9,8 @@ namespace Yoti\WP;
  */
 class Admin
 {
+    private const SAVE_ERROR = 'There was a problem saving form data. Please try again.';
+
     /**
      * @var self
      */
@@ -17,16 +19,16 @@ class Admin
     /**
      * POST data.
      *
-     * @var array
+     * @var array<string,mixed>
      */
     private $postData;
 
     /**
      * init
      */
-    public static function init()
+    public static function init(): void
     {
-        if (!self::$instance) {
+        if (self::$instance === null) {
             self::$instance = new self();
 
             self::$instance->options();
@@ -50,7 +52,7 @@ class Admin
     /**
      * options page for admin
      */
-    private function options()
+    private function options(): void
     {
         // Make sure user can edit
         if (!current_user_can('manage_options')) {
@@ -70,7 +72,7 @@ class Admin
             $errors[] = "PHP module 'json' not installed. Yoti requires it to work." .
                 "Please contact your server administrator.";
         }
-        if (version_compare(phpversion(), '7.2', '<')) {
+        if (phpversion() === false || version_compare(phpversion(), '7.2', '<')) {
             $errors[] = 'Yoti could not be installed. Yoti PHP SDK requires PHP 7.2 or higher.';
         }
 
@@ -82,11 +84,10 @@ class Admin
             try {
                 $this->setPostData();
 
-                $data['yoti_app_id'] = trim($this->postVar('yoti_app_id'));
-                $data['yoti_scenario_id'] = trim($this->postVar('yoti_scenario_id'));
-                $data['yoti_sdk_id'] = trim($this->postVar('yoti_sdk_id'));
-                $data['yoti_company_name'] = trim($this->postVar('yoti_company_name'));
-                $data['yoti_delete_pem'] = $this->postVar('yoti_delete_pem') ? true : false;
+                $data['yoti_app_id'] = trim((string) $this->postVar('yoti_app_id'));
+                $data['yoti_scenario_id'] = trim((string) $this->postVar('yoti_scenario_id'));
+                $data['yoti_sdk_id'] = trim((string) $this->postVar('yoti_sdk_id'));
+                $data['yoti_company_name'] = trim((string) $this->postVar('yoti_company_name'));
                 $data['yoti_only_existing'] = $this->postVar('yoti_only_existing');
                 $data['yoti_user_email'] = $this->postVar('yoti_user_email');
                 $data['yoti_age_verification'] = $this->postVar('yoti_age_verification');
@@ -103,12 +104,13 @@ class Admin
                     $errors['yoti_pem'] = 'PEM file is required.';
                 } elseif (
                     !empty($pemFile['tmp_name']) &&
-                    !openssl_get_privatekey(file_get_contents($pemFile['tmp_name']))
+                    ($pemContents = file_get_contents($pemFile['tmp_name'])) !== false &&
+                    !openssl_get_privatekey($pemContents)
                 ) {
                     $errors['yoti_pem'] = 'PEM file is invalid.';
                 }
             } catch (\Exception $e) {
-                $errors['yoti_admin_options'] = 'There was a problem saving form data. Please try again.';
+                $errors['yoti_admin_options'] = self::SAVE_ERROR;
             }
 
             // No errors? proceed
@@ -121,7 +123,7 @@ class Admin
                         $name = md5($pemFile['name']) . '.pem';
                     }
                     $contents = file_get_contents($pemFile['tmp_name']);
-                } elseif (!$data['yoti_delete_pem']) {
+                } elseif ($this->postVar('yoti_delete_pem')) {
                     // If delete not ticked
                     $pemConfig = $config->get('yoti_pem');
                     $name = $pemConfig['name'];
@@ -129,11 +131,13 @@ class Admin
                 }
 
                 $data['yoti_pem'] = compact('name', 'contents');
-                unset($data['yoti_delete_pem']);
 
                 // Save config
-                $config->save($data);
-                $updateMessage = 'Yoti settings saved.';
+                if ($config->save($data)) {
+                    $updateMessage = 'Yoti settings saved.';
+                } else {
+                    $errors['yoti_admin_options'] = self::SAVE_ERROR;
+                }
             }
         }
 
@@ -147,7 +151,7 @@ class Admin
     /**
      * Sets POST data from request.
      */
-    private function setPostData()
+    private function setPostData(): void
     {
         if (
             !isset($_POST['yoti_verify'])
@@ -160,7 +164,8 @@ class Admin
 
     /**
      * @param string $var
-     * @param null $default
+     * @param mixed|null $default
+     *
      * @return string|null
      */
     private function postVar($var, $default = null)
@@ -169,9 +174,10 @@ class Admin
     }
 
     /**
-     * @param $var
+     * @param string $var
      * @param null $default
-     * @return array|null
+     *
+     * @return array<string,string>|null
      */
     private function filesVar($var, $default = null)
     {
