@@ -24,10 +24,10 @@ class Widget extends \WP_Widget
      *
      * @see WP_Widget::widget()
      *
-     * @param array $args Widget arguments.
-     * @param array $instance Saved values from database.
+     * @param array<string,string> $args Widget arguments.
+     * @param array<string,string> $instance Saved values from database.
      */
-    public function widget($args, $instance)
+    public function widget($args, $instance): void
     {
         if (! isset($args['widget_id'])) {
             $args['widget_id'] = $this->id;
@@ -50,9 +50,11 @@ class Widget extends \WP_Widget
     /**
      * Back-end widget form.
      *
-     * @see WP_Widget::form()
+     * @see \WP_Widget::form()
      *
-     * @param array $instance Previously saved values from database.
+     * @param array<string,string> $instance Previously saved values from database.
+     *
+     * @return string
      */
     public function form($instance)
     {
@@ -85,6 +87,7 @@ class Widget extends \WP_Widget
           type="text" value="<?php esc_attr_e($scenario_id); ?>">
         </p>
         <?php
+        return '';
     }
 
     /**
@@ -92,10 +95,10 @@ class Widget extends \WP_Widget
      *
      * @see WP_Widget::update()
      *
-     * @param array $new_instance Values just sent to be saved.
-     * @param array $old_instance Previously saved values from database.
+     * @param array<string,string> $new_instance Values just sent to be saved.
+     * @param array<string,string> $old_instance Previously saved values from database.
      *
-     * @return array Updated safe values to be saved.
+     * @return array<string,string> Updated safe values to be saved.
      */
     public function update($new_instance, $old_instance)
     {
