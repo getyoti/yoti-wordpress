@@ -66,9 +66,8 @@ class User
             throw LinkException::noToken();
         }
 
-        $client = $this->clientFactory->getClient();
-
         try {
+            $client = $this->clientFactory->getClient();
             return $client->getActivityDetails($token);
         } catch (\Exception $e) {
             throw LinkException::couldNotConnect();
