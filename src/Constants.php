@@ -18,4 +18,7 @@ class Constants
 
     /** Yoti WordPress SDK version. */
     public const SDK_VERSION = '2.0.0';
+
+    /** Nonce action used to verify requests. */
+    public const NONCE_ACTION = 'yoti_verify';
 }

@@ -585,7 +585,7 @@ class User
 
         $siteUrl = site_url('wp-login.php') . '?' . http_build_query($queryData);
 
-        return wp_nonce_url($siteUrl, 'yoti_verify', 'yoti_verify');
+        return wp_nonce_url($siteUrl, Constants::NONCE_ACTION, Constants::NONCE_ACTION);
     }
 
     /**

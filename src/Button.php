@@ -58,7 +58,7 @@ class Button
             $query_params['redirect'] = $redirect;
         }
         $unlink_url = site_url('wp-login.php') . '?' . http_build_query($query_params, '', '&', PHP_QUERY_RFC3986);
-        $unlink_url = wp_nonce_url($unlink_url, 'yoti_verify', 'yoti_verify');
+        $unlink_url = wp_nonce_url($unlink_url, Constants::NONCE_ACTION, Constants::NONCE_ACTION);
 
         // Get button specific scenario ID, or fall back on global configuration.
         if (!empty($instance_config[Config::KEY_SCENARIO_ID])) {

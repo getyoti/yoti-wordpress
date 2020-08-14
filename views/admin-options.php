@@ -48,7 +48,7 @@ defined('ABSPATH') or die();
         </div>
     <?php } ?>
     <form method="post" enctype="multipart/form-data" action="<?php esc_attr_e($_SERVER['REQUEST_URI']); ?>">
-        <?php wp_nonce_field('yoti_verify', 'yoti_verify'); ?>
+        <?php wp_nonce_field(Constants::NONCE_ACTION, Constants::NONCE_ACTION); ?>
         <table class="form-table">
             <tbody>
                 <tr>
