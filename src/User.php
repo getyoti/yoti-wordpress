@@ -72,8 +72,7 @@ class User
     /**
      * Login user
      *
-     * @throws LinkException
-     * @throws UnlinkException
+     * @throws UserMessageExceptionInterface
      */
     public function link(): void
     {
@@ -129,7 +128,7 @@ class User
      *
      * @return void
      *
-     * @throws UnlinkException
+     * @throws UserMessageExceptionInterface
      */
     public function unlink(): void
     {
@@ -351,7 +350,7 @@ class User
      *
      * @return int
      *
-     * @throws LinkException
+     * @throws UserMessageExceptionInterface
      */
     private function createUser(ActivityDetails $activityDetails): int
     {

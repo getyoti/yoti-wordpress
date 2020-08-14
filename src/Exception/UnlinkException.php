@@ -2,25 +2,29 @@
 
 namespace Yoti\WP\Exception;
 
-/**
- * Provides user friendly messages to display when account cannot be unlinked.
- *
- * Unlink exceptions can only be created using predefined static methods.
- */
-final class UnlinkException extends \RuntimeException
+final class UnlinkException extends AbstractUserMessageException
 {
-    private function __construct(string $message)
+    private const CODE_UNLINK = 0;
+    private const CODE_DELETE_IMAGE = 1;
+
+    /**
+     * @inheritDoc
+     */
+    protected static function userMessages(): array
     {
-        parent::__construct($message);
+        return [
+            self::CODE_UNLINK => 'Could not unlink from Yoti.',
+            self::CODE_DELETE_IMAGE => 'Could not delete user image.',
+        ];
     }
 
     public static function couldNotUnlink(): self
     {
-        return new static('Could not unlink from Yoti.');
+        return new static(self::CODE_UNLINK);
     }
 
     public static function couldNotDeleteImage(): self
     {
-        return new static('Could not delete user image.');
+        return new static(self::CODE_DELETE_IMAGE);
     }
 }
