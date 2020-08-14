@@ -19,6 +19,9 @@ class ClientFactory implements ClientFactoryInterface
      */
     private $config;
 
+    /**
+     * @param Config $config
+     */
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -60,7 +63,7 @@ class ClientFactory implements ClientFactoryInterface
     }
 
     /**
-     * @return YotiClient
+     * @inheritDoc
      */
     public function getClient(): YotiClient
     {
@@ -72,7 +75,7 @@ class ClientFactory implements ClientFactoryInterface
     }
 
     /**
-     * @return DocScanClient
+     * @inheritDoc
      */
     public function getDocScanClient(): DocScanClient
     {
