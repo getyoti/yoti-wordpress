@@ -67,7 +67,12 @@ class User
         }
 
         $client = $this->clientFactory->getClient();
-        return $client->getActivityDetails($token);
+
+        try {
+            return $client->getActivityDetails($token);
+        } catch (\Exception $e) {
+            throw LinkException::couldNotConnect();
+        }
     }
 
     /**
@@ -77,50 +82,47 @@ class User
      */
     public function link(): void
     {
-        try {
-            $activityDetails = $this->getActivityDetails();
-        } catch (\Exception $e) {
-            throw LinkException::couldNotConnect();
-        }
-
+        $activityDetails = $this->getActivityDetails();
         $profile = $activityDetails->getProfile();
 
-        if (!$this->passedAgeVerification($profile)) {
-            throw LinkException::failedAgeVerification();
-        }
+        $this->ensurePassedAgeVerification($profile);
 
         $rememberMeId = $activityDetails->getRememberMeId();
         if ($rememberMeId === null) {
             throw LinkException::missingRememberMeId();
         }
-        $userId = $this->getUserIdByYotiId($rememberMeId);
+        $linkedUserId = $this->getUserIdByYotiId($rememberMeId);
 
-        if ($userId && !$this->userExists($userId)) {
-            $this->deleteYotiUser($userId);
+        if ($linkedUserId && !$this->userExists($linkedUserId)) {
+            $this->deleteYotiUser($linkedUserId);
         }
 
         if (is_user_logged_in()) {
             $currentUser = wp_get_current_user();
-            if ($userId && $userId !== $currentUser->ID) {
+            if ($linkedUserId && $linkedUserId !== $currentUser->ID) {
                 throw LinkException::alreadyLinked();
             }
-            if (!$userId) {
+            if (!$linkedUserId) {
                 $this->createYotiUser($currentUser->ID, $activityDetails);
             }
         } else {
-            if (!$userId) {
-                $userId = $this->linkByEmail($activityDetails);
-                if (!$userId) {
-                    if (!empty($this->config->get('yoti_only_existing'))) {
+            if ($linkedUserId) {
+                $this->loginUser($linkedUserId);
+            } else {
+                $emailLinkedUserId = $this->linkByEmail($activityDetails);
+                if ($emailLinkedUserId !== null) {
+                    $this->loginUser($emailLinkedUserId);
+                } else {
+                    if ($this->config->onlyLinkExistingUsers()) {
                         $this->storeYotiUser($activityDetails);
                         $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
                         wp_safe_redirect(wp_login_url($redirect));
                         exit;
                     }
-                    $userId = $this->createUser($activityDetails);
+                    $newUserId = $this->createUser($activityDetails);
+                    $this->loginUser($newUserId);
                 }
             }
-            $this->loginUser($userId);
         }
     }
 
@@ -181,15 +183,18 @@ class User
      * Check if age verification applies and is valid.
      *
      * @param UserProfile $profile
-     *
-     * @return bool
      */
-    private function passedAgeVerification(UserProfile $profile): bool
+    private function ensurePassedAgeVerification(UserProfile $profile): void
     {
-        if (!$this->config->get('yoti_age_verification')) {
-            return true;
+        if (!$this->config->requireAgeVerification()) {
+            return;
         }
-        return $this->oneAgeIsVerified($profile);
+
+        if ($this->oneAgeIsVerified($profile)) {
+            return;
+        }
+
+        throw LinkException::failedAgeVerification();
     }
 
     /**
@@ -600,7 +605,7 @@ class User
             $email = $emailAttr->getValue();
         }
 
-        if ($email && !empty($this->config->get('yoti_user_email'))) {
+        if ($email && $this->config->linkNewUsersByEmail()) {
             $user = get_user_by('email', $email);
             if ($user) {
                 $userId = $user->ID;
