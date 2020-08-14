@@ -6,7 +6,7 @@ defined('ABSPATH') or die();
 
 /**
  * @var array $data
- * @var string $updateMessage
+ * @var array $messages
  * @var array $errors
  */
 ?>
@@ -27,15 +27,17 @@ defined('ABSPATH') or die();
         Warning: User IDs provided by Yoti are unique to each Yoti Application. Using a different Yoti 
         Application means you will receive a different Yoti User ID for all of your users.
     </p>
-    <?php if ($updateMessage) { ?>
+    <?php if (count($messages) > 0) { ?>
         <div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible">
-            <p><strong><?php esc_html_e($updateMessage); ?></strong></p>
+            <?php foreach ($messages as $message) { ?>
+                <p><strong><?php esc_html_e($message); ?></strong></p>
+            <?php } ?>
             <button type="button" class="notice-dismiss">
                 <span class="screen-reader-text">Dismiss this notice.</span>
             </button>
         </div>
     <?php } ?>
-    <?php if ($errors) { ?>
+    <?php if (count($errors) > 0) { ?>
         <div id="setting-error-settings_updated" class="error settings-error notice is-dismissible">
             <?php foreach ($errors as $err) { ?>
                 <p><strong><?php esc_html_e($err); ?></strong></p>
