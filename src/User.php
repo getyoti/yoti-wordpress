@@ -6,6 +6,8 @@ use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\Attribute\AgeVerification;
 use Yoti\Profile\UserProfile;
 use Yoti\WP\Client\ClientFactoryInterface;
+use Yoti\WP\Exception\LinkException;
+use Yoti\WP\Exception\UnlinkException;
 
 /**
  * Class User
@@ -14,25 +16,6 @@ class User
 {
     /** Selfie key */
     public const SELFIE_FILENAME = 'selfie_filename';
-
-    /**
-     * @return array<string,string>
-     */
-    public static function profileFields()
-    {
-        return [
-            UserProfile::ATTR_SELFIE => 'Selfie',
-            UserProfile::ATTR_FULL_NAME => 'Full Name',
-            UserProfile::ATTR_GIVEN_NAMES => 'Given Names',
-            UserProfile::ATTR_FAMILY_NAME => 'Family Name',
-            UserProfile::ATTR_PHONE_NUMBER => 'Mobile Number',
-            UserProfile::ATTR_EMAIL_ADDRESS => 'Email Address',
-            UserProfile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
-            UserProfile::ATTR_POSTAL_ADDRESS => 'Postal Address',
-            UserProfile::ATTR_GENDER => 'Gender',
-            UserProfile::ATTR_NATIONALITY => 'Nationality',
-        ];
-    }
 
     /**
      * @var Config
@@ -54,123 +37,107 @@ class User
     }
 
     /**
+     * @return array<string,string>
+     */
+    public static function profileFields(): array
+    {
+        return [
+            UserProfile::ATTR_SELFIE => 'Selfie',
+            UserProfile::ATTR_FULL_NAME => 'Full Name',
+            UserProfile::ATTR_GIVEN_NAMES => 'Given Names',
+            UserProfile::ATTR_FAMILY_NAME => 'Family Name',
+            UserProfile::ATTR_PHONE_NUMBER => 'Mobile Number',
+            UserProfile::ATTR_EMAIL_ADDRESS => 'Email Address',
+            UserProfile::ATTR_DATE_OF_BIRTH => 'Date Of Birth',
+            UserProfile::ATTR_POSTAL_ADDRESS => 'Postal Address',
+            UserProfile::ATTR_GENDER => 'Gender',
+            UserProfile::ATTR_NATIONALITY => 'Nationality',
+        ];
+    }
+
+    /**
+     * @return ActivityDetails
+     */
+    private function getActivityDetails(): ActivityDetails
+    {
+        $token = !empty($_GET['token']) ? $_GET['token'] : null;
+        if ($token === null) {
+            throw LinkException::noToken();
+        }
+
+        $client = $this->clientFactory->getClient();
+        return $client->getActivityDetails($token);
+    }
+
+    /**
      * Login user
      *
-     * @param \WP_User|null $currentUser
-     *
-     * @return bool
+     * @throws LinkException
+     * @throws UnlinkException
      */
-    public function link($currentUser = null)
+    public function link(): void
     {
-        if ($currentUser === null) {
-            $currentUser = wp_get_current_user();
-        }
-
-        $token = (!empty($_GET['token'])) ? $_GET['token'] : null;
-
-        // If no token then ignore
-        if (!$token) {
-            Message::setFlash('Could not get Yoti token.', 'error');
-
-            return false;
-        }
-
-        // Init Yoti client and attempt to request user details
         try {
-            $yotiClient = $this->clientFactory->getClient();
-            $activityDetails = $yotiClient->getActivityDetails($token);
-            $profile = $activityDetails->getProfile();
+            $activityDetails = $this->getActivityDetails();
         } catch (\Exception $e) {
-            Message::setFlash('Yoti failed to connect to your account.', 'error');
-
-            return false;
+            throw LinkException::couldNotConnect();
         }
+
+        $profile = $activityDetails->getProfile();
 
         if (!$this->passedAgeVerification($profile)) {
-            Message::setFlash('Could not log you in as you haven\'t passed the age verification', 'error');
-            return false;
+            throw LinkException::failedAgeVerification();
         }
 
-        // Check if Yoti user exists
         $rememberMeId = $activityDetails->getRememberMeId();
         if ($rememberMeId === null) {
-            Message::setFlash('Could not create user account without Remember Me ID.', 'error');
-            return false;
+            throw LinkException::missingRememberMeId();
         }
-        $wpYotiUid = $this->getUserIdByYotiId($rememberMeId);
+        $userId = $this->getUserIdByYotiId($rememberMeId);
 
-        // If Yoti user exists in db but isn't an actual account then remove it from yoti table
-        if ($wpYotiUid !== null && $currentUser->ID !== $wpYotiUid && !get_user_by('id', $wpYotiUid)) {
-            // remove users account
-            $this->deleteYotiUser($wpYotiUid);
+        if ($userId && !$this->userExists($userId)) {
+            $this->deleteYotiUser($userId);
         }
 
-        // If user isn't logged in
-        if (!$currentUser->ID) {
-            // Register new user
-            if (!$wpYotiUid) {
-                // Attempt to connect by email
-                $wpYotiUid = $this->shouldLoginByEmail($activityDetails, $this->config->get('yoti_user_email'));
-
-                // If config only existing enabled then check if user exists, if not then redirect
-                // to login page
-                if (!$wpYotiUid) {
-                    if (empty($this->config->get('yoti_only_existing'))) {
-                        try {
-                            $wpYotiUid = $this->createUser($activityDetails);
-                        } catch (\Exception $e) {
-                            // Could not create user.
-                        }
-                    } else {
+        if (is_user_logged_in()) {
+            $currentUser = wp_get_current_user();
+            if ($userId && $userId !== $currentUser->ID) {
+                throw LinkException::alreadyLinked();
+            }
+            if (!$userId) {
+                $this->createYotiUser($currentUser->ID, $activityDetails);
+            }
+        } else {
+            if (!$userId) {
+                $userId = $this->linkByEmail($activityDetails);
+                if (!$userId) {
+                    if (!empty($this->config->get('yoti_only_existing'))) {
                         $this->storeYotiUser($activityDetails);
                         $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
                         wp_safe_redirect(wp_login_url($redirect));
                         exit;
                     }
-                }
-
-                if (!$wpYotiUid) {
-                    Message::setFlash('Could not create user account.', 'error');
-                    return false;
+                    $userId = $this->createUser($activityDetails);
                 }
             }
-
-            // Log user in
-            $this->loginUser($wpYotiUid);
-        } else {
-            if ($wpYotiUid && $currentUser->ID !== $wpYotiUid) {
-                // If current logged in user doesn't match Yoti user registered then bail
-                Message::setFlash('This Yoti account is already linked to another account.', 'error');
-                return false;
-            } elseif (!$wpYotiUid) {
-                // If WP user not found in Yoti table then create new Yoti user
-                $this->createYotiUser($currentUser->ID, $activityDetails);
-            }
+            $this->loginUser($userId);
         }
-
-        return true;
     }
 
     /**
      * Unlink account from currently logged in user
      *
-     * @return bool
+     * @return void
+     *
+     * @throws UnlinkException
      */
-    public function unlink(): bool
+    public function unlink(): void
     {
-        $currentUser = wp_get_current_user();
-
-        // Unlink user account from Yoti
-        if (is_user_logged_in()) {
-            $this->deleteYotiUser($currentUser->ID);
-            Message::setFlash('Your Yoti profile was successfully unlinked from your account.');
-
-            return true;
+        if (!is_user_logged_in()) {
+            throw UnlinkException::couldNotUnlink();
         }
 
-        Message::setFlash('Could not unlink from Yoti.');
-
-        return false;
+        $this->deleteYotiUser(wp_get_current_user()->ID);
     }
 
     /**
@@ -217,9 +184,12 @@ class User
      *
      * @return bool
      */
-    public function passedAgeVerification(UserProfile $profile)
+    private function passedAgeVerification(UserProfile $profile): bool
     {
-        return !($this->config->get('yoti_age_verification') && !$this->oneAgeIsVerified($profile));
+        if (!$this->config->get('yoti_age_verification')) {
+            return true;
+        }
+        return $this->oneAgeIsVerified($profile);
     }
 
     /**
@@ -238,7 +208,7 @@ class User
      *
      * @return array<string,string>
      */
-    private function processAgeVerifications(UserProfile $profile)
+    private function processAgeVerifications(UserProfile $profile): array
     {
         $ageVerifications = $profile->getAgeVerifications();
         $ageVerificationsAttr = [];
@@ -284,7 +254,7 @@ class User
      *
      * @return string
      */
-    private function generateUsername(UserProfile $profile, $prefix = 'yoti.user')
+    private function generateUsername(UserProfile $profile, $prefix = 'yoti.user'): string
     {
         $givenName = $this->getUserGivenName($profile);
         if ($familyNameAttr = $profile->getFamilyName()) {
@@ -326,9 +296,10 @@ class User
      * If user has more than one given name return the first one
      *
      * @param UserProfile $profile
+     *
      * @return null|string
      */
-    private function getUserGivenName(UserProfile $profile)
+    private function getUserGivenName(UserProfile $profile): ?string
     {
         $givenName = null;
         if ($givenNamesAttr = $profile->getGivenNames()) {
@@ -345,7 +316,7 @@ class User
      *
      * @return string
      */
-    private function generateEmail($prefix = 'yoti.user', $domain = 'example.com')
+    private function generateEmail($prefix = 'yoti.user', $domain = 'example.com'): string
     {
         // Get the number of user_email that starts with yotiuser-
         $userQuery = new \WP_User_Query(
@@ -374,30 +345,19 @@ class User
     }
 
     /**
-     * Generate Yoti user password.
-     *
-     * @param int $length
-     * @return mixed
-     */
-    private function generatePassword($length = 10)
-    {
-        return wp_generate_password($length);
-    }
-
-    /**
      * Create user profile with Yoti data.
      *
      * @param ActivityDetails $activityDetails
      *
      * @return int
      *
-     * @throws \Exception
+     * @throws LinkException
      */
-    private function createUser(ActivityDetails $activityDetails)
+    private function createUser(ActivityDetails $activityDetails): int
     {
         $profile = $activityDetails->getProfile();
         $username = $this->generateUsername($profile);
-        $password = $this->generatePassword();
+        $password = wp_generate_password(10);
 
         // Check that email is available and valid.
         $userProvidedEmailCanBeUsed = false;
@@ -410,15 +370,14 @@ class User
         // otherwise use Yoti generic email
         $email = isset($userProvidedEmail) && $userProvidedEmailCanBeUsed ? $userProvidedEmail : $this->generateEmail();
 
-        $wpUserId = wp_create_user($username, $password, $email);
-        // If there has been an error creating the user, stop the process
-        if ($wpUserId instanceof \WP_Error) {
-            throw new \Exception($wpUserId->get_error_message(), 401);
+        $userId = wp_create_user($username, $password, $email);
+        if ($userId instanceof \WP_Error) {
+            throw LinkException::couldNotCreateAccount();
         }
 
-        $this->createYotiUser($wpUserId, $activityDetails);
+        $this->createYotiUser($userId, $activityDetails);
 
-        return $wpUserId;
+        return $userId;
     }
 
     /**
@@ -426,9 +385,9 @@ class User
      *
      * @param string $yotiId
      *
-     * @return int
+     * @return int|null
      */
-    private function getUserIdByYotiId($yotiId)
+    private function getUserIdByYotiId($yotiId): ?int
     {
         // Query for users based on the meta data
         $users = (new \WP_User_Query(
@@ -445,10 +404,10 @@ class User
     /**
      * Create Yoti user profile.
      *
-     * @param int $wpUserId
+     * @param int $userId
      * @param ActivityDetails $activityDetails
      */
-    public function createYotiUser($wpUserId, ActivityDetails $activityDetails): void
+    public function createYotiUser($userId, ActivityDetails $activityDetails): void
     {
         $profile = $activityDetails->getProfile();
         // Create upload dir
@@ -489,8 +448,8 @@ class User
             $meta[$ageAttr] = $result;
         }
 
-        update_user_meta($wpUserId, 'yoti_user.profile', $meta);
-        update_user_meta($wpUserId, 'yoti_user.identifier', $activityDetails->getRememberMeId());
+        update_user_meta($userId, 'yoti_user.profile', $meta);
+        update_user_meta($userId, 'yoti_user.identifier', $activityDetails->getRememberMeId());
     }
 
     /**
@@ -498,9 +457,10 @@ class User
      *
      * @param string $prefix
      * @param string $extension
+     *
      * @return string
      */
-    private function createUniqueFilename($prefix, $extension)
+    private function createUniqueFilename($prefix, $extension): string
     {
         // Get last user meta ID to prevent filename collision.
         global $wpdb;
@@ -513,27 +473,38 @@ class User
     }
 
     /**
+     * @param int $userId
+     *
+     * @return boolean
+     */
+    private function userExists(int $userId): bool
+    {
+        return $userId === wp_get_current_user()->ID || get_user_by('id', $userId);
+    }
+
+    /**
      * Delete Yoti user profile.
      *
      * @param int $userId WP user id
      */
     private function deleteYotiUser($userId): void
     {
-        // Remove user image.
         $dbProfile = $this->getUserProfile($userId);
         if ($dbProfile === false) {
             return;
         }
 
+        // Remove user image.
         $filePath = isset($dbProfile[self::SELFIE_FILENAME])
             ? $this->config->uploadDir() . '/' . $dbProfile[self::SELFIE_FILENAME]
             : false;
 
         if ($filePath && is_file($filePath)) {
             if (!unlink($filePath)) {
-                Message::setFlash('Could not delete user image.', 'error');
+                throw UnlinkException::couldNotDeleteImage();
             }
         }
+
         // Remove user metadata.
         delete_user_meta($userId, 'yoti_user.identifier');
         delete_user_meta($userId, 'yoti_user.profile');
@@ -579,7 +550,7 @@ class User
      *
      * @return string|null
      */
-    public function selfieUrl($userId, $dbProfile = null)
+    public function selfieUrl($userId, $dbProfile = null): ?string
     {
         $dbProfile = $dbProfile ?? $this->getUserProfile($userId);
         if ($dbProfile == false) {
@@ -617,26 +588,25 @@ class User
      * Attempt to connect by email
      *
      * @param ActivityDetails $activityDetails
-     * @param string $emailConfig
      *
      * @return int|null
      */
-    private function shouldLoginByEmail(ActivityDetails $activityDetails, $emailConfig)
+    private function linkByEmail(ActivityDetails $activityDetails): ?int
     {
-        $wpYotiUid = null;
+        $userId = null;
         $email = null;
 
         if ($emailAttr = $activityDetails->getProfile()->getEmailAddress()) {
             $email = $emailAttr->getValue();
         }
 
-        if ($email && !empty($emailConfig)) {
-            $byMail = get_user_by('email', $email);
-            if ($byMail) {
-                $wpYotiUid = $byMail->ID;
-                $this->createYotiUser($wpYotiUid, $activityDetails);
+        if ($email && !empty($this->config->get('yoti_user_email'))) {
+            $user = get_user_by('email', $email);
+            if ($user) {
+                $userId = $user->ID;
+                $this->createYotiUser($userId, $activityDetails);
             }
         }
-        return $wpYotiUid;
+        return $userId;
     }
 }

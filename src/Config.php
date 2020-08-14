@@ -32,32 +32,22 @@ class Config
 
     /**
      * Remove Yoti config option data from WordPress option table.
-     *
-     * @return bool
      */
-    public function delete(): bool
+    public function delete(): void
     {
-        if (delete_option(self::YOTI_CONFIG_OPTION_NAME)) {
-            $this->config = null;
-            return true;
-        }
-        return false;
+        delete_option(self::YOTI_CONFIG_OPTION_NAME);
+        $this->config = null;
     }
 
     /**
      * Save Yoti Config.
      *
      * @param array<string,mixed> $config
-     *
-     * @return bool
      */
-    public function save($config): bool
+    public function save($config): void
     {
-        if (update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config))) {
-            $this->config = null;
-            return true;
-        }
-        return false;
+        update_option(self::YOTI_CONFIG_OPTION_NAME, maybe_serialize($config));
+        $this->config = null;
     }
 
     /**

@@ -38,11 +38,10 @@ class UserTest extends TestBase
             Service::config()
         );
 
-        $linked = $user->link();
+        $user->link();
 
         $dbProfile = $user->getUserProfile($this->unlinkedUser->ID);
 
-        $this->assertTrue($linked);
         $this->assertCount(1, $dbProfile);
         $this->assertEquals('some given name', $dbProfile[UserProfile::ATTR_GIVEN_NAMES]);
     }
