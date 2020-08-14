@@ -2,9 +2,7 @@
 
 namespace Yoti\WP\Exception;
 
-use Throwable;
-
-interface UserMessageExceptionInterface extends Throwable
+interface UserMessageExceptionInterface extends \Throwable
 {
     /**
      * Provides user friendly messages to display.

@@ -8,6 +8,7 @@ use Yoti\Profile\UserProfile;
 use Yoti\WP\Client\ClientFactoryInterface;
 use Yoti\WP\Exception\LinkException;
 use Yoti\WP\Exception\UnlinkException;
+use Yoti\WP\Exception\UserMessageExceptionInterface;
 
 /**
  * Class User
