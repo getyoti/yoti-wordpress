@@ -119,7 +119,7 @@ class Hooks
             $companyName = $config['yoti_company_name'];
         }
 
-        // Verifiy the action.
+        // Verify the action.
         $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');
         if ($verified) {
             $noLink = !empty($_POST['yoti_nolink']);
