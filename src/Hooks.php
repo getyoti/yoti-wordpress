@@ -113,11 +113,8 @@ class Hooks
             return;
         }
 
-        $config = Service::config()->load();
-        $companyName = 'WordPress';
-        if (isset($config['yoti_company_name']) && !empty($config['yoti_company_name'])) {
-            $companyName = $config['yoti_company_name'];
-        }
+        $config = Service::config();
+        $companyName = $config->getCompanyName() ?? 'WordPress';
 
         // Verify the action.
         $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');

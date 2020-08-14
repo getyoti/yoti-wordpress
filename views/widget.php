@@ -1,12 +1,13 @@
 <?php
 
 use Yoti\WP\Button;
+use Yoti\WP\Config;
 
 defined('ABSPATH') or die();
 /**
  * @var array $args
  * @var string $title
- * @var array $config
+ * @var Config $config
  * @var array $instance
  */
 ?>
@@ -19,11 +20,11 @@ if (!empty($title)) {
     echo $args['after_title'] ?: '';
 }
 ?>
-<ul><li>
-    <?php if (!empty($config['yoti_sdk_id']) && !empty($config['yoti_pem']['contents'])) { ?>
-        <?php Button::render(null, true, $instance); ?>
-    <?php } else { ?>
-        <strong>Yoti not configured.</strong>
-    <?php } ?>
-</li></ul>
+
+<?php if ($config->getClientSdkId() !== null && $config->getPemContent() !== null) { ?>
+    <?php Button::render(null, true, $instance); ?>
+<?php } else { ?>
+    <strong>Yoti not configured.</strong>
+<?php } ?>
+
 <?php echo $args['after_widget'] ?: ''; ?>

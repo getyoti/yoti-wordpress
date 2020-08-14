@@ -4,7 +4,8 @@ defined('ABSPATH') or die();
  * @var bool $is_linked
  * @var string $message
  * @var string $button_text
- * @var array $config
+ * @var string $sdkId
+ * @var string $scenarioId
  * @var bool $from_widget
  * @var string $unlink_url
  * @var string $button_id
@@ -22,8 +23,8 @@ defined('ABSPATH') or die();
             var yotiConfig = yotiConfig || { elements: [] };
             yotiConfig.elements.push(<?php echo json_encode(array(
                 'domId' => esc_attr($button_id),
-                'clientSdkId' => esc_attr($config['yoti_sdk_id']),
-                'scenarioId' => esc_attr($config['yoti_scenario_id']),
+                'clientSdkId' => esc_attr($sdkId),
+                'scenarioId' => esc_attr($scenarioId),
                 'button' => array(
                     'label' => esc_attr($button_text),
                 ),

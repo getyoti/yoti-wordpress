@@ -107,32 +107,32 @@ class Admin
         try {
             $this->setPostData();
 
-            $this->formData['yoti_app_id'] = trim((string) $this->postValue('yoti_app_id'));
-            if (!$this->formData['yoti_app_id']) {
+            $this->formData[Config::KEY_APP_ID] = trim((string) $this->postValue(Config::KEY_APP_ID));
+            if (!$this->formData[Config::KEY_APP_ID]) {
                 $this->errors[] = 'App ID is required.';
             }
 
-            $this->formData['yoti_scenario_id'] = trim((string) $this->postValue('yoti_scenario_id'));
+            $this->formData[Config::KEY_SCENARIO_ID] = trim((string) $this->postValue(Config::KEY_SCENARIO_ID));
 
-            $this->formData['yoti_sdk_id'] = trim((string) $this->postValue('yoti_sdk_id'));
-            if (!$this->formData['yoti_sdk_id']) {
+            $this->formData[Config::KEY_CLIENT_SDK_ID] = trim((string) $this->postValue(Config::KEY_CLIENT_SDK_ID));
+            if (!$this->formData[Config::KEY_CLIENT_SDK_ID]) {
                 $this->errors[] = 'Client SDK ID is required.';
             }
 
-            $this->formData['yoti_company_name'] = trim((string) $this->postValue('yoti_company_name'));
-            $this->formData['yoti_only_existing'] = $this->postValue('yoti_only_existing');
-            $this->formData['yoti_user_email'] = $this->postValue('yoti_user_email');
-            $this->formData['yoti_age_verification'] = $this->postValue('yoti_age_verification');
+            $this->formData[Config::KEY_COMPANY_NAME] = trim((string) $this->postValue(Config::KEY_COMPANY_NAME));
+            $this->formData[Config::KEY_ONLY_EXISTING] = $this->postValue(Config::KEY_ONLY_EXISTING);
+            $this->formData[Config::KEY_USER_EMAIL] = $this->postValue(Config::KEY_USER_EMAIL);
+            $this->formData[Config::KEY_AGE_VERIFICATION] = $this->postValue(Config::KEY_AGE_VERIFICATION);
 
             if ($this->postValue('yoti_delete_pem')) {
-                $this->formData['yoti_pem'] = [];
+                $this->formData[Config::KEY_PEM] = [];
             } else {
                 try {
-                    $this->formData['yoti_pem'] = $this->uploadedPemFile() ?? $this->config->get('yoti_pem');
+                    $this->formData[Config::KEY_PEM] = $this->uploadedPemFile() ?? $this->config->getPem();
                 } catch (PemFileException $e) {
                     $this->errors[] = 'PEM file is invalid.';
                 }
-                if (empty($this->formData['yoti_pem']['name'])) {
+                if (empty($this->formData[Config::KEY_PEM]['name'])) {
                     $this->errors[] = 'PEM file is required.';
                 }
             }
@@ -209,7 +209,7 @@ class Admin
      */
     private function uploadedPemFile(): ?array
     {
-        $pemFile = $this->filesVar('yoti_pem');
+        $pemFile = $this->filesVar(Config::KEY_PEM);
 
         if (!empty($pemFile['tmp_name'])) {
             $name = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $pemFile['name']);

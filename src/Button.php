@@ -28,13 +28,10 @@ class Button
         $button_id = 'yoti-button-' . ++$button_id_suffix;
 
         // Do not show the button if the plugin has not been configured.
-        $config = Service::config()->load();
-        if (!$config) {
+        $config = Service::config();
+        if ($config->getClientSdkId() === null) {
             return;
         }
-
-        // Merge instance config with global config.
-        $config = array_merge($config, array_filter($instance_config));
 
         // Default button text and linked status.
         $button_text = Button::YOTI_LINK_BUTTON_TEXT;
@@ -48,8 +45,8 @@ class Button
         }
 
         // Override button text if set for widget instance.
-        if (!empty($config['yoti_button_text'])) {
-            $button_text = $config['yoti_button_text'];
+        if (!empty($instance_config['yoti_button_text'])) {
+            $button_text = $instance_config['yoti_button_text'];
         }
 
         // Build unlink URL.
@@ -63,12 +60,20 @@ class Button
         $unlink_url = site_url('wp-login.php') . '?' . http_build_query($query_params, '', '&', PHP_QUERY_RFC3986);
         $unlink_url = wp_nonce_url($unlink_url, 'yoti_verify', 'yoti_verify');
 
+        // Get button specific scenario ID, or fall back on global configuration.
+        if (!empty($instance_config[Config::KEY_SCENARIO_ID])) {
+            $scenarioId = $instance_config[Config::KEY_SCENARIO_ID];
+        } else {
+            $scenarioId = $config->getScenarioId();
+        }
+
         View::render('button', [
             'is_linked' => $is_linked,
             'message' => Message::getFlash(),
             'button_text' => $button_text,
             'from_widget' => $from_widget,
-            'config' => $config,
+            'scenarioId' => $scenarioId,
+            'sdkId' => $config->getClientSdkId(),
             'unlink_url' => $unlink_url,
             'button_id' => $button_id
         ]);
