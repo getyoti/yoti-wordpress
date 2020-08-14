@@ -4,6 +4,7 @@ namespace Yoti\WP;
 
 use Yoti\WP\Exception\LinkException;
 use Yoti\WP\Exception\UnlinkException;
+use Yoti\WP\Exception\UserMessageExceptionInterface;
 use Yoti\WP\Widget;
 use Yoti\WP\User;
 
@@ -53,8 +54,8 @@ class Hooks
                 case 'link':
                     try {
                         $userService->link();
-                    } catch (LinkException | UnlinkException $e) {
-                        Message::setFlash($e->getMessage(), 'error');
+                    } catch (UserMessageExceptionInterface $e) {
+                        Message::setFlash($e->getUserMessage(), 'error');
                         $redirect = home_url();
                     }
                     wp_safe_redirect($redirect);
@@ -68,9 +69,9 @@ class Hooks
                         try {
                             $userService->unlink();
                             Message::setFlash('Your Yoti profile was successfully unlinked from your account.');
-                        } catch (UnlinkException $e) {
+                        } catch (UserMessageExceptionInterface $e) {
                             $redirect = home_url();
-                            Message::setFlash($e->getMessage(), 'error');
+                            Message::setFlash($e->getUserMessage(), 'error');
                         }
                     }
 
