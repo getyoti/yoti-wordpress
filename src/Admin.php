@@ -9,8 +9,6 @@ namespace Yoti\WP;
  */
 class Admin
 {
-    private const SAVE_ERROR = 'There was a problem saving form data. Please try again.';
-
     /**
      * @var self
      */
@@ -110,7 +108,7 @@ class Admin
                     $errors['yoti_pem'] = 'PEM file is invalid.';
                 }
             } catch (\Exception $e) {
-                $errors['yoti_admin_options'] = self::SAVE_ERROR;
+                $errors['yoti_admin_options'] = 'There was a problem saving form data. Please try again.';
             }
 
             // No errors? proceed
@@ -123,7 +121,7 @@ class Admin
                         $name = md5($pemFile['name']) . '.pem';
                     }
                     $contents = file_get_contents($pemFile['tmp_name']);
-                } elseif ($this->postVar('yoti_delete_pem')) {
+                } elseif (!$this->postVar('yoti_delete_pem')) {
                     // If delete not ticked
                     $pemConfig = $config->get('yoti_pem');
                     $name = $pemConfig['name'];
@@ -133,11 +131,8 @@ class Admin
                 $data['yoti_pem'] = compact('name', 'contents');
 
                 // Save config
-                if ($config->save($data)) {
-                    $updateMessage = 'Yoti settings saved.';
-                } else {
-                    $errors['yoti_admin_options'] = self::SAVE_ERROR;
-                }
+                $config->save($data);
+                $updateMessage = 'Yoti settings saved.';
             }
         }
 
