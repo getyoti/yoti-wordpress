@@ -4,7 +4,6 @@ defined('ABSPATH') or die();
  * @var array $dbProfile
  * @var string $selfieUrl
  * @var bool $displayButton
- * @var int $userId
  */
 
 use Yoti\Profile\UserProfile;

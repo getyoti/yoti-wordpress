@@ -3,6 +3,7 @@
 namespace Yoti\WP\Test;
 
 use Yoti\WP\Admin;
+use Yoti\WP\Constants;
 use Yoti\WP\Service;
 
 /**
@@ -19,7 +20,7 @@ class AdminTest extends TestBase
 
         // Set untrimmed POST data to be processed by form submit handler.
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        $_POST[Constants::NONCE_ACTION] = wp_create_nonce(Constants::NONCE_ACTION);
         foreach ($this->config as $key => $value) {
             $_POST[$key] = $value;
             if (is_string($value)) {
@@ -120,7 +121,7 @@ class AdminTest extends TestBase
         wp_set_current_user($this->adminUser->ID);
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        $_POST[Constants::NONCE_ACTION] = wp_create_nonce(Constants::NONCE_ACTION);
 
         ob_start();
         Admin::init();

@@ -4,6 +4,7 @@ namespace Yoti\WP\Test;
 
 use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\UserProfile;
+use Yoti\WP\Constants;
 use Yoti\WP\Hooks;
 use Yoti\WP\Message;
 use Yoti\WP\Service;
@@ -129,9 +130,9 @@ class HooksTest extends TestBase
     {
         $userService = Service::user();
 
-        wp_create_nonce('yoti_verify');
+        wp_create_nonce(Constants::NONCE_ACTION);
         $_POST['yoti_nolink'] = '0';
-        $_POST['yoti_verify'] = 'invalid-verification';
+        $_POST[Constants::NONCE_ACTION] = 'invalid-verification';
         $userService->storeYotiUser($this->createMockActivityDetails());
 
         Hooks::login('unlinked_user', $this->unlinkedUser);
@@ -157,7 +158,7 @@ class HooksTest extends TestBase
         $userService = Service::user();
 
         $_POST['yoti_nolink'] = '0';
-        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        $_POST[Constants::NONCE_ACTION] = wp_create_nonce(Constants::NONCE_ACTION);
         $userService->storeYotiUser($this->createMockActivityDetails());
 
         Hooks::login('unlinked_user', $this->unlinkedUser);
@@ -172,7 +173,7 @@ class HooksTest extends TestBase
         $userService = Service::user();
 
         $_POST['yoti_nolink'] = '1';
-        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        $_POST[Constants::NONCE_ACTION] = wp_create_nonce(Constants::NONCE_ACTION);
         $userService->storeYotiUser($this->createMockActivityDetails());
 
         Hooks::login('unlinked_user', $this->unlinkedUser);
@@ -208,7 +209,7 @@ class HooksTest extends TestBase
     {
         $_REQUEST['REQUEST_METHOD'] = 'POST';
         $_POST['yoti_nolink'] = '1';
-        $_POST['yoti_verify'] = wp_create_nonce('yoti_verify');
+        $_POST[Constants::NONCE_ACTION] = wp_create_nonce(Constants::NONCE_ACTION);
         $_SESSION['yoti-user'] = serialize($this->createMockActivityDetails());
 
         ob_start();

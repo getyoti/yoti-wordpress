@@ -1,4 +1,7 @@
 <?php
+
+use Yoti\WP\Constants;
+
 defined('ABSPATH') or die();
 /**
  * @var string $companyName
@@ -20,4 +23,4 @@ defined('ABSPATH') or die();
     >
     <label class="option" for="edit-yoti-link">Don't link my Yoti account</label>
 </div>
-<?php wp_nonce_field('yoti_verify', 'yoti_verify'); ?>
+<?php wp_nonce_field(Constants::NONCE_ACTION, Constants::NONCE_ACTION); ?>

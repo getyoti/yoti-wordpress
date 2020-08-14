@@ -41,8 +41,9 @@ class Hooks
             session_start();
         }
 
-        // Verifiy the action.
-        $verified = !empty($_GET['yoti_verify']) && wp_verify_nonce($_GET['yoti_verify'], 'yoti_verify');
+        // Verify the action.
+        $verified = !empty($_GET[Constants::NONCE_ACTION]) &&
+            wp_verify_nonce($_GET[Constants::NONCE_ACTION], Constants::NONCE_ACTION);
 
         if (!empty($_GET['yoti-select'])) {
             $userService = Service::user();
@@ -117,7 +118,8 @@ class Hooks
         $companyName = $config->getCompanyName() ?? 'WordPress';
 
         // Verify the action.
-        $verified = !empty($_POST['yoti_verify']) && wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify');
+        $verified = !empty($_POST[Constants::NONCE_ACTION]) &&
+            wp_verify_nonce($_POST[Constants::NONCE_ACTION], Constants::NONCE_ACTION);
         if ($verified) {
             $noLink = !empty($_POST['yoti_nolink']);
         } else {
@@ -143,14 +145,14 @@ class Hooks
         }
 
         // Return when the login form doesn't have Yoti verification.
-        if (empty($_POST['yoti_verify'])) {
+        if (empty($_POST[Constants::NONCE_ACTION])) {
             return;
         }
 
         $userService = Service::user();
 
         // Verify the action.
-        if (!wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')) {
+        if (!wp_verify_nonce($_POST[Constants::NONCE_ACTION], Constants::NONCE_ACTION)) {
             Message::setFlash('Yoti profile could not be linked, please try again.');
         } else {
             $activityDetails = $userService->getYotiUserFromStore();
@@ -178,64 +180,34 @@ class Hooks
     /**
      * Display Yoti user profile.
      *
-     * @param \WP_User $user.
+     * @param \WP_User $profileUser.
      */
-    public static function showUserProfile($user): void
+    public static function showUserProfile($profileUser): void
     {
         // Do not display profile if account is not linked.
-        if (empty(get_user_meta($user->ID, 'yoti_user.identifier'))) {
+        if (empty(get_user_meta($profileUser->ID, 'yoti_user.identifier'))) {
             return;
         }
 
         $userService = Service::user();
 
-        $dbProfile = $userService->getUserProfile($user->ID);
+        $dbProfile = $userService->getUserProfile($profileUser->ID);
         if ($dbProfile === false) {
             return;
         }
 
-        $selfieUrl = $userService->selfieUrl($user->ID, $dbProfile);
+        // Selfie is displayed separately in template.
+        $selfieUrl = $userService->selfieUrl($profileUser->ID, $dbProfile);
+        unset($dbProfile[User::SELFIE_FILENAME]);
 
-        $profileUserId = $user->ID;
-        $currentUser = wp_get_current_user();
-        $isAdmin = in_array('administrator', $currentUser->roles, true);
-        $userId = (!empty($_GET['user_id'])) ? $_GET['user_id'] : null;
-
-        // Set userId if admin user is viewing his own profile
-        // and the userId is NULL
-        if (
-            $isAdmin
-            && $profileUserId === $currentUser->ID
-            && is_null($userId)
-        ) {
-            $userId = $profileUserId;
-        }
-
-        if (!empty($dbProfile)) {
-            // Selfie is displayed separately in template.
-            unset($dbProfile[User::SELFIE_FILENAME]);
-        }
-
-        // Flag to display button.
-        $displayButton = false;
-
-        if (!$isAdmin) {
-            // Display for non-admin accounts.
-            $displayButton = true;
-        } elseif (!$userId) {
-            // Display for anonymous users.
-            $displayButton = true;
-        } elseif ($currentUser->ID === $userId) {
-            // Display for current user.
-            $displayButton = true;
-        }
+        // Display button for user viewing their own profile.
+        $displayButton = wp_get_current_user()->ID === $profileUser->ID;
 
         // Add profile scope
         View::render('profile', [
             'dbProfile' => $dbProfile,
             'selfieUrl' => $selfieUrl,
             'displayButton' => $displayButton,
-            'userId' => $userId,
         ]);
     }
 

@@ -100,7 +100,10 @@ class Admin
      */
     private function handleSubmit(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if (
+            !isset($_SERVER['REQUEST_METHOD']) ||
+            $_SERVER['REQUEST_METHOD'] !== 'POST'
+        ) {
             return;
         }
 
@@ -170,8 +173,8 @@ class Admin
     private function setPostData(): void
     {
         if (
-            !isset($_POST['yoti_verify'])
-            || !wp_verify_nonce($_POST['yoti_verify'], 'yoti_verify')
+            !isset($_POST[Constants::NONCE_ACTION])
+            || !wp_verify_nonce($_POST[Constants::NONCE_ACTION], Constants::NONCE_ACTION)
         ) {
             throw new \RuntimeException('Could not verify request');
         }
