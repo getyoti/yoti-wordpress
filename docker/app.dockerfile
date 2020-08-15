@@ -14,7 +14,6 @@ RUN set -ex; \
         echo "Finished cloning ${BRANCH}"; \
         chown -R www-data:www-data /usr/src/yoti-wordpress; \
         cd /usr/src/yoti-wordpress; \
-        mkdir __sdk-sym; \
         ./bin/pack-plugin.sh; \
         echo "Finished packing the plugin"; \
         mv ./${PLUGIN_PACKAGE_NAME} /usr/src/wordpress/wp-content/plugins; \
