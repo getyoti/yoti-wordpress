@@ -3,7 +3,7 @@
 Contributors: yotiwordpress
 Tags: identity, verification, login, form, 2 factor, 2 step authentication, 2FA, access, privacy, authentication, security, sign in, two factor
 Requires at least: 3.0.1
-Tested up to: 5.3
+Tested up to: 5.5
 Requires PHP: 7.2
 Stable tag: 2.0.0
 License: GNU v3
