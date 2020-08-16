@@ -61,7 +61,10 @@ class User
      */
     private function getActivityDetails(): ActivityDetails
     {
-        $token = !empty($_GET['token']) ? $_GET['token'] : null;
+        // phpcs:disable
+        $token = !empty($_GET['token']) ? sanitize_text_field(wp_unslash($_GET['token'])) : null;
+        // phpcs:enable
+
         if ($token === null) {
             throw LinkException::noToken();
         }
@@ -114,7 +117,13 @@ class User
                 } else {
                     if ($this->config->onlyLinkExistingUsers()) {
                         $this->storeYotiUser($activityDetails);
-                        $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
+
+                        // phpcs:disable
+                        $redirect = !empty($_GET['redirect'])
+                            ? sanitize_text_field(wp_unslash($_GET['redirect']))
+                            : home_url();
+                        // phpcs:enable
+
                         wp_safe_redirect(wp_login_url($redirect));
                         exit;
                     }

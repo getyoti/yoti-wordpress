@@ -2,8 +2,6 @@
 
 namespace Yoti\WP;
 
-use Yoti\WP\Exception\LinkException;
-use Yoti\WP\Exception\UnlinkException;
 use Yoti\WP\Exception\UserMessageExceptionInterface;
 use Yoti\WP\Widget;
 use Yoti\WP\User;
@@ -43,14 +41,14 @@ class Hooks
 
         // Verify the action.
         $verified = !empty($_GET[Constants::NONCE_ACTION]) &&
-            wp_verify_nonce($_GET[Constants::NONCE_ACTION], Constants::NONCE_ACTION);
+            wp_verify_nonce(sanitize_text_field(wp_unslash($_GET[Constants::NONCE_ACTION])), Constants::NONCE_ACTION);
 
         if (!empty($_GET['yoti-select'])) {
             $userService = Service::user();
 
             // Action
-            $action = !empty($_GET['action']) ? $_GET['action'] : '';
-            $redirect = !empty($_GET['redirect']) ? $_GET['redirect'] : home_url();
+            $action = !empty($_GET['action']) ? sanitize_text_field(wp_unslash($_GET['action'])) : '';
+            $redirect = !empty($_GET['redirect']) ? sanitize_text_field(wp_unslash($_GET['redirect'])) : home_url();
             switch ($action) {
                 case 'link':
                     try {
@@ -81,7 +79,7 @@ class Hooks
 
                 case 'bin-file':
                     if ($verified) {
-                        $userService->binFile('selfie', !empty($_GET['user_id']) ? $_GET['user_id'] : null);
+                        $userService->binFile('selfie', !empty($_GET['user_id']) ? (int) $_GET['user_id'] : null);
                         exit;
                     }
                     break;
@@ -108,7 +106,11 @@ class Hooks
         if (!$userService->getYotiUserFromStore()) {
             // Don't allow unless there is an existing session
             return;
-        } elseif ($_REQUEST['REQUEST_METHOD'] != 'POST' && !isset($_REQUEST['redirect_to'])) {
+        } elseif (
+            isset($_REQUEST['REQUEST_METHOD']) &&
+            $_REQUEST['REQUEST_METHOD'] != 'POST' &&
+            !isset($_REQUEST['redirect_to'])
+        ) {
             // On page refresh clear the YotiUserStore session and don't display the message
             $userService->clearYotiUserStore();
             return;
@@ -119,7 +121,7 @@ class Hooks
 
         // Verify the action.
         $verified = !empty($_POST[Constants::NONCE_ACTION]) &&
-            wp_verify_nonce($_POST[Constants::NONCE_ACTION], Constants::NONCE_ACTION);
+            wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[Constants::NONCE_ACTION])), Constants::NONCE_ACTION);
         if ($verified) {
             $noLink = !empty($_POST['yoti_nolink']);
         } else {
@@ -152,7 +154,12 @@ class Hooks
         $userService = Service::user();
 
         // Verify the action.
-        if (!wp_verify_nonce($_POST[Constants::NONCE_ACTION], Constants::NONCE_ACTION)) {
+        if (
+            !wp_verify_nonce(
+                sanitize_text_field(wp_unslash($_POST[Constants::NONCE_ACTION])),
+                Constants::NONCE_ACTION
+            )
+        ) {
             Message::setFlash('Yoti profile could not be linked, please try again.');
         } else {
             $activityDetails = $userService->getYotiUserFromStore();

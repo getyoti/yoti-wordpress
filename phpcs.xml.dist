@@ -5,9 +5,7 @@
 	<file>views</file>
 
 	<rule ref="PSR12" />
-	<rule ref="WordPress.Security.PluginMenuSlug"/>
-	<rule ref="WordPress.Security.EscapeOutput" />
-	<rule ref="WordPress.Security.SafeRedirect"/>
+	<rule ref="WordPress.Security"/>
 
 	<!-- Show sniff codes in all reports -->
 	<arg value="s"/>

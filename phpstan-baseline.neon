@@ -1,9 +1,24 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Parameter \\#1 \\$str of function sanitize_text_field expects string, array\\<string\\>\\|string given\\.$#"
+			count: 1
+			path: src/Admin.php
+
+		-
 			message: "#^Constant WP_CONTENT_DIR not found\\.$#"
 			count: 1
 			path: src/Config.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function sanitize_text_field expects string, array\\<string\\>\\|string given\\.$#"
+			count: 5
+			path: src/Hooks.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function sanitize_text_field expects string, array\\<string\\>\\|string given\\.$#"
+			count: 2
+			path: src/User.php
 
 		-
 			message: "#^Function apply_filters invoked with 4 parameters, 2 required\\.$#"
