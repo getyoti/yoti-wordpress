@@ -46,7 +46,14 @@ foreach ($dbProfile as $attrName => $value) {
 <?php if ($displayButton) { ?>
     <tr>
         <th></th>
-        <td><?php Button::render($_SERVER['REQUEST_URI'], false); ?></td>
+        <td>
+            <?php
+            $requestUri = isset($_SERVER['REQUEST_URI'])
+                ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']))
+                : null;
+            Button::render($requestUri, false);
+            ?>
+        </td>
     </tr>
 <?php } ?>
 </table>

@@ -27,7 +27,9 @@ class AdminTest extends TestBase
                 $_POST[$key] .= "\t \n\r\x0B";
             }
         }
+        // phpcs:disable
         unset($_POST['yoti_pem']);
+        // phpcs:enable
 
         ob_start();
         Admin::init();

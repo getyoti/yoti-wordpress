@@ -47,7 +47,15 @@ defined('ABSPATH') or die();
             </button>
         </div>
     <?php } ?>
-    <form method="post" enctype="multipart/form-data" action="<?php esc_attr_e($_SERVER['REQUEST_URI']); ?>">
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        <?php if (isset($_SERVER['REQUEST_URI'])) { ?>
+        action="<?php esc_attr_e(sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']))); ?>"
+        <?php } ?>
+    >
+
         <?php wp_nonce_field(Constants::NONCE_ACTION, Constants::NONCE_ACTION); ?>
         <table class="form-table">
             <tbody>

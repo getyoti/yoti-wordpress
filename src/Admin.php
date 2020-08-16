@@ -173,8 +173,8 @@ class Admin
     private function setPostData(): void
     {
         if (
-            !isset($_POST[Constants::NONCE_ACTION])
-            || !wp_verify_nonce($_POST[Constants::NONCE_ACTION], Constants::NONCE_ACTION)
+            !isset($_POST[Constants::NONCE_ACTION]) ||
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[Constants::NONCE_ACTION])), Constants::NONCE_ACTION)
         ) {
             throw new \RuntimeException('Could not verify request');
         }
@@ -235,6 +235,8 @@ class Admin
      */
     private function filesVar($var): ?array
     {
+        // phpcs:disable
         return isset($_FILES[$var]['name']) ? $_FILES[$var] : null;
+        // phpcs:enable
     }
 }
