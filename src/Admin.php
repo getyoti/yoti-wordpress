@@ -188,19 +188,10 @@ class Admin
      */
     private function postValue($key): ?string
     {
-        if (
-            !isset($this->postData[$key]) ||
-            !is_string($this->postData[$key])
-        ) {
+        if (!isset($this->postData[$key])) {
             return null;
         }
-
-        $value = wp_unslash($this->postData[$key]);
-        if (!is_string($value)) {
-            return null;
-        }
-
-        return sanitize_text_field($value);
+        return sanitize_text_field(wp_unslash($this->postData[$key]));
     }
 
     /**
