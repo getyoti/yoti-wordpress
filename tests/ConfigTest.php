@@ -2,7 +2,6 @@
 
 namespace Yoti\WP\Test;
 
-use Yoti\WP\Config;
 use Yoti\WP\Service;
 
 /**

@@ -6,7 +6,6 @@ use Yoti\Profile\ActivityDetails;
 use Yoti\Profile\Attribute;
 use Yoti\Profile\UserProfile;
 use Yoti\WP\Client\ClientFactoryInterface;
-use Yoti\WP\Config;
 use Yoti\WP\Service;
 use Yoti\WP\User;
 use Yoti\YotiClient;

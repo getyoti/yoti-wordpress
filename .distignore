@@ -11,4 +11,5 @@
 composer.*
 phpcs.*
 phpunit.*
+phpstan*
 README.md

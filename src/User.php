@@ -488,7 +488,7 @@ class User
     /**
      * @param int $userId
      *
-     * @return boolean
+     * @return bool
      */
     private function userExists(int $userId): bool
     {

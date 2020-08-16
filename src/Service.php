@@ -4,8 +4,6 @@ namespace Yoti\WP;
 
 use Yoti\WP\Client\ClientFactory;
 use Yoti\WP\Client\ClientFactoryInterface;
-use Yoti\WP\Config;
-use Yoti\WP\User;
 
 /**
  * Class Service

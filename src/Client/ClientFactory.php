@@ -4,8 +4,8 @@ namespace Yoti\WP\Client;
 
 use Yoti\DocScan\DocScanClient;
 use Yoti\Util\Config as YotiConfig;
-use Yoti\WP\Constants;
 use Yoti\WP\Config;
+use Yoti\WP\Constants;
 use Yoti\WP\Exception\ClientConfigException;
 use Yoti\YotiClient;
 

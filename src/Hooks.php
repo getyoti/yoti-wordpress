@@ -3,8 +3,6 @@
 namespace Yoti\WP;
 
 use Yoti\WP\Exception\UserMessageExceptionInterface;
-use Yoti\WP\Widget;
-use Yoti\WP\User;
 
 /**
  * Class Yoti used in the plugin main file yoti.php

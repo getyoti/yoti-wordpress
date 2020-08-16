@@ -132,7 +132,7 @@ class Config
     /**
      * Only allow existing WordPress users to link their Yoti account
      *
-     * @return boolean
+     * @return bool
      */
     public function onlyLinkExistingUsers(): bool
     {
@@ -143,7 +143,7 @@ class Config
     /**
      * Attempt to link Yoti email address with WordPress account for first time users
      *
-     * @return boolean
+     * @return bool
      */
     public function linkNewUsersByEmail(): bool
     {

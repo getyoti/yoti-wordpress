@@ -13,7 +13,8 @@
         "symfony/phpunit-bridge": "^5",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
         "phpstan/phpstan": "^0.12.37",
-        "php-stubs/wordpress-stubs": "^5.4"
+        "php-stubs/wordpress-stubs": "^5.4",
+        "friendsofphp/php-cs-fixer": "^2.15"
     },
     "autoload": {
         "psr-4": {
@@ -29,6 +30,7 @@
         "test": "phpunit",
         "lint": [
             "phpcs",
+            "php-cs-fixer fix --config=.php_cs.dist -v --dry-run --using-cache=no --diff-format=udiff --ansi",
             "phpstan analyse --memory-limit=256M"
         ]
     }
