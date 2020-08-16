@@ -21,14 +21,14 @@ defined('ABSPATH') or die();
         <div id="<?php esc_attr_e($button_id); ?>" class="yoti-button"></div>
         <script>
             var yotiConfig = yotiConfig || { elements: [] };
-            yotiConfig.elements.push(<?php echo json_encode(array(
+            yotiConfig.elements.push(<?php echo wp_json_encode([
                 'domId' => esc_attr($button_id),
                 'clientSdkId' => esc_attr($sdkId),
                 'scenarioId' => esc_attr($scenarioId),
-                'button' => array(
+                'button' => [
                     'label' => esc_attr($button_text),
-                ),
-            )); ?>);
+                ],
+            ]); ?>);
         </script>
     <?php } elseif ($from_widget) { ?>
         <strong>Yoti</strong> Linked

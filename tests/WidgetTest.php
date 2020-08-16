@@ -2,10 +2,9 @@
 
 namespace Yoti\WP\Test\Button;
 
-use Yoti\WP\Widget;
-use Yoti\WP\Config;
 use Yoti\WP\Service;
 use Yoti\WP\Test\TestBase;
+use Yoti\WP\Widget;
 
 /**
  * @group yoti

@@ -5,4 +5,5 @@
 /composer.* export-ignore
 /phpcs.* export-ignore
 /phpunit.* export-ignore
+/phpstan* export-ignore
 /*.png export-ignore

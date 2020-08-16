@@ -7,7 +7,7 @@ abstract class AbstractUserMessageException extends \RuntimeException implements
     private const DEFAULT_MESSAGE = 'An unknown error occurred.';
 
     /**
-     * @param integer $code
+     * @param int $code
      */
     protected function __construct(int $code)
     {
@@ -15,7 +15,7 @@ abstract class AbstractUserMessageException extends \RuntimeException implements
     }
 
     /**
-     * @param integer $code
+     * @param int $code
      *
      * @return string
      */
