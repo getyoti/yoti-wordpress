@@ -203,31 +203,29 @@ class Admin
      */
     private function uploadedPemFile(): ?array
     {
-        $pemFile = $this->filesVar(Config::KEY_PEM);
+        if (!isset($_FILES[Config::KEY_PEM])) {
+            return null;
+        }
+        // phpcs:disable
+        $pemFile = $_FILES[Config::KEY_PEM];
+        // phpcs:enable
 
-        if (!empty($pemFile['tmp_name'])) {
-            $name = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $pemFile['name']);
-            if (!$name) {
-                $name = md5($pemFile['name']) . '.pem';
-            }
-            return [
-                'name' => $name,
-                'contents' => (string) PemFile::fromFilePath($pemFile['tmp_name']),
-            ];
+        if (
+            empty($pemFile['name']) ||
+            !is_string($pemFile['name']) ||
+            empty($pemFile['tmp_name']) ||
+            !is_string($pemFile['tmp_name'])
+        ) {
+            return null;
         }
 
-        return null;
-    }
-
-    /**
-     * @param string $var
-     *
-     * @return array<string,string>|null
-     */
-    private function filesVar($var): ?array
-    {
-        // phpcs:disable
-        return isset($_FILES[$var]['name']) ? $_FILES[$var] : null;
-        // phpcs:enable
+        $name = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $pemFile['name']);
+        if (!$name) {
+            $name = md5($pemFile['name']) . '.pem';
+        }
+        return [
+            'name' => $name,
+            'contents' => (string) PemFile::fromFilePath($pemFile['tmp_name']),
+        ];
     }
 }
