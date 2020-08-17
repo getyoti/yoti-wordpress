@@ -191,7 +191,11 @@ class Admin
         if (!isset($this->postData[$key])) {
             return null;
         }
-        return sanitize_text_field(wp_unslash($this->postData[$key]));
+        $unslashedValue = wp_unslash($this->postData[$key]);
+        if (!is_string($unslashedValue)) {
+            return null;
+        }
+        return sanitize_text_field($unslashedValue);
     }
 
     /**
