@@ -566,7 +566,7 @@ class User
     public function selfieUrl($userId, $dbProfile = null): ?string
     {
         $dbProfile = $dbProfile ?? $this->getUserProfile($userId);
-        if ($dbProfile == false) {
+        if ($dbProfile === false) {
             return null;
         }
 
