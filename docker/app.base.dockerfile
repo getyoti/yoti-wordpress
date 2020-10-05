@@ -6,14 +6,18 @@ RUN apt-get update; \
 
 ADD default.conf /etc/apache2/sites-available/000-default.conf
 RUN mkdir /etc/apache2/ssl/
+
+COPY openssl.cnf /etc/apache2/ssl/openssl.localhost.cnf
 RUN openssl req \
+    -config /etc/apache2/ssl/openssl.localhost.cnf \
     -x509 \
     -nodes \
     -days 365 \
+    -sha256 \
     -newkey rsa:2048 \
     -keyout /etc/apache2/ssl/server.key \
-    -out /etc/apache2/ssl/server.crt \
-    -subj "/C=UK/ST=London/L=London/O=Yoti/OU=Yoti/CN=localhost"
+    -out /etc/apache2/ssl/server.crt
+
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install- dir=/usr/local/bin --filename=composer \
